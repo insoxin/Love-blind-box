@@ -1,0 +1,861 @@
+{php $title=$_W['module_setting']['set_app_name']}
+{template 'inc/header'}
+
+<script type="text/javascript">
+	wx.ready(function () {
+		wx.onMenuShareAppMessage({
+			title:"{$_W['module_setting']['share_post_title']}",
+			desc:"{$_W['module_setting']['share_post_desc']}",
+			imgUrl:"{php echo tomedia($_W['module_setting']['share_post_logo'])}",
+			link:"{$publish_url}"
+		});
+		wx.onMenuShareTimeline({
+			title:"{$_W['module_setting']['share_post_line']}",
+			imgUrl:"{php echo tomedia($_W['module_setting']['share_post_logo'])}",
+			link:"{$publish_url}"
+		});
+	});
+</script>
+
+<style>
+
+
+	.vp-flex{
+	  display: -webkit-box;
+	  display: -webkit-flex;
+	  display: -ms-flexbox;
+	  display: flex;
+	}
+	.vp-flex_1{
+	  -webkit-box-flex: 1;
+	  -webkit-flex: 1;
+	  -ms-flex: 1;
+	  flex: 1;
+	  -webkit-tap-highlight-color: transparent;
+	}
+
+
+	.static-data{height:75px;background:#FFFFFF;overflow:hidden;text-align:center;}
+	.static-data p{font-size:12px;height:40px;line-height:50px;}
+	.static-data p em{font-size:16px;font-weight:bold}
+	.static-data h5{font-size:12px;color:#bbbbbb;}
+
+	.vp-tabs{overflow:hidden;}
+	.vp-tab{border-bottom:1px solid #EEEEEE;color:#999999;text-align:center;padding:15px 0}
+	.vp-tab-on{border-bottom:1px solid #444444;color:#444444;position:relative;font-weight:bold;}
+	.vp-tab-on:after{content:'';position:absolute;left:0;width:100%;bottom:0;height:1px;background:#444444}
+	.vp-tab-label{font-size:14px;position:relative}
+	.vp-tab-dot{position:absolute;right:13px;top:-8px;font-size:10px;display:inline-block;padding:0 5px;background:#F4F4F4;border:1px solid #FFFFFF;border-radius:100px;}
+
+	.share-type{text-align:center;margin-top:20px;}
+	.share-type img{width:50px;height:50px;}
+	.share-type p{margin-top:10px;font-size:10px;font-weight:bold;}
+
+	.text-li{margin-top:5px;}
+	
+	#publish_poster_box img{width:100%;-moz-box-shadow:0px 0px 5px #bbbbbb; -webkit-box-shadow:0px 0px 5px #bbbbbb; box-shadow:0px 0px 5px #bbbbbb;}
+	
+	.invite-cells:before{display:none;}
+	.invite-cells:after{display:none;}
+	.invite-cells .weui-cell{-webkit-box-align:stretch;-webkit-align-items:stretch;align-items:stretch;}
+	.invite-cells .weui-cell:before{display:none;}
+
+
+	#main_list{margin-top:0;}
+	#main_list:before{display:none;}
+	#main_list:after{display:none;}
+	#main_list p{color:#000000;font-weight:bold;}
+	#main_list h4{font-size:12px;color:#bbbbbb;}
+</style>
+
+
+<div>
+	{php $tab='agent'}
+	{template 'inc/tab'}
+
+	<div style="height:80px;"><!--顶部占位--></div>
+
+	{if $is_user_infoed==0}
+		<div style="position:relative;text-align:center;">
+			<div style="position:absolute;left:0;top:-25px;width:100%;">
+				<img src="{MODULE_URL}/static/mobile/images/avatar.jpg" style="width:60px;height:60px;border:3px solid #FFFFFF;background:#FFFFFF;border-radius:100px;overflow:hidden;"/>
+			</div>
+		</div>
+
+		<div style="text-align:center;margin:0 15px 15px 15px;background:#FFFFFF;border-radius:8px;overflow:hidden;">
+			<div style="padding:50px 0 0 0;">
+				<span style="font-weight:bold">登录后成为{$_W['module_setting']['agent_name']}</span>
+			</div>
+
+			<div style="margin-top:30px"><a href="{php echo $_W['siteroot'] . 'app/' . substr($this->createMobileUrl('login'), 2)}" class="weui-btn weui-btn_primary" >一键授权登录</a></div>
+		<div>
+	{else}
+		<div style="position:relative;text-align:center;">
+			<div style="position:absolute;left:0;top:-25px;width:100%;">
+				<img src="{$mine['avatar']}" style="width:60px;height:60px;border:3px solid #FFFFFF;background:#FFFFFF;border-radius:100px;overflow:hidden;"/>
+			</div>
+		</div>
+
+		<div style="text-align:center;margin:0 15px 15px 15px;background:#FFFFFF;border-radius:8px;overflow:hidden;">
+
+
+			<div style="padding:50px 0 0 0;">
+				<span style="font-weight:bold">{$_W['module_setting']['agent_name']} {$mine['nickname']}</span>
+			</div>
+
+			<div style="padding:30px 0 30px 0;position:relative;">
+				
+				<div style="font-size:12px;color:#bbbbbb">我已累计收入{$mine['agent_money_in']}元</div>
+				<div style="font-size:12px;margin:0 0 10px 0;font-weight:bold;"><span style="font-size:36px;">{$mine['agent_money']}</span>元</div>
+				<!--<div style="font-weight:bold">我的账户 <a>提现</a></div>-->
+				
+				<div>
+					<a id="btn_to_outcash" href="javascript:" class="weui-btn weui-btn_mini weui-btn_default" style="font-size:12px;;margin-right:5px">账户提现</a> 
+					<a  href="javascript:" class="weui-btn weui-btn_mini weui-btn_default btn_to_server" style="font-size:12px;">联系客服</a> 
+					<!--<a href="{php echo $this->createMobileUrl('city',array('id'=>$_GPC['id'],'cmd'=>'money'))}" class="weui-btn weui-btn_mini weui-btn_default" style="font-size:12px;">明细</a>-->
+				</div>
+				
+			</div>
+
+			<div>
+				<div class="vp-flex">
+					<div class="vp-flex_1">
+						<div class="static-data">
+							<p><em>{$mine['users']}</em>人</p>
+							<h5>推广用户</h5>
+						</div>
+					</div>
+					<div class="vp-flex_1">
+						<div class="static-data">
+							<p><em>{$mine['agentbs']}</em>人</p>
+							<h5>下级{$_W['module_setting']['agent_name']}</h5>
+						</div>
+					</div>
+				
+					<div class="vp-flex_1">
+						<div class="static-data">
+							<p><em>{php echo $mine['agentb1s']}</em>人</p>
+							<h5>下下级{$_W['module_setting']['agent_name']}</h5>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+		<div style="margin:0 15px 15px 15px;">
+			<a id="btn_to_publish" href="javascript:" class="btn">摆摊赚钱</a>
+			<!--
+			<div class="vp-flex">
+				<div class="vp-flex_1" style="margin-right:5px;">
+					<a id="btn_to_publish" href="javascript:" class="weui-btn weui-btn_primary" style="width:100%;background:#fa9d3b;">推广赚钱</a> 
+				</div>
+				<div class="vp-flex_1" style="margin-left:5px;">
+					<a id="btn_to_invite" href="javascript:" class="weui-btn weui-btn_primary" style="width:100%;background:#fa9d3b">邀请下级</a>
+				</div>
+			</div>
+			-->
+		</div>
+
+
+		<div style="margin:0 15px 15px 15px;background:#FFFFFF;border-radius:8px;overflow:hidden;">
+			<div class="weui-cell task-tabs" style="padding:0 15px;">
+				<div class="weui-cell__bd">
+					<div class="vp-tabs vp-flex">
+						<div  class="vp-flex_1 vp-tab vp-tab-on" data-cmd="moneys" >
+							<div class="vp-tab-label">账户记录</div>
+						</div>
+						<div  class="vp-flex_1 vp-tab" data-cmd="agents" data-filt="b1">
+							<div class="vp-tab-label">下级{$_W['module_setting']['agent_name']}</div>
+						</div>
+						<div  class="vp-flex_1 vp-tab" data-cmd="agents" data-filt="b2">
+							<div class="vp-tab-label">下下级{$_W['module_setting']['agent_name']}</div>
+						</div>
+					</div>
+				</div>
+				<div class="weui-cell__ft">
+				</div>
+			</div>
+
+			<div>
+				
+				<!-- 列表 -->
+				<div id="main_list" class="weui-cells" data-url="" data-cmd="moneys" data-filt="" data-loading=0 data-start=0 data-more=1 ></div>
+				
+				<!--账户模板-->
+				<script id="moneys_list_tpl" type="text/template" >
+					<%
+						if(!list || list.length==0){
+					%>
+							<div style="padding:40px 0;text-align:center;font-size:14px;color:#999999;">这里空空的，快去推广吧</div>
+					<%
+						}
+						for(var i=0;i<list.length;i++){
+							var item = list[i];
+					%>	
+						<div class="weui-cell">
+							<div class="weui-cell__bd">
+								<p>
+									<%if(item.money>=0){%><span style="color:#09BB07">+<%=item.money%>元</span><%}%>
+									<%if(item.money<0){%><span style="color:#F76260"><%=item.money%>元</span><%}%>
+								</p>
+							</div>
+							<div class="weui-cell__ft">
+								<h4><%=item.biz_name%></h4>
+								<h4><%=VP_FORMAT(item.create_time,'MM-dd hh:mm')%></h4>
+							</div>
+						</div>
+					<%  } %>
+				</script>
+
+				<!--代理模板-->
+				<script id="agents_list_tpl" type="text/template" >
+					<%
+						if(!list || list.length==0){
+					%>
+							<div style="padding:40px 0;text-align:center;font-size:14px;color:#999999;">这里空空的，快去推广吧</div>
+					<%
+						}
+						for(var i=0;i<list.length;i++){
+							var item = list[i];
+					%>	
+						<div class="weui-cell">
+							<div class="weui-cell__hd">
+								<img src="<%=item._avatar%>" style="height:36px;width:36px;object-fit:cover;border-radius:3px;margin-right:5px;"/>
+							</div>
+							<div class="weui-cell__bd">
+								<p><%=item.nickname%></p>
+								<h4><%=VP_FORMAT(item.agent_time,'MM-dd')%></h4>
+							</div>
+							<div class="weui-cell__ft">
+								<p><%=item.users%>人</p>
+								<h4>推广用户</h4>
+							</div>
+						</div>
+					<%  } %>
+				</script>
+
+			</div>
+		</div>
+
+	{/if}
+
+</div>
+
+
+<div style="height:50px;"><!--底部占高--></div>
+
+
+
+
+
+<!-- 接受消息提醒关注弹出框 -->
+<div id="dialog_follow" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">关注公众号，及时接收通知</strong>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+			<div style="text-align:center;">
+				<div><img src="{$_W['module_setting']['set_acc_qrcode']}" style="display:inline-block;width:200px;"/></div>
+				<div style="margin-top:15px;font-size:14px;">长按识别二维码关注</div>
+			</div>
+		</div>
+		<div class="weui-half-screen-dialog__ft"></div>
+	</div>
+</div>
+
+
+<!-- 推广弹出框 -->
+<div id="dialog_publish" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">请选择推广方式</strong>
+			<!--<span class="weui-half-screen-dialog__subtitle">我推广的用户消费时，我提成<em style="color:red">{$_W['module_setting']['agent_rate']}%</em></span>-->
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+			<div class="vp-flex">
+				<div class="vp-flex_1">
+					<div class="share-type" id="btn_to_publish_wx">
+						<div><img src="{MODULE_URL}/static/mobile/images/share_wx.png" /></div>
+						<p>好友/朋友圈</p>
+					</div>
+				</div>
+				<div class="vp-flex_1">
+					<div class="share-type" id="btn_to_publish_poster">
+						<div><img src="{MODULE_URL}/static/mobile/images/share_poster.png" /></div>
+						<p>二维码海报</p>
+					</div>
+				</div>
+				<div class="vp-flex_1">
+					<div class="share-type" id="btn_to_publish_wxmp">
+						<div><img src="{MODULE_URL}/static/mobile/images/share_wxmp.png" /></div>
+						<p>嵌入公众号</p>
+					</div>
+				</div>
+				<div class="vp-flex_1">
+					<div class="share-type" id="btn_to_publish_url">
+						<div><img src="{MODULE_URL}/static/mobile/images/share_url.png" /></div>
+						<p>推广链接</p>
+					</div>
+				</div>
+			</div>
+			<div>
+				<div style="font-size:12px;margin:30px 0 0 0;padding:10px;background:#fefbf0;border-radius:10px;color:#c2913b">
+					<p class="text-li">通过以上方式可邀请用户进入{$_W['module_setting']['set_app_name']}</p>
+					<p class="text-li">我推广的新用户，都自动归入我的用户</p>
+					<p class="text-li">我的用户成为{$_W['module_setting']['agent_name']}时，会成为我的下级{$_W['module_setting']['agent_name']}</p>
+					<p class="text-li">我的用户产生任何消费，我都可获得<em style="color:red">{$_W['module_setting']['agent_rate']}%</em>收益</p>
+					<p class="text-li">下级{$_W['module_setting']['agent_name']}的用户产生消费，我可获得<em style="color:red">{$_W['module_setting']['agent_rate1']}%</em>收益</p>
+					<p class="text-li">下下级{$_W['module_setting']['agent_name']}的用户产生消费，我可获得<em style="color:red">{$_W['module_setting']['agent_rate2']}%</em>收益</p>
+				</div>
+			</div>
+		</div>
+		<div class="weui-half-screen-dialog__ft"></div>
+	</div>
+</div>
+
+
+<!-- 推广弹出框 -->
+<div id="dialog_publish_wx" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"  style="z-index:998"></div>
+	<div  class="weui-half-screen-dialog" style="background:#F4F4F4;z-index:999">
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">推广给好友/朋友圈</strong>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+			<div style="background:#eaeaea;width:300px;padding:20px 0;margin:0 auto;text-align:center;border-radius:10px;">
+				<div style="font-size:12px;color:#444444;padding-bottom:10px;font-weight:bold;">点击右上角... 后发送给好友或朋友圈</div>
+				<div><img src="{MODULE_URL}/static/mobile/images/share.jpg" style="width:100px;display:inline-block;"/></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- 推广海报-弹出框 -->
+<div id="dialog_publish_poster" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">我的专属推广海报</strong>
+			<span class="weui-half-screen-dialog__subtitle">生成后长按图片保存到手机相册</span>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+			<div style="width:280px;margin:0 auto;position:relative;">
+
+
+				<div id="publish_poster_tpl" style="padding:0;margin:0;">
+					<div style="position:relative;">
+						<img src="{php echo VP_IMAGE_URL($_W['module_setting']['agent_poster'])}" style="width:280px;"/>
+						<div style="position:absolute;bottom:55px;left:100px;">
+							<img id="publish_qrcode" src="{$publish_qrcode}" style="width:80px;height:80px;"/>
+						</div>
+					</div>
+				</div>
+								
+				<div id="publish_poster_box" style="position:absolute;left:0;top:0;width:280px;height:100%;background:#FFFFFF url({MODULE_URL}/static/mobile/images/loading.gif) no-repeat center center;background-size:60px;"></div>
+
+			</div>
+		</div>
+		<div class="weui-half-screen-dialog__ft"></div>
+	</div>
+</div>
+
+
+<!-- 推广公众号-弹出框 -->
+<div id="dialog_publish_wxmp" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">推广到公众号</strong>
+			<span class="weui-half-screen-dialog__subtitle">复制推广链接添加到你的公众号菜单</span>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+
+			<div class="weui-cells weui-cells_form">
+				<div class="weui-cell" style="background:#F4F4F4;border-radius:5px;">
+					<div class="weui-cell__bd">
+						<textarea class="weui-textarea" rows="3" readonly>{$publish_url}</textarea>
+					</div>
+				</div>
+			</div>
+
+			<div style="margin-top:15px;"><a class="weui-btn weui-btn_primary btn-copyer" href="javascript:" data-clipboard-text="{$publish_url}">复制推广链接</a></div>
+
+		</div>
+		<div class="weui-half-screen-dialog__ft"></div>
+	</div>
+</div>
+
+<!-- 推广链接-弹出框 -->
+<div id="dialog_publish_url" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">我的专属推广链接</strong>
+			<span class="weui-half-screen-dialog__subtitle">复制后发布到其他平台推广</span>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+
+			<div class="weui-cells weui-cells_form">
+				<div class="weui-cell" style="background:#F4F4F4;border-radius:5px;">
+					<div class="weui-cell__bd">
+						<textarea class="weui-textarea" rows="3" readonly>{$publish_url}</textarea>
+					</div>
+				</div>
+			</div>
+
+			<div style="margin-top:15px;"><a class="weui-btn weui-btn_primary btn-copyer" href="javascript:" data-clipboard-text="{$publish_url}">复制推广链接</a></div>
+
+		</div>
+		<div class="weui-half-screen-dialog__ft"></div>
+	</div>
+</div>
+
+<!-- 邀请弹出框 -->
+<div id="dialog_invite" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">邀请下级{$_W['module_setting']['agent_name']}</strong>
+			<span class="weui-half-screen-dialog__subtitle">我可获得下级<em style="color:red">{$_W['module_setting']['agent_rate1']}%</em>，三级<em style="color:red">{$_W['module_setting']['agent_rate2']}%</em>销售提成</span>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+			<div class="weui-cells invite-cells">
+				<div class="weui-cell">
+					<div class="weui-cell__hd">
+						<div style="width:20px">①</div>
+					</div>
+					<div class="weui-cell__bd">
+						我推广的用户成为{$_W['module_setting']['agent_name']}时，将自动成为我的下级{$_W['module_setting']['agent_name']}
+					</div>
+				</div>
+				<div class="weui-cell">
+					<div class="weui-cell__hd">
+						<div style="width:20px">②</div>
+					</div>
+					<div class="weui-cell__bd">
+						让好友扫描下方二维码可直接被邀请成为我的下级{$_W['module_setting']['agent_name']}
+					</div>
+				</div>
+				<div class="weui-cell" style="padding-top:0">
+					<div class="weui-cell__hd">
+						<div style="width:20px"></div>
+					</div>
+					<div class="weui-cell__bd">
+						<img src="{$invite_qrcode}" style="width:100px;height:100px;"/>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="weui-half-screen-dialog__ft"></div>
+	</div>
+</div>
+
+
+
+<!-- 提现弹出框 -->
+<div id="dialog_outcash" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"  style="z-index:998"></div>
+	<div  class="weui-half-screen-dialog" style="background:#F4F4F4;z-index:999">
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">收入账户金额提现</strong>
+			<span class="weui-half-screen-dialog__subtitle">每{$_W['module_setting']['outcash_sp']}天可提现一次</span>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+			
+
+			<form id="outcash_form" action="" method="post" style="margin-top:20px;">
+				<input type="hidden" name="cmd" value="outcash"/>
+				<!--
+				<input type="hidden" name="channel" value="{$_W['module_setting']['outcash_way']}"/>
+				-->
+
+				<div class="weui-form">
+					<div class="weui-form__text-area">
+						<div class="weui-form__control-area">
+							<div class="weui-cells weui-cells_form" style="margin-top:0;">
+								<div class="weui-cell">
+									<div class="weui-cell__hd"><label class="weui-label">提现金额</label></div>
+									<div class="weui-cell__bd">
+										<input name="money" class="weui-input"  placeholder="{$_W['module_setting']['outcash_min']}~{$_W['module_setting']['outcash_max']}" min="{$_W['module_setting']['outcash_min']}" max="{$_W['module_setting']['outcash_max']}" type="number" step="0.01" style="text-align:right;padding-right:3px;" value="{$mine['agent_money']}"/>
+									</div>
+									<div class="weui-cell__hd">元</div>
+								</div>
+							</div>
+							
+							
+							<div class="weui-cells weui-cells_form">
+								{if $_W['module_setting']['outcash_way']==1}
+								<div class="weui-cell weui-cell_access">
+									<div class="weui-cell__hd"><label class="weui-label">我的微信收款码</label></div>
+									<div class="weui-cell__bd">
+										<input id="channel_account_picker" readonly class="weui-input"  placeholder="上传" style="text-align:right;" value=""/>
+										<input id="channel_account_value" type="hidden" name="account" value=""/>
+									</div>
+									<div class="weui-cell__ft"></div>
+								</div>
+								<div class="weui-cell">
+									<div class="weui-cell__hd"><label class="weui-label">收款账户姓名</label></div>
+									<div class="weui-cell__bd">
+										<input name="realname" class="weui-input"  placeholder="微信实名认证姓名" style="text-align:right;padding-right:3px;" value=""/>
+									</div>
+								</div>
+								{/if}
+								<div class="weui-cell">
+									<div class="weui-cell__hd"><label class="weui-label">您的微信账号</label></div>
+									<div class="weui-cell__bd">
+										<input name="weixin" class="weui-input"  placeholder="用于转账失败时联系您" style="text-align:right;padding-right:3px;" value=""/>
+									</div>
+								</div>
+							</div>
+							
+							{if $_W['module_setting']['outcash_way']==2}
+								<div style="padding-top:15px;text-align:center;">金额将转入您当前微信账户钱包</div>
+							{/if}
+
+						</div>
+
+						<div class="weui-form__opr-area" style="margin-bottom:0;">
+							<p><a class="weui-btn weui-btn_primary" href="javascript:" id="btn_outcash">确认发起提现</a></p>
+						</div>
+					</div>
+				</div>
+			</form>
+
+
+		</div>
+		<div class="weui-half-screen-dialog__ft"></div>
+	</div>
+</div>
+
+<!-- 联系客服弹出框 -->
+<div id="dialog_server" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">长按二维码添加客服微信</strong>
+			<span class="weui-half-screen-dialog__subtitle"><a href="javascript:;" class="btn-copyer" data-clipboard-text="{php echo pencode($mine['id'])}">点击复制我的ID:{php echo pencode($mine['id'])}</a></span>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+
+			<div style="text-align:center;">
+				<div><img src="{$_W['module_setting']['server_qrcode']}" style="display:inline-block;width:200px;"/></div>
+			</div>
+		
+		</div>
+		<div class="weui-half-screen-dialog__ft"></div>
+	</div>
+</div>
+
+
+{template 'inc/script'}
+<script type="text/javascript">
+
+	$(function(){
+		var loading=null;
+
+
+		// 推广弹出框
+		$('#btn_to_publish').on('click', function(){
+			$('#dialog_publish').fadeIn(200);
+			$('#dialog_publish').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+
+		// 推广到微信
+		$('#btn_to_publish_wx').on('click', function(){
+			$('.js_dialog').fadeOut(200);
+            $('.js_dialog').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+
+			$('#dialog_publish_wx').fadeIn(200);
+			$('#dialog_publish_wx').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+
+		// 推广到海报
+		function getBase64Image(img) {  
+			 var canvas = document.createElement("canvas");  
+			 canvas.width = img.width;  
+			 canvas.height = img.height;  
+			 var ctx = canvas.getContext("2d");  
+			 ctx.drawImage(img, 0, 0, img.width, img.height);  
+			 var ext = img.src.substring(img.src.lastIndexOf(".")+1).toLowerCase();  
+			 var dataURL = canvas.toDataURL("image/"+ext);  
+			 return dataURL;  
+		}
+		// 海报弹出框
+		$('#btn_to_publish_poster').on('click',function(){
+			$('.js_dialog').fadeOut(200);
+            $('.js_dialog').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+
+			$('#dialog_publish_poster').fadeIn(200);
+			$('#dialog_publish_poster').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+
+			// 清空之前的海报
+			$('#publish_poster_box').html('');
+			window.scroll(0,0);
+			// 设置海报图片
+
+			$('#publish_qrcode').attr('src',getBase64Image($('#publish_qrcode')[0]));
+			
+			// 延时是因为由于弹出框还没弹出，html2canvas抓取不到模板内容
+			setTimeout(function() { // weui.confirm后接weui.alert太快会导致weui.alert不弹出
+				// 生成推广海报
+				html2canvas($('#publish_poster_tpl')[0],{
+					allowTaint:true,
+					useCORS:true,
+					scrollY:0
+				}).then(canvas => {
+					var poster = new Image();
+					//poster.width='100';
+					poster.src = canvas.toDataURL();  // 导出图片
+					$('#publish_poster_box').append(poster);
+				});
+			},1000);
+		});
+
+
+		// 推广到公众号
+		$('#btn_to_publish_wxmp').on('click', function(){
+			$('.js_dialog').fadeOut(200);
+            $('.js_dialog').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+
+			$('#dialog_publish_wxmp').fadeIn(200);
+			$('#dialog_publish_wxmp').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+
+		// 推广链接
+		$('#btn_to_publish_url').on('click', function(){
+			$('.js_dialog').fadeOut(200);
+            $('.js_dialog').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+
+			$('#dialog_publish_url').fadeIn(200);
+			$('#dialog_publish_url').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+
+		// 邀请下级
+		$('#btn_to_invite').on('click', function(){
+			$('.js_dialog').fadeOut(200);
+            $('.js_dialog').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+
+			$('#dialog_invite').fadeIn(200);
+			$('#dialog_invite').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+
+
+		var list = $("#main_list");
+		var moneys_list_tpl=baidu.template($('#moneys_list_tpl').html());
+		var agents_list_tpl=baidu.template($('#agents_list_tpl').html());
+
+		var loadList=function(refresh=true){
+			if(refresh){
+				list.attr('data-start',0);
+				list.attr('data-more',1);
+			}
+
+			if(list.attr('data-loading')==1 || list.attr('data-more')==0){
+				return;
+			}
+
+			loading = weui.loading();
+			list.attr('data-loading',1);
+			
+			$.post(list.attr('data-url'), {
+				cmd:list.attr('data-cmd'),
+				filt:list.attr('data-filt'),
+				start:list.attr('data-start')
+			},function(resp) {
+				loading.hide();
+				list.attr('data-loading',0);
+				if(resp.status==0){
+					alert(resp.info);
+				}else{
+					//$('#order_new_cnt').html(resp.data.static_todo);
+					//$('#order_doing_cnt').html(resp.data.static_doing);
+					
+					list.attr('data-start',resp.data.start);
+					list.attr('data-more',resp.data.more);
+					
+					var html='';
+					
+					if(list.attr('data-cmd')=='moneys'){
+						html=moneys_list_tpl(resp.data);
+					}else if(list.attr('data-cmd')=='agents'){
+						html=agents_list_tpl(resp.data);
+					}
+					
+					if(!refresh){
+						html=list.html()+html;
+					}
+					list.html(html);
+				}
+			});	
+		}
+		
+		// 自动加载历史链接
+		loadList(true);
+		
+		
+		// 切换tab
+		$('.vp-tab').on('click', function(){
+			if($(this).hasClass('vp-tab-on')){
+				return false;
+			}else{
+				$('.vp-tab-on').removeClass('vp-tab-on');
+				$(this).addClass('vp-tab-on');
+
+				list.attr('data-cmd',$(this).attr('data-cmd'));
+				list.attr('data-filt',$(this).attr('data-filt'));
+				
+				loadList(true);
+				// refreshLoad
+			}
+		});
+
+
+
+
+		// 提现弹出窗
+		$('#btn_to_outcash').on('click', function(){
+			$('#dialog_outcash').fadeIn(200);
+			$('#dialog_outcash').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+
+		// 上传收款吗
+		$('#channel_account_picker').on('click',function(){
+			var that=$(this);
+			wx.chooseImage({
+				count:1,
+				sourceType: ['album'],
+				success: function (res) {
+					if(res.localIds){
+						that.val('正在上传...');
+						wx.uploadImage({
+							localId:res.localIds[0],
+							isShowProgressTips:0,
+							success: function (res) {
+								//weui.alert('上传成功');
+								$('#channel_account_value').val(res.serverId);
+								that.val('已上传');
+							},
+							fail: function () {
+								weui.alert('上传失败，请重试');
+							}
+						});
+					}
+				}
+			});
+		});
+	
+		// 提交提现申请
+		$('#btn_outcash').on('click',function(){
+			var form = $('#outcash_form');
+			loading = weui.loading('正在提交...');
+			$.post(form.attr('action'), form.serialize(),function(resp) {
+				loading.hide();
+				if(resp.status==0){
+					weui.alert(resp.info);
+				}else{
+					weui.alert(resp.info,function(){
+						location.reload();
+					});
+				}
+			});
+		});
+
+
+		// 客服弹窗
+		$('.btn_to_server').on('click',function(){
+			$('#dialog_server').fadeIn(200);
+			$('#dialog_server').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+		
+
+		/**统一关闭弹出框**/
+	     $('.js_dialog').find('.js_dialog_closer').on('click', function(){
+            $('.js_dialog').fadeOut(200);
+            $('.js_dialog').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+        });
+		
+		// 统一复制
+		var clipboard = new ClipboardJS('.btn-copyer');
+		clipboard.on('success', function(e) {
+			weui.toast('复制成功', 2000);
+		});
+
+
+	});
+</script>
+{template 'inc/footer'}

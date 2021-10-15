@@ -1,0 +1,38 @@
+{php $title=$msg}
+
+{template 'inc/header'}
+
+	<div class="weui-msg">
+		<div class="weui-msg__icon-area"><i class="weui_icon_{$label} weui_icon_msg"></i></div>
+		<div class="weui-msg__text-area">
+			<h2 class="weui-msg__title">{$msg}</h2>
+			<!--<p class="weui-msg__desc">{$info}</p>--->
+		</div>
+		<div class="weui-msg__opr-area">
+			<p class="weui-btn-area">
+				<a id="btn_ok"  data-redirect="{$redirect}" class="weui-btn weui-btn_default">确定</a>
+			</p>
+		</div>
+
+	</div>
+
+{template 'inc/script'}
+<script type="text/javascript">
+
+	wx.ready(function(){
+		$('#btn_ok').on('click',function(){
+			var url=$(this).data('redirect');
+			if(url){
+				location.href=url;
+			}else{
+				if(history.length>1){
+					history.back();
+				}else{
+					wx.closeWindow();
+				}
+			}
+		});
+	});
+
+</script>
+{template 'inc/footer'}

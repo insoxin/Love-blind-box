@@ -1,0 +1,212 @@
+<?php defined('IN_IA') or exit('Access Denied');?><?php (!empty($this) && $this instanceof WeModuleSite || 0) ? (include $this->template('common/header', TEMPLATE_INCLUDEPATH)) : (include template('common/header', TEMPLATE_INCLUDEPATH));?>
+<?php  if($_GPC['step'] == 1 || $_GPC['step'] == '') { ?>
+	<div class="account-list-add" id="js-account-post-step1" ng-controller="AccountPostStepOne" ng-cloak>
+		<?php  if($_W['iscontroller']) { ?>
+		<ol class="breadcrumb we7-breadcrumb">
+			<a href="<?php  echo url('account/manage')?>"><i class="wi wi-back-circle"></i></a>
+			<li><a href="<?php  echo url('account/manage')?>">平台列表</a></li>
+			<li>新建公众号</li>
+		</ol>
+		<?php  } ?>
+		<div class="panel we7-panel">
+			<div class="panel-body we7-padding">
+				<div class="col-lg-6 list-item">
+					<span class="img img-pen"></span>
+					<div class="info">
+						<div class="title">
+							<a href="javascript:;">手动添加公众号</a>
+						</div>
+						<div class="con">
+							通过<a href="https://mp.weixin.qq.com/" target="_blank" class="color-default">微信公众平台</a> 基本配置获取AppID和AppSecret，添加成功后，将本平台获取的服务器配置接口绑定到微信公众平台（注：添加过程中，请务必保持参数一致）
+						</div>
+						<div class="action">
+							<a href="<?php  echo url('account/create', array('sign' => 'account'))?>" class="btn btn-primary">手动添加公众号</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 list-item">
+					<span class="img img-tel"></span>
+					<div class="info">
+						<div class="title">
+							授权添加公众号
+						</div>
+						<div class="con">
+							<?php  if($_W['isadmin']) { ?>
+							使用授权添加需认证微信开放平台和全网发布，并在<a href="<?php  echo url('system/platform')?>" target="_blank" class="color-default">微信开放平台设置</a>中启用
+							<?php  } else { ?>
+							使用公众平台绑定的管理员个人微信扫码即可快速添加
+							<?php  } ?>
+						</div>
+						<div class="action">
+							<a href="javascript:;" ng-click="checkAccountLimit()" class="btn btn-primary">授权添加公众号</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		angular.module('accountApp').value('config', {
+			links: {
+				checkAccountLimitUrl: "<?php  echo url('account/post-step/check_account_limit')?>",
+			}
+		});
+		angular.bootstrap($('#js-account-post-step1'),['accountApp']);
+	</script>
+<?php  } else if($_GPC['step'] == 4) { ?>
+	<div class="account-list-add-step">
+		<?php  if($_W['iscontroller']) { ?>
+		<ol class="breadcrumb we7-breadcrumb">
+			<a href="<?php  echo url('account/manage', array('account_type' => ACCOUNT_TYPE_OFFCIAL_NORMAL))?>"><i class="wi wi-back-circle"></i> </a>
+			<li><a href="<?php  echo url('account/manage', array('account_type' => ACCOUNT_TYPE_OFFCIAL_NORMAL))?>">公众号列表</a></li>
+			<li>新建公众号</li>
+		</ol>
+		<?php  } ?>
+		<ul class="we7-step">
+			<li ><span class="content">1. 设置公众号信息</span></li>
+			<?php  if(!empty($_W['isfounder'])) { ?>
+			<li ><span class="content">2. 设置权限</span></li>
+			<li class="active"><span class="content">3. 引导页面</span></li>
+			<?php  } else { ?>
+			<li class="active"><span class="content">2. 引导页面</span></li>
+			<?php  } ?>
+		</ul>
+		<div class="we7-form" id="js-account-post-step4" ng-controller="AccountPostStepFour" ng-cloak>
+			<!--第四步:引导页面-->
+			<p class="alert alert-info">您绑定的微信公众号：<strong ng-bind="account.name"></strong>，请按照下列引导完成配置。</p>
+			<div class="panel we7-panel" ng-if="account.isconnect == 0">
+				<div class="panel-heading">
+					第一步
+				</div>
+				<div class="panel-body">
+					<div class="alert">
+						<i class="wi wi-info-sign"></i>
+						<span>登录 <a href="https://mp.weixin.qq.com/" class="color-default" target="_blank">微信公众平台</a>，点击左侧菜单[开发者工具]，进入 [ <em class=" color-red">web开发者工具</em> ]</span>
+					</div>
+					<div class="form-group">
+						<div class="img"><img src="./resource/images/guide-01.png"></div>
+						<p># 点击 [ <em class=" color-red">绑定开发者微信号</em> ]，输入微信号，邀请绑定</p>
+						<div class="img"><img src="./resource/images/guide-04.png" width="524"></div>
+						<p># 手机端打开微信公众号的绑定邀请，点击 [ <em class=" color-red">同意</em> ]，完成开发者绑定</p>
+						<div class="img"><img src="./resource/images/guide-05.png"></div>
+					</div>
+
+				</div>
+			</div>
+			<div class="panel we7-panel" ng-if="account.isconnect == 0">
+				<div class="panel-heading">
+					第二步
+				</div>
+				<div class="panel-body">
+					<div class="alert">
+						<i class="wi wi-info-sign"></i>
+						<span>在基本配置中，找到［<em class="color-red"> 服务器配置</em> ］</span>
+					</div>
+					<div class="form-group">
+						<div class="img"><img src="./resource/images/guide-02.png" width="524"/></div>
+						<p># 将以下链接链接填入对应输入框：</p>
+						<div class="form-group clip">
+							<label class="col-sm-1 control-label">URL:</label>
+							<div class="col-sm-11 input-group">
+								<p class="form-control-static">
+									<a href="javascript:;"><?php  echo $_W['siteroot'];?>api.php?id=<?php  echo $account['acid'];?></a>
+									<a href="javascript:;" id="copy-0" class="color-default" clipboard supported="supported" text="url" on-copied="success('0')">&nbsp;&nbsp;点击复制</a>
+								</p>
+							</div>
+						</div>
+						<div class="form-group clip">
+							<label class="col-sm-1 control-label">Token:</label>
+							<div class="col-sm-11 input-group">
+								<p class="form-control-static">
+									<a href="javascript:;" ng-bind="account.token"></a>
+									<a href="javascript:;" id="copy-1" class="color-default" clipboard supported="supported" text="account.token" on-copied="success('1')">&nbsp;&nbsp;点击复制</a>
+								</p>
+							</div>
+						</div>
+						<div class="form-group clip">
+							<label class="col-sm-2 control-label">EncodingAESKey:</label>
+							<div class="col-sm-10 input-group">
+								<p class="form-control-static">
+									<a href="javascript:;" title="点击复制EncodingAESKey" ng-bind="account.encodingaeskey"></a>
+									<a href="javascript:;" id="copy-2" class="color-default" clipboard supported="supported" text="account.encodingaeskey" on-copied="success('2')">&nbsp;&nbsp;点击复制</a>
+								</p>
+							</div>
+						</div>
+						<p># 如果以前已填写过URL和Token，请点击[<em class=" color-red"> 修改配置 </em>] ，再填写上述链接</p>
+						<p># 请点击 [<em class=" color-red"> 启用 </em>] ，以启用服务器配置：</p>
+						<div class="img"><img src="./resource/images/guide-03.png" width="524"></div>
+					</div>
+				</div>
+			</div>
+			<div class="panel we7-panel" ng-if="account.isconnect == 0">
+				<div class="panel-heading">
+					第三步
+				</div>
+				<div class="panel-body">
+					<div class="alert">
+						<i class="wi wi-info-sign"></i>
+						<span>在基本配置中，找到［<em class="color-red"> IP白名单</em> ］</span>
+					</div>
+					<div class="form-group">
+						<div class="img"><img src="./resource/images/guide-06.png" width="524"></div>
+						<p># 点击 [ <em class=" color-red">查看</em> ]，输入服务器IP并保存</p>
+					</div>
+				</div>
+			</div>
+			<div class="panel we7-panel" ng-if="account.isconnect == 0">
+				<div class="panel-heading">
+					第四步
+				</div>
+				<div class="panel-body">
+					<div class="alert">
+						<i class="wi wi-info-sign"></i>
+						<span>在公众号设置中，找到［<em class="color-red"> 功能设置</em> ］</span>
+					</div>
+					<div class="form-group">
+						<div class="img"><img src="./resource/images/guide-07.png" width="524"></div>
+						<p># 点击设置并根据提示依次配置 [ <em class=" color-red">业务域名</em> ]，[ <em class=" color-red">JS接口安全域名
+						</em> ]，[ <em class=" color-red">网页授权域名
+						</em> ]</p>
+					</div>
+				</div>
+			</div>
+			<div class="panel we7-panel">
+				<div class="panel-heading">
+					第五步
+				</div>
+				<div class="panel-body">
+					<div class="alert">
+						<i class="wi wi-info-sign"></i>
+						<span class="color-red" ng-if="account.isconnect == 1">公众号 <span ng-bind="account.name"></span> 接入成功</span>
+						<span class="color-red" ng-if="account.isconnect == 0">公众号 <span ng-bind="account.name"></span> 正在等待接入……请及时按照以上步骤操作接入公众平台</span>
+					</div>
+					<div class="form-group">
+						<div ng-if="account.isconnect == 0">
+							<p># 检查公众平台配置</p>
+							<p># 编辑公众号 <a ng-href="{{links.post}}acid={{account.acid}}&uniacid={{account.uniacid}}"><?php  echo $account['name'];?></a></p>
+							<a ng-href="{{links.switch}}uniacid={{account.uniacid}}" class="btn btn-primary">完成</a>&nbsp;
+						</div>
+						<div ng-if="account.isconnect == 1">
+							<a ng-href="{{links.post}}acid={{account.acid}}&uniacid={{account.uniacid}}" class="btn btn-primary">管理公众号</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		angular.module('accountApp').value('config', {
+			account: <?php echo !empty($account) ? json_encode($account) : 'null'?>,
+			links: {
+				siteroot: "<?php  echo $_W['siteroot'];?>",
+				post: "<?php  echo url('account/post')?>",
+				manage: "<?php  if($_W['isfounder']) { ?><?php  echo url('account/manage')?><?php  } else { ?><?php  echo $_W['siteroot'].'web/home.php'?><?php  } ?>",
+				wxapp_manage: "<?php  echo url('account/manage')?>",
+				switch: "<?php  echo url('account/display/switch')?>",
+			}
+		});
+
+		angular.bootstrap($('#js-account-post-step4'),['accountApp']);
+	</script>
+<?php  } ?>
+<?php (!empty($this) && $this instanceof WeModuleSite || 0) ? (include $this->template('common/footer', TEMPLATE_INCLUDEPATH)) : (include template('common/footer', TEMPLATE_INCLUDEPATH));?>

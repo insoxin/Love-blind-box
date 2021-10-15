@@ -1,0 +1,9 @@
+/*** 仅在app.js共存情况下使用
+.weui_mask{z-index:9999;}
+.weui_dialog, .weui_toast{z-index:10000;}
+***/
+
+.weui_tabbar{z-index:10 !important;}
+.weui-popup-container.fullscreen .close-popup{position:absolute;width:32px;height:32px;top:15px;right:15px;background:url("../images/cross.png") no-repeat;background-size:32px 32px;}
+.weui-popup-container.fullscreen .popup-title{position:absolute;top:15px;left:15px;height:32px;line-height:32px;}
+.weui-popup-container.fullscreen .popup-main{padding:60px 0 0 0;}

@@ -1,0 +1,139 @@
+{php $title=$_W['module_setting']['set_app_name']}
+{template 'inc/header'}
+
+<script type="text/javascript">
+	wx.ready(function () {
+		wx.onMenuShareAppMessage({
+			title:"{$_W['module_setting']['share_post_title']}",
+			desc:"{$_W['module_setting']['share_post_desc']}",
+			imgUrl:"{php echo tomedia($_W['module_setting']['share_post_logo'])}",
+			link:"{$publish_url}"
+		});
+		wx.onMenuShareTimeline({
+			title:"{$_W['module_setting']['share_post_line']}",
+			imgUrl:"{php echo tomedia($_W['module_setting']['share_post_logo'])}",
+			link:"{$publish_url}"
+		});
+	});
+</script>
+
+<style>
+	body{background:#ffffff;}
+	.weui-btn_primary{background:#000000}
+	.weui-btn_primary:not(.weui-btn_disabled):active {background-color: #444444;}
+
+	#nt_box{position:absolute;left:0;top:-15px;width:100%;text-align:center;z-index:1}
+	#nt_box a{display:inline-block;border:1px solid #000000;border-radius:100px;font-size:12px;background:#FFFFFF url({MODULE_URL}/static/mobile/images/ic_nt.png) no-repeat 10px center;background-size:16px;color:#000000;font-weight:bold;padding:8px 10px 10px 30px;}
+
+	.page-frame{height:100%;display:flex;flex-flow:column;}
+	.page-frame-hd{height:50px;}
+	.page-frame-bd{flex:1;position:relative;}
+	.page-frame-ft{text-align:center;padding-bottom:calc(10px + constant(safe-area-inset-bottom));padding-bottom: calc(10px + env(safe-area-inset-bottom))}
+
+</style>
+
+
+<div>
+	{php $tab='agent'}
+	{template 'inc/tab'}
+	
+	<div>
+		<div style="height:50px;"></div>
+		<div style="padding:10px;overflow:hidden;">
+			{$_W['module_setting']['agent_intro']}
+		</div>
+	
+		<div style="padding:0 10px 20px 10px;">
+			<div class="btn" id="btn_agent_join">{$_W['module_setting']['agent_fee']}元成为{$_W['module_setting']['agent_name']}</div>
+		</div>
+	</div>
+
+</div>
+
+
+<!-- 联系客服弹出框 -->
+<div id="dialog_server" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">长按二维码添加客服微信</strong>
+			<span class="weui-half-screen-dialog__subtitle"><a href="javascript:;" class="btn-copyer" data-clipboard-text="{php echo pencode($mine['id'])}">点击复制我的ID:{php echo pencode($mine['id'])}</a></span>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+
+			<div style="text-align:center;">
+				<div><img src="{$_W['module_setting']['server_qrcode']}" style="display:inline-block;width:200px;"/></div>
+			</div>
+		
+		</div>
+		<div class="weui-half-screen-dialog__ft"></div>
+	</div>
+</div>
+
+<!-- 微信支付表单 -->
+<form id="pay_wechat" action="{php echo url('mc/cash/wechat');}" method="post">
+	<input id="pay_wechat_params" type="hidden" name="params" value="" />
+</form>
+
+{template 'inc/script'}
+<script type="text/javascript">
+
+	$(function(){
+		var loading=null;
+
+		// 成为代理商
+		$('#btn_agent_join').on('click',function(){	
+			loading = weui.loading('正在提交...');
+			$.post('', {
+				submit:'join'
+			},function(resp) {
+				setTimeout(function() { // weui.confirm后接weui.alert太快会导致weui.alert不弹出
+					loading.hide();
+					if(resp.status==0){
+						weui.alert(resp.info);
+					}else{
+						if(resp.data){
+							loading = weui.loading('准备支付...');
+							$('#pay_wechat_params').val(resp.data.params);
+							$('#pay_wechat').submit();
+						}else{
+							weui.alert(resp.info,function(){
+								location.reload();
+							});
+						}
+					}
+				},300);
+			});
+		});
+
+		// 客服弹窗
+		$('.btn_to_server').on('click',function(){
+			$('#dialog_server').fadeIn(200);
+			$('#dialog_server').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+		
+
+		/**统一关闭弹出框**/
+	     $('.js_dialog').find('.js_dialog_closer').on('click', function(){
+            $('.js_dialog').fadeOut(200);
+            $('.js_dialog').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+        });
+		
+		// 统一复制
+		var clipboard = new ClipboardJS('.btn-copyer');
+		clipboard.on('success', function(e) {
+			weui.toast('复制成功', 2000);
+		});
+
+
+	});
+</script>
+{template 'inc/footer'}

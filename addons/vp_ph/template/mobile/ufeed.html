@@ -1,0 +1,135 @@
+{php $title=$_W['module_setting']['set_app_name']}
+{template 'inc/header'}
+
+<script type="text/javascript">
+	wx.ready(function () {
+		wx.onMenuShareAppMessage({
+			title:"{$_W['module_setting']['share_post_title']}",
+			desc:"{$_W['module_setting']['share_post_desc']}",
+			imgUrl:"{php echo tomedia($_W['module_setting']['share_post_logo'])}",
+			link:"{$invite_url}"
+		});
+		wx.onMenuShareTimeline({
+			title:"{$_W['module_setting']['share_post_line']}",
+			imgUrl:"{php echo tomedia($_W['module_setting']['share_post_logo'])}",
+			link:"{$invite_url}"
+		});
+	});
+</script>
+
+<style>
+	body{background:#FFFFFF;}
+	.weui-btn_primary{background:#000000}
+	.weui-btn_primary:not(.weui-btn_disabled):active {background-color: #444444;}
+
+
+	.page-frame{height:100%;display:flex;flex-flow:column;}
+	.page-frame-hd{height:50px;}
+	.page-frame-bd{flex:1;position:relative;}
+	.page-frame-ft{text-align:center;padding-bottom:calc(10px + constant(safe-area-inset-bottom));padding-bottom: calc(10px + env(safe-area-inset-bottom))}
+
+
+	.feed-item{background:#FFFFFF;margin:0 10px 10px 10px;border:2px solid #000000;border-radius:5px;overflow:hidden}
+	.feed-item .weui-cell{padding:15px;}/**-webkit-box-align:stretch;-webkit-align-items:stretch;align-items:stretch;**/
+
+
+</style>
+
+<div>
+
+	<div class="page-frame">
+		<div class="page-frame-hd"></div>
+		<div class="page-frame-bd">
+		
+				<div style="text-align:center;">
+					<div style="font-size:24px;font-weight:bold">
+						抽到一张{if $feed['sex']==1}<span style="color:#4e86ec">男生</span>{/if}{if $feed['sex']==2}<span style="color:#ec4eb3">女生</span>{/if}交友纸条
+					</div>
+					<div style="margin:10px 0 30px 0;font-size:14px;">
+						喜欢就快去加好友吧！
+					</div>
+				</div>
+
+				<div class="feed-item">
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<div>
+								{$feed['content']}
+							</div>
+							{if $feed['images'] && count($feed['images'])>0}
+								<div style="margin-top:8px;">
+									{loop $feed['images'] $img}
+										<img class="feed-img" src="{$img['url']}" data-src="{$img['url']}" style="width:80px;height:80px;margin-right:2px;object-fit:cover;" />
+									{/loop}
+								</div>
+							{/if}
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							{php echo ($feed['sex']==1?'他':'她')}留的{if $feed['ctype']=='wx'}微信号{/if}{if $feed['ctype']=='qq'}QQ号{/if}：{$feed['contact']}
+						</div>
+						<div class="weui-cell__ft">
+							<a class="btnm btn-copyer"  href="javascript:" data-clipboard-text="{$feed['contact']}">复制</a>
+						</div>
+					</div>
+				</div>
+
+				<div style="font-size:12px;margin:10px;padding:10px;background:#fefbf0;border-radius:10px;color:#c2913b">
+					<p class="text-li">纸条内容为网友发布，平台不保证真实性，请注意甄别，如对方要求转账等行为请勿轻信，谨防诈骗</p>
+					<p class="text-li" style="margin-top:3px;">我抽到的全部纸条可在<a href="{php echo $this->createMobileUrl('index',array('cmd'=>'iouts'))}">我的纸条</a>页面查看</p>
+				</div>
+
+			
+
+		</div>
+		
+		<div class="page-frame-ft">
+			<div style="padding:0 10px;">
+				<a class="btn"  href="{php echo $this->createMobileUrl('index')}">返回首页</a>
+			</div>
+			<!--
+			<div class="btn-feels">
+				<div class="vp-flex">
+					<div class="vp-flex_1">
+						<a id="btn_bye" href="javascript:;" class="btn-feel btn-feel-bye" >无感</a>
+					</div>
+					<div class="vp-flex_1">
+						<a id="btn_like" href="javascript:;" class="btn-feel btn-feel-like" >心动</span>
+							<span class="btn-feel-cnt mine_likes">{$mine['likes']}</span>
+						</a>
+					</div>
+				</div>
+			</div>
+			--->
+		</div>
+	</div>
+
+</div>
+
+
+
+{template 'inc/script'}
+{template 'inc/app'}
+<script type="text/javascript">
+
+	$(function(){
+
+		// 预览图片
+		$('.feed-img').on('click',function(){
+			var imgs = $(this).parent().children();
+
+			var imgurls=new Array();
+			$(this).parent().children().each(function(){
+				imgurls.push($(this).data('src'));
+			}); 
+
+			wx.previewImage({
+			  current: $(this).data('src'),
+			  urls: imgurls
+			});
+		});
+		
+	});
+</script>
+{template 'inc/footer'}

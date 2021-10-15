@@ -1,0 +1,104 @@
+<div class="skin-2 skin-2--full" data-skin="2">
+	{template 'common/header-topnav'}
+	<div class="skin-2__right">
+		<div class="skin-2__header">
+			<div class="header-info-common pull-left">
+				<a class="header-info-common__logo" href="{php echo $_W['siteroot'] . 'web/home.php'}">
+					<img src="{if !empty($_W['setting']['copyright']['blogo'])}{php echo to_global_media($_W['setting']['copyright']['blogo'])}{else}./resource/images/logo/logo.png{/if}" class="logo" style="max-height: 40px;max-width: 100px;">
+				</a>
+				<div class="header-info-common__breadcrumb">
+					<a href="{$_W['siteroot']}web/home.php" class="home">
+						<i class="wi wi-home"></i>
+					</a>
+					<span class="separator"> <i class="wi wi-angle-right"></i> </span>
+					<div class="item">副站长控制台</div>
+				</div>
+			</div>
+			{if !empty($_W['uid'])}
+			<ul class="user-info">
+				{template 'common/header-user'}
+			</ul>
+			{else}
+			<ul class="user-info">
+				<li class="dropdown"><a href="{php echo url('user/register');}">注册</a></li>
+				<li class="dropdown"><a href="{php echo url('user/login');}">登录</a></li>
+			</ul>
+			{/if}
+		</div>
+		<div class="skin-2__content main">
+			{if !defined('IN_MESSAGE')}
+			<div class="skin-2__sub">
+				<div class="sub-top">
+					<a class="skin-2__logo" href="{if $_W['iscontroller']}{php echo url('home/welcome/system', array('page' => 'home'))}{else}{php echo $_W['siteroot'] . 'web/home.php'}{/if}">
+						副站长控制台
+					</a>
+				</div>
+
+				<!-- 二级菜单-->
+				<div class="js-menu" id="js-menu-{FRAME}{$_W['account']['uniacid']}">
+
+					<div class="panel panel-menu">
+						{loop $nav_top_tiled_system $key $nav}
+						{if !in_array($nav['name'], array('welcome', 'system', 'myself'))}
+						<ul class="list-group collapse {if $_GPC['menu_fold_tag:'.$key] == 0}in{/if}" id="frame-{$key}"">
+
+						<!-- start应用入口和平台入口特殊处理active-->
+						{if (FRAME == 'account' && $nav['name'] == 'platform') && !defined('IN_MODULE')}{php $nav['name'] = FRAME}{/if}
+						{if defined('IN_MODULE') && $nav['name'] == 'module'}{php $nav['name'] = 'account'}{/if}
+						<!-- end应用入口和平台入口特殊处理active-->
+						<li class="list-group-item {if FRAME == $nav['name']}active{/if}">
+							<a class="text-over" href="{if empty($nav['url'])}{php echo url('home/welcome/' . $nav['name']);}{else}{$nav['url']}{if $nav['title'] != '市场'}&iscontroller=1{/if}{/if}" {if !empty($nav['blank'])}target="_blank"{/if}><span class="nav-icon" data-container="body" data-toggle="tooltip" data-placement="right" title="{$menu['title']}"><i class="{$nav['icon']}"></i></span><span class="nav-title">{$nav['title']}</span></a>
+						</li>
+						</ul>
+						{/if}
+						{/loop}
+					</div>
+				</div>
+				<!-- end二级菜单-->
+			</div>
+			<div class="skin-2__container container">
+				<div class="content">
+					{if !empty($_W['page']['title']) && $frames['title'] != '首页' && !empty($frames['title']) && !defined('IN_MODULE') && $_W['iscontroller']}
+					<div class="we7-page-title">{$_W['page']['title']}</div>
+					{/if}
+					{if $frames['dimension'] == 2}
+					<!-- start用户管理菜单和消息管理菜单特殊,走自己的we7-page-tab,故加此if判断;平台/应用/我的账户无we7-page-table -->
+					{if !in_array(FRAME, array('user_manage', 'message', 'platform', 'module', 'myself', 'workorder'))}
+					<ul class="we7-page-tab">
+						{php $have_right_content_menu = 0;}
+						{loop $frames['section'][FRAME]['menu'] $menu_id $menu}
+						{if in_array(FRAME, array('account_manage', 'permission'))}
+						{if permission_check_account_user('see_' . $menu['permission_name'])}
+						<li class="{if $menu['active']}active{/if}">
+							<a href="{$menu['url']}">
+								{$menu['title']}
+								<!-- start应用管理中未安装应用数量 -->
+								{if FRAME == 'module_manage' && $menu_id == 'module_manage_not_installed'}<span class="color-red"> ({$module_uninstall_total}) </span>{/if}
+								<!-- end应用管理中未安装应用数量 -->
+							</a>
+						</li>
+						{/if}
+						{else}
+						<li class="{if $menu['active']}active{/if}">
+							<a href="{$menu['url']}">
+								{$menu['title']}
+								<!-- start应用管理中未安装应用数量 -->
+								{if FRAME == 'module_manage' && $menu_id == 'module_manage_not_installed'}<span class="color-red"> ({$module_uninstall_total}) </span>{/if}
+								<!-- end应用管理中未安装应用数量 -->
+							</a>
+						</li>
+						{/if}
+						{if $menu['active']}{php $have_right_content_menu = 1;}{/if}
+						{/loop}
+					</ul>
+					<script>
+						$(function(){
+							{if empty($have_right_content_menu)}
+							$('.we7-page-tab, .we7-page-title').addClass('hidden');
+							{/if}
+							});
+					</script>
+					{/if}
+					<!-- end用户管理菜单和消息管理菜单特殊,走自己的we7-page-tab;平台/应用/我的账户无we7-page-table -->
+					{/if}
+					{/if}

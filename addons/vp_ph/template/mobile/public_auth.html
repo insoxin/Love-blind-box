@@ -1,0 +1,89 @@
+{template 'inc/header'}
+
+<script type="text/javascript">
+
+</script>
+
+<style>
+
+</style> 
+
+
+<div>
+
+	<div>
+		<form id="auth_form" action="" method="post">
+			<input type="hidden" name="submit" value="auth"/>
+			
+			<div class="weui-form">
+				<div class="weui-form__text-area">
+					<div class="weui-form__control-area">	
+						<div class="weui-cells weui-cells_form" style="margin:20px 40px;">
+							<div class="weui-cell">
+								<div class="weui-cell__bd">
+									<textarea id="auth_codes" name="codes" class="weui-textarea" placeholder="" rows="5"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="weui-form__opr-area">
+					  <p><a class="weui-btn weui-btn_primary" href="javascript:" id="btn_auth">确认</a></p>
+					</div>
+				</div>
+			</div>
+		</form>
+	<div>
+
+
+</div>
+
+
+
+{template 'inc/script'}
+
+<script type="text/javascript">
+
+
+
+	$(function(){
+		var loading=null;
+
+		
+
+		function doCodesSave(){
+			var form = $('#auth_form');
+			$.post(form.attr('action'), form.serialize(),function(resp) {
+				loading.hide();
+				if(resp.status==0){
+					weui.alert(resp.info);
+				}else{
+					$('#auth_codes').val(resp.data);
+					//location.reload();
+					
+					/**
+					//weui.alert(resp.data);
+					weui.toast(resp.info, {
+						duration: 2000,
+						callback :function(){
+							weui.alert("{$_SERVER['HTTP_REFERER']}");
+							//location.href=resp.data?resp.data:"{$_SERVER['HTTP_REFERER']}";
+						}
+					});
+					***/
+				}
+			});
+		}
+
+		// 保存
+		$('#btn_auth').on('click',function(){
+			if(!$('#auth_codes').val()){
+				return weui.alert('请填写内容');
+			}
+
+			loading = weui.loading('正在提交...');
+			doCodesSave();
+		});
+
+	});
+</script>
+{template 'inc/footer'}

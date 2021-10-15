@@ -1,0 +1,548 @@
+{php define(MUI, true);}
+{template 'common/header'}
+
+<!-- 我的会员卡 -->
+{if $do == 'mycard'}
+	{if empty($mcard['status'])}
+	<div class="alert alert-warning" role="alert">
+		您的会员卡已被禁用，如有疑问，请联系{$_W['account']['name']}。
+	</div>
+	{else}
+	<div class="mui-content membership-card-home">
+		<div class="card-panel" style="background-image:url(
+			{if empty($setting['background']['image'])}
+			{php echo tomedia('images/global/card/1.png')}
+			{elseif $setting['background']['background'] == 'system'}
+			{php echo tomedia('images/global/card/' . $setting['background']['image'] . '.png')}
+			{else}
+			{php echo tomedia($setting['background']['image']);}
+			{/if}
+		)">
+			<a href="#">
+				<div class="card-logo mui-text-center">
+					{if !empty($setting['logo'])}<img src="{php echo tomedia($setting['logo'])}" class="mui-img-rounded"/>{/if}
+				</div>
+				<div class="card-info">
+					<div class="mui-text-center">
+						<span class="vip" style="color:#fff;">VIP</span>
+						<span class="card-rank" style="color: #fff;">{$_W['member']['groupname']}</span>
+					</div>
+					<div class="card-no mui-text-right">会员卡号:<span style="color: #fff;">{$mcard['cardsn']}</span></div>
+				</div>
+			</a>
+		</div>
+		<div class="mui-table mui-mt15 nav">
+			<div class="mui-table-cell">
+				<a href="javascript:;" class="mui-block">
+					<span class="mui-block">{$_W['member']['credit2']}</span>
+					<span class="mui-text-muted mui-block mui-small">余额</span>
+				</a>
+			</div>
+			<div class="mui-table-cell">
+				<a href="javascript:;" class="mui-block">
+					<span class="mui-block">{$_W['member']['credit1']}</span>
+					<span class="mui-text-muted mui-block mui-small">积分</span>
+				</a>
+			</div>
+			{if $setting['nums_status'] == 1}
+			<div class="mui-table-cell">
+				<a href="{php echo url('mc/card/times', array('type' => 'nums'));}" class="mui-block">
+					<span class="mui-block">{$mcard['nums']}</span>
+					<span class="mui-text-muted mui-block mui-small">{$setting['nums_text']}</span>
+				</a>
+			</div>
+			{/if}
+			{if $setting['times_status'] == 1}
+			<div class="mui-table-cell">
+				<a href="{php echo url('mc/card/addtimes');}" class="mui-block">
+					<span class="mui-block">{php echo date('Y-m-d', $mcard['endtime']);}</span>
+					<span class="mui-text-muted mui-block mui-small">{$setting['times_text']}</span>
+				</a>
+			</div>
+			{/if}
+		</div>
+		<div class="mui-table mui-table-inline mui-mt15 action-nav">
+			<div class="mui-table-cell">
+				<a href="javascript:;" class="mui-block">
+					<img src="resource/images/recharge.png" alt="" class="mui-mr5"/>充值
+				</a>
+			</div>
+			<div class="mui-table-cell">
+				<a href="javascript:;" class="mui-block">
+					<img src="resource/images/payment.png" alt="" class="mui-mr5"/>付款
+				</a>
+			</div>
+		</div>
+		<ul class="mui-table-view mui-table-view-chevron">
+			<li class="mui-table-view-cell">
+				<a href="discount.html" class="mui-navigate-right">
+					会员折扣
+					<span class="mui-pull-right">9折</span>
+				</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="sign.html" class="mui-navigate-right">
+					签到
+				</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="share.html" class="mui-navigate-right">
+					分享
+				</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="#" class="mui-navigate-right">
+					优惠说明
+				</a>
+			</li>
+		</ul>
+		<ul class="mui-table-view mui-table-view-chevron">
+			<li class="mui-table-view-cell">
+				<a href="{php echo url('mc/card/addnums');}" class="mui-navigate-right">
+					次数充值
+				</a>
+			</li>
+		</ul>
+	</div>
+	<script>
+		$(function(){
+			$('.collapse-link a').click(function(){
+				$(this).next().toggleClass('off');
+			});
+		});
+	</script>
+	{/if}
+{/if}
+
+{if $do == 'addnums'}
+<div class="mui-content membership-card-add-times">
+	<div class="mui-section mui-text-center">
+		请选择您要增加的次数
+	</div>
+	<div class="mui-row mui-mr5 mui-ml5">
+		{php $i = 0;}
+		{loop $setting $nums}
+		<div class="mui-col-xs-4 mui-pa5 mui-mt5">
+			<div class="mui-thumbnail mui-text-center mui-text-info {if $i == '0'}selected{/if}" data-nums="{$nums['num']}" data-recharge="{$nums['recharge']}">
+				<div class="mui-big">{$nums['num']}</div>
+				<div class="mui-small">{$nums['recharge']}元</div>
+				<div class="selected-status"></div>
+			</div>
+		</div>
+		{php $i++;}
+		{/loop}
+	</div>
+	<ul class="mui-table-view">
+		<li class="mui-table-view-cell">
+			实际增加的次数 <span class="mui-pull-right add-nums"></span>
+		</li>
+		<li class="mui-table-view-cell">
+			需要支付的金额 <span class="mui-pull-right mui-text-success mui-big add-pay"></span>
+		</li>
+	</ul>
+	<div class="mui-content-padded">
+		<a class="mui-btn mui-btn-success mui-btn-block dopay" href="javascript:;">确认支付</a>
+	</div>
+</div>
+<script>
+$(function(){
+	$('.mui-thumbnail').click(function(){
+		$('.mui-thumbnail').removeClass('selected');
+		$(this).addClass('selected');
+		var addnums = $(this).data('nums');
+		var addpay = $(this).data('recharge');
+		var status = '<div class="selected-status"></div>';
+		var url = "{php echo url('entry', array('m' => 'recharge', 'do' => 'pay', 'type' => 'card_nums'), true)}&fee=" + addpay;
+		$('.add-nums').text(addnums + '次');
+		$('.add-pay').text(addpay + '元');
+		$('.dopay').attr('href', url);
+	})
+	$('.mui-thumbnail:first').click();
+})
+</script>
+{/if}
+
+{if $do == 'addtimes'}
+<div class="mui-content membership-card-valid-date">
+	<div class="mui-section mui-text-center">
+		请选择您要延长的时间
+	</div>
+	<div class="mui-row mui-mr5 mui-ml5">
+		{php $i = 0;}
+		{loop $setting $times}
+		<div class="mui-col-xs-4 mui-pa5 mui-mt5">
+			<div class="mui-thumbnail mui-text-center mui-text-info {if $i == '0'}selected{/if}" data-times="{$times['time']}" data-recharge="{$times['recharge']}">
+				<div class="mui-big">{$times['time']}</div>
+				<div class="mui-small">{$times['recharge']}元</div>
+				<div class="selected-status"></div>
+			</div>
+		</div>
+		{php $i++;}
+		{/loop}
+	</div>
+	<ul class="mui-table-view">
+		<li class="mui-table-view-cell">
+			实际延长的时间 <span class="mui-pull-right add-times"></span>
+		</li>
+		<li class="mui-table-view-cell">
+			需要支付的金额 <span class="mui-pull-right mui-text-success mui-big add-pay"></span>
+		</li>
+	</ul>
+	<div class="mui-content-padded">
+		<a class="mui-btn mui-btn-success mui-btn-block dopay">确认支付</a>
+	</div>
+</div>
+<script>
+$(function(){
+	$('.mui-thumbnail').click(function(){
+		$('.mui-thumbnail').removeClass('selected');
+		$(this).addClass('selected');
+		var addtimes = $(this).data('times');
+		var addpay = $(this).data('recharge');
+		var url = "{php echo url('entry', array('m' => 'recharge', 'do' => 'pay', 'type' => 'card_times'), true)}&fee=" + addpay;
+		$('.add-times').text(addtimes + '次');
+		$('.add-pay').text(addpay + '元');
+		$('.dopay').attr('href', url);
+	})
+	$('.mui-thumbnail:first').click();
+})
+</script>
+{/if}
+
+{if $do == 'times'}
+<!-- 查看剩余次数 -->
+<div class="mui-content membership-card-times">
+	<div class="mui-section">
+		<div class="mui-text-success mui-text-center times">{$card['nums']}</div>
+		<div class="mui-text-center mui-text-muted">剩余次数</div>
+		<a class="mui-btn mui-btn-success mui-btn-outlined mui-btn-block" href="{php echo url('mc/card/addtimes');}">立即充值</a>
+	</div>
+	<ul class="mui-table-view">
+		<li class="mui-table-view-cell">
+			<div class="mui-row">
+				<div class="mui-col-xs-3">
+					<a href="#times-date">
+						<span class="date-filter">{$period_date}</span>
+						<span class="mui-text-muted"><i class="fa fa-angle-down"></i></span>
+					</a>
+				</div>
+				<div class="mui-col-xs-9 mui-text-right">
+					充值花费<span class="mui-rmb">200</span>,<span class="mui-text-success">消费节省<span class="mui-rmb">2000</span></span>
+				</div>
+			</div>
+		</li>
+		{loop $data $da}
+		<li class="mui-table-view-cell">
+			<div class="mui-row">
+				<div class="mui-col-xs-6">
+					{if $da['model'] == '1'}
+					次数充值
+					{else}
+					次数消费
+					{/if}
+					<span class="mui-block mui-text-muted mui-small"> <span class="mui-ml5 mui-rmb">{$da['fee']}</span></span>
+				</div>
+				<div class="mui-col-xs-6 mui-text-right">
+					<span class="mui-big">{if $da['model'] == '1'}+{else}-{/if}{$da['tag']}</span>
+					<span class="mui-block mui-text-muted mui-small">{php echo date('Y-m-d', $da['addtime'])}</span>
+				</div>
+			</div>
+		</li>
+		{/loop}
+	</ul>
+	<div id="times-date" class="mui-popover mui-popover-top">
+		<ul class="mui-table-view">
+			<li class="mui-table-view-cell">
+				<a href="{php echo url('mc/card/times', array('period' => '1', 'type' => 'nums'));}">{php echo date('Y.m', strtotime('now'))}</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="{php echo url('mc/card/times', array('period' => '-1', 'type' => 'nums'));}">{php echo date('Y.m', strtotime('now - 1 month'))}</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="{php echo url('mc/card/times', array('period' => '-2', 'type' => 'nums'));}">{php echo date('Y.m', strtotime('now - 2 month'))}</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="{php echo url('mc/card/times', array('period' => '-3', 'type' => 'nums'));}">{php echo date('Y.m', strtotime('now - 3 month'))}</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="{php echo url('mc/card/times', array('period' => '-4', 'type' => 'nums'));}">{php echo date('Y.m', strtotime('now - 4 month'))}</a>
+			</li>
+		</ul>
+	</div>
+</div>
+
+{/if}
+
+{if $do == 'sign_display'}
+<!--签到界面-->
+<div class="sign">
+	<header>
+		<ul class="tbox tbox_1">
+			<li><p class="pre"><label>{$credits['credit1']}</label>可用积分</p></li>
+			<li><a href="javascript:void(0)" id="sign" data-record="{$record['id']}"><label>{if $record['id']}已签到{else}签到{/if}</label></a></li>
+			<li><p class="pre"><label>{$total}</label>签到次数</p></li>
+		</ul>
+		<nav class="nav_integral">
+			<ul class="box clearfix">
+				<li><a href="{php echo url('activity/coupon/display');}"><span class="fa fa-gift">&nbsp;</span><label>兑换礼品</label></a></li>
+				<li><a href="{php echo url('mc/card/sign_record');}"><span class="fa fa-file-text-o">&nbsp;</span><label>签到记录</label></a></li>
+				<li><a href="{php echo url('mc/card/sign_strategy');}"><span class="fa fa-cog">&nbsp;</span><label>积分攻略</label></a></li>
+			</ul>
+		</nav>
+	</header>
+	<div class="content">
+		<div class="calendar">
+			<div class="header">
+				<a class="pre" href="{php echo url('mc/card/sign_display', array('e' => $pretime));}"><i class="fa fa-long-arrow-left"></i></a>
+				<span class="year" id="idCalendarYear">{$year}</span>年 <span class="month" id="idCalendarMonth">{$month}</span>月
+				<a class="next" href="{php echo url('mc/card/sign_display', array('e' => $nexttime));}"><i class="fa fa-long-arrow-right"></i></a>
+			</div>
+			<table cellspacing="0">
+				<thead>
+				<tr>
+					<td>日</td>
+					<td>一</td>
+					<td>二</td>
+					<td>三</td>
+					<td>四</td>
+					<td>五</td>
+					<td>六</td>
+				</tr>
+				</thead>
+				<tbody id="idCalendar">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script>
+	require(['calendar', 'util'], function(calendar, util){
+		var flag = $.parseJSON('{$flags}');
+		var cale = new Calendar("idCalendar", {
+			Year : "{$year}",
+			Month : "{$month}",
+			onToday: function(o){ o.className = "onToday"; },
+			onFinish: function(){
+				this.Year = "{$year}";
+				this.Month = "{$month}";
+				$$("idCalendarYear").innerHTML = this.Year;
+				$$("idCalendarMonth").innerHTML = this.Month;
+				for(var i = 0, len = flag.length; i < len; i++){
+					this.Days[flag[i]].innerHTML = "<a href='javascript:void(0);' class='checked'>" + flag[i] + "</a>";
+				}
+			}
+		});
+
+		$('#sign').click(function(){
+			var record = parseInt($(this).data('record'));
+			if(record > 0) return false;
+			$.post("{php echo url('mc/card/sign')}", function(data){
+				var data = $.parseJSON(data);
+				if(data.error) {
+					util.message(data.message, '', 'error');
+				} else {
+					util.message(data.message, "{php echo url('mc/card/sign_display')}", 'success');
+				}
+			});
+			return false;
+		});
+	});
+</script>
+{/if}
+
+{if $do == 'sign_record'}
+<!--签到记录-->
+<div class="sign-record">
+	<div class="header">签到记录</div>
+	<div class="content">
+		<div class="list">
+			<table class="table_record">
+				<thead>
+				<tr>
+					<td style="width:30%;">积分详情 </td>
+					<td style="width:50%;">日期 </td>
+					<td style="width:20%;">积分</td>
+				</tr>
+				</thead>
+				{if !empty($data)}
+				{loop $data $da}
+					<tr>
+						<td>签到送积分</td>
+						<td>{php echo date('Y年m月d日', $da['addtime']);}</td>
+						<td>+{$da['credit']}</td>
+					</tr>
+				{/loop}
+				{else}
+					<tr>
+						<td colspan="3" class="text-center" style="color:#25a5b7"><i class="fa fa-info-circle"></i> 暂无记录</td>
+					</tr>
+				{/if}
+			</table>
+		</div>
+	</div>
+</div>
+{/if}
+
+{if $do == 'sign_strategy'}
+<div class="share">
+	<header>
+		<ul class="tbox tbox_1">
+			<li><p class="pre"></li>
+			<li><a href="javascript:void(0)" id="share"><label>积分<br>攻略</label></a></li>
+			<li><p class="pre"></li>
+		</ul>
+	</header>
+	<div class="content">
+		{$content}
+	</div>
+</div>
+{/if}
+
+{if $do == 'recommend'}
+<div class="sign">
+	<header>
+		<ul class="tbox tbox_1">
+			<li><p class="pre"><label>{$credits['credit1']}</label>可用积分</p></li>
+			<li class="share-cover"><a href="javascript:void(0)"><label>分享</label></a></li>
+			<li><p class="pre"><label></label></p></li>
+		</ul>
+		<nav class="nav_integral">
+			<ul class="box claarfix">
+				<li><a href="{php echo url('activity/coupon/display');}"><span class="fa fa-gift">&nbsp;</span><label>兑换礼品</label></a></li>
+				<li><a href="{php echo url('mc/card/sign_record');}"><span class="fa fa-file-text-o">&nbsp;</span><label>签到记录</label></a></li>
+				<li><a href="{php echo url('mc/card/sign_strategy');}"><span class="fa fa-cog">&nbsp;</span><label>积分攻略</label></a></li>
+			</ul>
+		</nav>
+	</header>
+
+	<div class="recommend">
+		<div class="head"><i class="fa fa-hand-o-right"></i>每日推荐</div>
+		<ul class="list-recommend">
+			{if !empty($data)}
+			{loop $data $da}
+			<li>
+				<div class="img"><a href="{$da['url']}"><img src="{php echo tomedia($da['thumb']);}"></a></div>
+				<div class="info">
+					<div class="title">{$da['title']}</div>
+					<div class="text-muted date">{php echo date('Y-m-d H:i', $da['addtime']);}</div>
+					<a href="{$da['url']}" class="text-muted share-btn share-cover"><i class="fa fa-share-square-o"></i></a>
+				</div>
+			</li>
+			{/loop}
+			{else}
+			{/if}
+		</ul>
+	</div>
+	<div class="masklayer" ontouchmove="return true;" onclick="$(this).toggleClass('on');">
+		<img src="resource/images/share.png" alt="" style="width:260px;">
+	</div>
+</div>
+<script>
+	//分享赠送积分
+	sharedata = {
+		success: function(){
+			var url = "{php echo url('mc/card/share');}";
+			$.post(url, function(dat){
+				if(dat) {
+					require(['util'], function(u){
+						u.message(dat);
+					});
+				}
+			});
+		}
+	};
+
+	$(function(){
+		$('.share-cover').click(function(){
+			$('.masklayer').addClass('on');
+			return false;
+		});
+	})
+</script>
+{/if}
+
+{if $do == 'notice'}
+<div class="message">
+	<div class="btn-group-top-box">
+		<div class="btn-group btn-group-top">
+			<a href="{php echo url('mc/card/notice', array('type' => 1));}" class="btn btn-default broadcast {if $type == 1 || !$type}active{/if}">广播</a>
+			<a href="{php echo url('mc/card/notice', array('type' => 2));}" class="btn btn-default system-messages {if $type == 2}active{/if}">系统消息</a>
+		</div>
+	</div>
+	<div class="tab-content clearfix">
+		<div class="tab-panel">
+			<ul class="list-msg">
+				{if !empty($data)}
+					{loop $data $da}
+						<li class="js-read" data-isnew="{$da['is_new']}" data-id="{$da['id']}">
+							<dl class="box">
+								<dd class="icon">
+									{if !empty($da['thumb'])}
+									<span class="icon-img"><img src="{php echo tomedia($da['thumb']);}" alt="" width="50"/></span>
+									{else}
+									<span class="icon-box"><i class="fa fa-bullhorn"></i></span>
+									{/if}
+									{if $da['is_new'] == 1}
+									<span class="marker"></span>
+									{/if}
+								</dd>
+								<dd>
+									<div class="title">{$da['title']}</div>
+									<p>{php echo date('Y-m-d H:i', $da['addtime']);}</p>
+								</dd>
+								<span class="icon-down"><i class="fa fa-angle-down"></i></span>
+							</dl>
+							<ol>
+								<p>
+									{$da['content']}
+								</p>
+							</ol>
+						</li>
+					{/loop}
+				{else}
+					<li class="text-center"><i class="fa fa-info-circle"></i> 暂无消息</li>
+				{/if}
+			</ul>
+		</div>
+	</div>
+</div>
+<script>
+	$('.list-msg .js-read').click(function(){
+		var $fa = $(this).find('.icon-down i');
+		if($fa.hasClass('fa-angle-down')) {
+			$fa.removeClass('fa-angle-down').addClass('fa-angle-up');
+		} else {
+			$fa.removeClass('fa-angle-up').addClass('fa-angle-down');
+		}
+		$(this).toggleClass('on');
+		//设置为已读
+		$(this).find('.marker').remove();
+		if($(this).data('isnew')) {
+			var id = $(this).data('id');
+			$.post("{php echo url('mc/card/notice')}", {'id':id}, function(data){
+				if(data != 0) {
+					$('.nav-group .notice-count em').html(data);
+				} else {
+					$('.nav-group .notice-count em').remove();
+				}
+			});
+			return false;
+		}
+	});
+</script>
+{/if}
+{php $nav = $setting['recommend_status'] + $setting['sign_status'] + 3; $nav = "has-nav-" . $nav;}
+<div class="nav-menu-app {$nav} usercard">	
+	<ul class="nav-group clearfix">
+		<li class="nav-group-item"><a href="{php echo url('mc/card/mycard');}"><i class="fa fa-credit-card"></i><span>会员卡</span></a></li>
+		<li class="nav-group-item notice-count"><a href="{php echo url('mc/card/notice');}"><i class="fa fa-comments-o"></i><span>消息</span>{if $notice_count > 0}<em class="maker badge">{$notice_count}</em>{/if}</a></li>
+		{if !empty($setting['sign_status'])}
+		<li class="nav-group-item"><a href="{php echo url('mc/card/sign_display');}"><i class="fa fa-hand-o-up"></i><span>签到</span></a></li>
+		{/if}
+		{if !empty($setting['recommend_status'])}
+		<li class="nav-group-item"><a href="{php echo url('mc/card/recommend');}"><i class="fa fa-share-square-o"></i><span>推荐</span></a></li>
+		{/if}
+		<li class="nav-group-item"><a href="{php echo url('mc/home');}"><i class="fa fa-user"></i><span>我的</span></a></li>
+	</ul>
+</div>
+{template 'common/footer'}

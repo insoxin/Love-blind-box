@@ -1,0 +1,136 @@
+{template 'common/header-base'}
+<div class="head">
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="{$_W['siteroot']}">
+					<img src="{if !empty($_W['setting']['copyright']['flogo'])}{php echo to_global_media($_W['setting']['copyright']['flogo'])}{else}./resource/images/logo/login-logo.png{/if}" class="logo" style="max-height: 40px;max-width: 100px;">
+				</a>
+			</div>
+		</div>
+	</nav>
+</div>
+<div class="main bind-account third-bind" ng-controller="userBindCtrl" ng-cloak>
+	<div class="register" >
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<form action="javascript:;" class="we7-form">
+					{if $_W['setting']['copyright']['bind'] == 'mobile'}
+					<div class="name">
+						绑定手机号
+						<!-- <small class="color-gray">(绑定后，可以用手机号登录系统)</small> -->
+					</div>
+					<div class="alert we7-page-alert"><i class="wi wi-info"></i>您还未绑定手机号，绑定手机号可用于修改密码等操作</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">手机号</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" placeholder="输入手机号" ng-model="mobile">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">短信验证码</label>
+						<div class="col-sm-10">
+							<div class="input-group">
+								<input type="text" ng-model='smscode' class="form-control" placeholder="输入手机验证码">
+								<span class="input-group-btn">
+									<button class="btn btn-primary send-code" ng-disabled="isDisable" ng-click="showCaptcha(bindmobile.third_nickname)">{{text}}</button>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group bottom-action">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-10 ">
+							<button type="button" class="btn btn-primary " ng-click="mobileBind(bindmobile.third_nickname, 3)">确定绑定</button>
+							<a href="./index.php?c=user&a=logout" class="btn btn-default">退出登录</a>
+						</div>
+					</div>
+					{/if}
+					{if $_W['setting']['copyright']['bind'] == 'qq'}
+					<div class="name">
+						绑定QQ
+						<!-- <small class="color-gray">(绑定后，可以用手机号登录系统)</small> -->
+					</div>
+					<div class="alert we7-page-alert"><i class="wi wi-info"></i>您还未绑定QQ，绑定后可直接用QQ登录</div>
+					<div class="bind-qq">
+						<div class="icon">
+							<i class="wi wi-qq"></i>
+						</div>
+						<div>请绑定QQ</div>
+						<div class="color-gray">
+							<small>绑定后，可以直接用QQ登录</small>
+						</div>
+					</div>
+					<div class="form-group bottom-action">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-10 ">
+							<a href="{$support_bind_urls['qq']}" class="btn btn-primary">点击去绑定</a>
+							<a href="./index.php?c=user&a=logout" class="btn btn-default">退出登录</a>
+						</div>
+					</div>
+					{/if}
+					{if $_W['setting']['copyright']['bind'] == 'wechat'}
+					<div class="name">
+						绑定微信
+						<!-- <small class="color-gray">(绑定后，可以用手机号登录系统)</small> -->
+					</div>
+					<div class="alert we7-page-alert"><i class="wi wi-info"></i>您还未绑定微信，绑定后可直接用微信登录</div>
+					<div class="bind-qq">
+						<div class="icon">
+							<i class="wi wi-account"></i>
+						</div>
+						<div>请绑定微信</div>
+						<div class="color-gray">
+							<small>绑定后，可以直接用微信登录</small>
+						</div>
+					</div>
+					<div class="form-group bottom-action">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-10 ">
+							<a href="{$support_bind_urls['wechat']}" class="btn btn-primary">点击去绑定</a>
+							<a href="./index.php?c=user&a=logout" class="btn btn-default">退出登录</a>
+						</div>
+					</div>
+					{/if}
+				</form>
+			</div>
+		</div>
+	</div>
+	<!--图形验证吗-->
+	<div id="checkcaptcha" class="modal fade in" tabindex="-1" role="dialog" aria-hidden="true" >
+		<div class="modal-dialog modal-tip">
+			<div class="modal-content">
+				<div class="modal-header clearfix">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				</div>
+				<div class="modal-body">
+					<div class="text-center">
+						<div class="form-group input-group">
+							验证码：<input type="text" ng-model='imagecode' class="form-control" placeholder="输入图形验证码">
+							<a href="javascript:;" class="input-group-btn imgverify" style="" ng-click="changeVerify()"><img ng-src="{{image}}" style="width: 127px; height: 32px;"/></a>
+						</div>
+					</div>
+					<div class="clearfix"></div></div>
+				<div class="modal-footer">
+					<a href="javascript:;" ng-click="checkCaptcha(imagecode, bindmobile.third_nickname)" class="btn btn-primary">确定</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--/图形验证码-->
+</div>
+<script>
+	angular.module('userProfile').value('config',{
+		'bind_sign': "{php echo !empty($bind_sign) ? $bind_sign : 'null'}",
+		'image' : "{php echo url('utility/code')}",
+		'links':{
+			'img_verify_link': "{php echo url('utility/code')}",
+			'send_code_link': "{php echo url('utility/verifycode')}",
+			'valid_mobile_link' : "{php echo url('user/third-bind/validate_mobile')}",
+			'bind_mobile_link' : "{php echo url('user/third-bind/bind_mobile')}",
+			'checkcaptcha_link' : "{php echo url('utility/code/checkcaptcha')}"
+		},
+	});
+	angular.bootstrap($('.bind-account'), ['userProfile']);
+</script>
+{template 'common/footer'}

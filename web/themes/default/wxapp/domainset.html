@@ -1,0 +1,116 @@
+{template 'common/header'}
+{if $_W['account']['type'] == 7}
+<div id="js-domain-set" ng-controller="domainSetCtrl" ng-cloak>
+	<div class="alert alert-info we7-page-alert"><i class="wi wi-info"></i>1.最多可以添加100个业务域名。2.此设置方式只适用于授权接入的小程序。</div>
+	<div class="search-box clearfix we7-margin-bottom">
+		<form action="" class="search-form search-box" method="get"></form>
+		<a data-toggle="modal" data-target="#domian-modal" class="btn btn-primary">添加业务域名</a>
+	</div>
+	<table class="table we7-table vertical-middle ">
+		<tr>
+			<th class="text-left">域名</th>
+			<th class="text-right">操作</th>
+		</tr>
+		{loop $webviewdomain $item}
+		<tr>
+			<td>{$item}</td>
+			<td>
+				<div class="link-group">
+					<a href="javascript:;" ng-click="domainEdit('delete', '{$item}')" class="del">删除</a>
+				</div>
+			</td>
+		</tr>
+		{/loop}
+		{if !$webviewdomain}
+		<tr >
+			<td colspan="100" >
+				<div class="we7-empty-block">暂无数据</div>	
+			</td>
+		</tr>
+		{/if}
+	</table>
+	<div class="pull-right">
+		{$pager}
+	</div>
+	<!--新建弹窗-->
+	<div class="modal fade " tabindex="-1" role="dialog" id="domian-modal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header clearfix">
+					添加业务域名
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				</div>
+				<div class="modal-body we7-form">
+					<div class="alert alert-info we7-page-alert" style="text-indent: -1em;padding-left: calc(30px + 1em);">
+						<i class="wi wi-info"></i>
+						业务域名需经过ICP备案，新备案域名需24小时后才可配置。域名格式只支持英文
+						大小写字母、数字及“-”，不支持IP地址。配置业务域名后，可打开任意合法的
+						子域名。
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">业务域名</label>
+						<div class="col-sm-10">
+							<input type="text" ng-model="newDomain" placeholder="https://" class="form-control">
+							<span class="help-block"></span>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-primary" name="submit" value="保存" ng-click="domainEdit('add')">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		angular.module('wxApp').value('config', {
+			'domainEditURl' : "{php echo url('wxapp/domainset/domain_post')}"
+		});
+		angular.bootstrap($('#js-domain-set'), ['wxApp']);
+	</script>
+</div>
+{else}
+<!--小程序前端下载-->
+<div class="panel we7-panel panel-table">
+	<div class="panel-heading">小程序配置</div>
+	<div class="panel-body we7-padding">
+		<form
+			  action="./index.php?c=wxapp&a=domainset&version_id={$version_id}"
+			  class="we7-form" enctype="multipart/form-data"
+			  method="post">
+			<div class="form-group">
+				<label class="control-label col-sm-2">设置小程序URL</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" name="appurl" value="{$appurl}" placeholder="">
+					<label style="color: red;">https://域名/app/index.php</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2">小程序业务域名校验文件</label>
+				<div class="col-sm-10">
+					<input type="file" class="form-control"
+						   name="file" value="" placeholder="没有可不传"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2"></label>
+				<div class="col-sm-10">
+					<button class="btn btn-primary" type="submit">更新</button>
+					<a href="{$appurl}?i={$uniacid}&c=utility&a=visit&do=health" class="btn btn-primary" target="_blank">https访问检测</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="wxapp-download-procedure">
+	<div class="title color-gray">设置小程序域名说明：</div>
+	<div class="step">1.设置链接域名，可以在系统后台设置操作小程序。设置完成后到小程序审核发布里点击下载后，域名更新。</div>
+	<div class="step">2.设置后的生效页面（<a href="#" class="color-default">站点管理</a><span class="color-default"><i
+			class="wi wi-angle-right"></i></span> <a href="#" class="color-default">站点设置</a>）
+	</div>
+	<div class="img">
+		<img src="/web/resource/images/wxapp/12.png" alt="" class="img-responsive">
+	</div>
+</div>
+{/if}
+{template 'common/footer'}

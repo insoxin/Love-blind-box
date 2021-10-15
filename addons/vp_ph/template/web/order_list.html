@@ -1,0 +1,114 @@
+{template 'common/header'}
+<style>
+	.sdverify{display:inline-block;height:20px;line-height:20px;padding-left:20px;font-size:12px;background:url("{MODULE_URL}/static/mobile/images/v_0.png") no-repeat left center;background-size:16px 16px;}
+	.sdverify.v1{background-image:url("{MODULE_URL}/static/mobile/images/v_1.png");color:#07ce81}
+	.sdverify.v2{background-image:url("{MODULE_URL}/static/mobile/images/v_2.png");color:#ff8808}
+</style> 
+
+
+<ul class="nav nav-tabs">
+	<li class="active"><a href="{php echo $this->createWebUrl('order')}">消费记录</a></li>
+</ul>
+
+
+<form id="the_form" class="form-horizontal form" action="" method="post" enctype="multipart/form-data">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			记录筛选
+		</div>
+		<div class="panel-body">
+
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-3 col-md-2 control-label">用户UID</label>
+				<div class="col-sm-9 col-xs-12">
+					<input type="text" name="s_user" class="form-control" value="{$_GPC['s_user']}" placeholder="根据UID查找用户"/>
+					<div class="help-block"></div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+				<div class="col-sm-9 col-xs-12">
+					<input id="btn-submit" type="submit" value="筛选" class="btn btn-primary col-lg-1" data-loading-text="正在筛选..."/>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+</form>
+
+<div class="panel panel-default">
+	<nav role="navigation" class="navbar navbar-default navbar-static-top" style="margin-bottom:0;">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="javascript:;" class="navbar-brand">消费订单</a>
+			</div>
+		</div>
+	</nav>
+
+
+	<div class="panel-body table-responsive" style="overflow:visible;">
+		<table class="table table-hover">
+			<thead class="navbar-inner">
+				<tr>
+					<th style="width:60px;">UID</th> 
+					<th>用户</th>
+					<th></th>
+					<th>商品</th> 
+					<th>价格</th>
+					<th>实际支付</th>
+					<th>支付方式</th>
+					<th>分销商收益</th>
+					<th>上级收益</th>
+					<th>上上级收益</th>
+					<th>平台利润</th>
+					<th>消费时间</th>
+				</tr>
+			</thead>
+			<tbody>
+				{loop $list $item}
+				<tr>
+					<td>
+						<p>{php echo pencode($item['_user']['id'])}</p>
+						<p>{$item['_user']['id']}</p>
+					</td>
+					<td><img src="{php echo VP_AVATAR($item['_user']['avatar'],'s');}" style="width:50px;"/></td>
+					<td>{$item['_user']['nickname']}</td>
+
+					<td>{$item['title']}</td>
+					<td>{$item['amount']}元</td>
+					<td>{$item['pay']}元</td>
+					<td>
+						{if $item['pay_way']==0}<label class='label label-success' >在线支付</label>{/if}
+						{if $item['pay_way']==10}<label class='label label-default' >后台手动</label>{/if}
+					</td>
+					<td>{$item['agentp_money']}</td>
+					<td>{$item['agentp1_money']}</td>
+					<td>{$item['agentp2_money']}</td>
+					<td>{$item['profit']}</td>
+					<td>
+						<!---{if $item['status']==1}<label class='label label-success' >正常</label>{else}<label class='label label-warning' >删除</label>{/if}<br/>-->
+						{php echo date('Y-m-d h:i', $item['create_time']);}
+					</td>
+				</tr>
+				{/loop}
+			</tbody>
+		</table>
+		{$pager}
+	</div>
+	</div>
+</div>
+<script type="text/javascript">
+	require(['bootstrap'],function($){
+		$('.btn-tooltip').hover(function(){
+			$(this).tooltip('show');
+		},function(){
+			$(this).tooltip('hide');
+		});
+	});
+</script>
+
+{template 'common/footer'}

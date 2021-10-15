@@ -1,0 +1,31 @@
+<!-- 关注引导页 -->
+<div id="follow_page" class="weui-popup-container fullscreen">
+  <div class="weui-popup-modal">
+	<a class='close-popup'></a>
+	<p class="popup-title">关注{$_W['module_setting']['set_app_name']}官方微信</p>
+	<div class='popup-main'>
+		<div style="text-align:center;padding:40px 0 0 0;">
+			<img style="width:200px;" src='{$_W["account"]["qrcode"]}' />
+		</div>
+		<p style="text-align:center;padding:5px;">长按二维码识别关注</p>
+	</div>
+ </div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+	{if $mine['follow']!=1}
+		{php $fo_img=empty($_W['module_setting']['fo_img'])?(MODULE_URL.'/static/mobile/images/logo.jpg'):(tomedia($_W['module_setting']['fo_img']))}
+		$.notification({
+		  title: "{php echo  empty($_W['module_setting']['fo_text'])?'为方便下次访问，建议您关注我们':$_W['module_setting']['fo_text']}",
+		  text: '点击进行关注',
+		  media:"<img src='{$fo_img}'/>",
+		  time:"{php echo  empty($_W['module_setting']['fo_time'])?'6000':$_W['module_setting']['fo_time']}",
+		  onClick: function(data) {
+			$.closeNotification();
+			$("#follow_page").popup();
+		  }
+		});  
+	{/if}
+});
+</script>

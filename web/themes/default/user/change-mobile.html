@@ -1,0 +1,90 @@
+{template 'common/header'}
+<div class="main bind-account third-bind" ng-controller="changeMobileCtrl" ng-cloak>
+	<ol class="breadcrumb we7-breadcrumb">
+		<li><a href="{url 'user/profile' array(user_type => 4)}"><i class="wi wi-back-circle"></i>账号绑定</a></li>
+		<li>更换手机号</li>
+	</ol>
+	<ul class="we7-step">
+		<li ng-class="step == 1 ? 'active' : ''"> <span class="content">1. 验证原手机</span> </li>
+		<li ng-class="step == 2 ? 'active' : ''"> <span class="content">2. 绑定新手机</span></li>
+	</ul>
+	<div class="sms-change-box">
+		<form action="javascript:;" class="we7-form" ng-show="step == 1">
+			<div class="form-group ">
+				<input type="text" class="form-control" placeholder="" readonly ng-model="mobile">
+			</div>
+			<div class="form-group">
+				<div class="input-group">
+					<input type="text" ng-model='smscode' class="form-control" placeholder="输入手机验证码">
+					<span class="input-group-btn">
+						<button class="btn btn-primary send-code" ng-disabled="isDisable" ng-click="showCaptcha(step, mobileBind)">{{text}}</button>
+					</span>
+				</div>
+			</div>
+			<div class="form-group ">
+				<button type="button" class="btn btn-primary" ng-click="nextStep()">下一步</button>
+			</div>
+		</form>
+		<form action="javascript:;" class="we7-form" ng-show="step == 2">
+			<div class="form-group ">
+				<input type="text" class="form-control" placeholder="输入手机号" ng-model="newMobile">
+			</div>
+			<div class="form-group">
+				<div class="input-group">
+					<input type="text" ng-model='newSmscode' class="form-control" placeholder="输入手机验证码">
+					<span class="input-group-btn">
+						<button class="btn btn-primary send-code" ng-disabled="isDisable" ng-click="showCaptcha(step)">{{text}}</button>
+					</span>
+				</div>
+			</div>
+			<div class="form-group ">
+				<button type="button" class="btn btn-primary" ng-click="mobileBind()">确认</button>
+			</div>
+		</form>
+	</div>
+
+	<!--图形验证吗-->
+	<div id="checkcaptcha" class="modal fade in" tabindex="-1" role="dialog" aria-hidden="true" >
+		<div class="modal-dialog modal-tip">
+			<div class="modal-content">
+				<div class="modal-header clearfix">
+					<!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> -->
+					<h4>输入图形验证码</h4>
+				</div>
+				<div class="modal-body">
+					<div class="text-center">
+						<div class="form-group input-group">
+							验证码：<input type="text" ng-model='imagecode' class="form-control" placeholder="输入图形验证码">
+							<a href="javascript:;" class="input-group-btn imgverify" style="" ng-click="changeVerify()"><img ng-src="{{image}}" style="width: 127px; height: 32px;"/></a>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:;" ng-click="checkCaptcha(imagecode, bindmobile.third_nickname, step)" class="btn btn-primary">确定</a>
+					<a href="javascript:;" data-dismiss="modal" aria-hidden="true" class="btn btn-default">取消</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--/图形验证码-->
+</div>
+<script>
+	angular.module('userProfile').value('config',{
+		'step': {$step},
+		'bind_sign': "{php echo !empty($bind_sign) ? $bind_sign : 'null'}",
+		'image' : "{php echo url('utility/code')}",
+		'bindmobile': {php echo json_encode($bind_mobile)},
+		'links':{
+			'img_verify_link': "{php echo url('utility/code')}",
+			'send_code_link': "{php echo url('utility/verifycode')}",
+			'valid_mobile_link' : "{php echo url('user/third-bind/validate_mobile')}",
+			'bind_mobile_link' : "{php echo url('user/profile/bind_mobile')}",
+			'checkcaptcha_link' : "{php echo url('utility/code/checkcaptcha')}",
+			'check_mobile_sms_code_link': "{php echo url('user/profile/check_mobile_sms_code')}",
+		},
+	});
+
+	angular.bootstrap($('.bind-account'), ['userProfile']);
+</script>
+{template 'common/footer'}

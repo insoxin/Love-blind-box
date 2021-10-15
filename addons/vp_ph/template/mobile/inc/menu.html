@@ -1,0 +1,39 @@
+<div class="weui_tabbar">
+	<!--
+	<a href="{php echo $_W['siteroot'] . 'app/' . substr($this->createMobileUrl('index'), 2)}" class="weui_tabbar_item {if $menu=='index'}weui_bar_item_on{/if}">
+		<div class="weui_tabbar_icon">
+			<img src="{php echo MODULE_URL.'/static/mobile/images/m_post'.($menu=='index'?'_ac':'').'.png';}"/>
+		</div>
+		<p class="weui_tabbar_label">发商品到微信</p>
+	</a>
+	-->
+	<a href="{php echo $_W['siteroot'] . 'app/' . substr($this->createMobileUrl('index',array('cmd'=>'sells')), 2)}" class="weui_tabbar_item {if $menu=='sells'}weui_bar_item_on{/if}">
+		<div class="weui_tabbar_icon">
+			<img src="{php echo MODULE_URL.'/static/mobile/images/m_index'.($menu=='sells'?'_ac':'').'.png';}"/>
+		</div>
+		<p class="weui_tabbar_label">买卖圈</p>
+	</a>
+	<a {if $menu=='index'}href="javascript:;"{else}href="{php echo $_W['siteroot'] . 'app/' . substr($this->createMobileUrl('index'), 2)}"{/if} class="vp_post_btn weui_tabbar_item {if $menu=='index'}weui_bar_item_on{/if}">
+		<div class="weui_tabbar_icon" style="position:relative;">
+			<img src="{php echo MODULE_URL.'/static/mobile/images/post.png';}" style="width:56px;height:56px;position:absolute;top:-12px;left:-12px"/>
+		</div>
+		<!--<p class="weui_tabbar_label">快速卖商品</p>-->
+	</a>
+	
+	{if !empty($_W['module_setting']['credit_field'])}
+	<a href="{$_W['module_setting']['credit_mall_link']}" class="weui_tabbar_item">
+		<div class="weui_tabbar_icon">
+			<img src="{php echo tomedia($_W['module_setting']['credit_mall_icon']);}"/>
+		</div>
+		<p class="weui_tabbar_label">{$_W['module_setting']['credit_mall_txt']}</p>
+	</a>
+	{/if}
+
+
+	<a href="{php echo $_W['siteroot'] . 'app/' . substr($this->createMobileUrl('mine'), 2)}" class="weui_tabbar_item {if $menu=='mine'}weui_bar_item_on{/if}">
+		<div class="weui_tabbar_icon">
+			<img src="{php echo MODULE_URL.'/static/mobile/images/m_mine'.($menu=='mine'?'_ac':'').'.png';}"/>
+		</div>
+		<p class="weui_tabbar_label">我的</p>
+	</a>
+</div>

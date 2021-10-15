@@ -1,0 +1,594 @@
+<!--应用内共通-->
+
+<style>
+	.weui-btn_primary{background:#000000}
+	.weui-btn_primary:not(.weui-btn_disabled):active {background-color: #444444;}
+	
+	.mine_coin_box{font-size:13px;color:#f73959;font-weight:bold;display:inline-block;padding:0 16px 0 20px;background:url("{php echo VP_IMAGE_URL($_W['module_setting']['coin_icon'])}") no-repeat left center;background-size:16px 16px;position:relative;}
+	.mine_coin_box:after{content:" ";position:absolute;right:0;top:0;width:14px;height:100%;background:url("{MODULE_URL}/static/mobile/images/arrow-r.png") no-repeat right center;background-size:14px;}
+
+
+	.vip-item{margin:0 3px;border:2px solid #000000;background:#FFFFFF;border-radius:5px;text-align:center;padding:20px 0;}
+	.vip-price{color:#f73959;font-weight:bold}
+	.vip-price-price{font-size:22px;}
+	.vip-price-unit{}
+
+	.vip-name{font-size:16px;font-weight:bold;margin-bottom:10px}
+	.vip-buy{margin-top:10px;}
+	.vip-buy .weui-btn_primary{background:#f73959}
+	.vip-buy .weui-btn_primary:not(.weui-btn_disabled):active {background-color:#de2645;}
+
+
+
+	/***
+	.pp-form{background:none;margin:0;}
+	.pp-form .weui-cell{margin-top:15px;border:2px solid #000000;border-radius:100px;}
+	.pp-form .weui-label{font-weight:bold;margin-left:10px;}
+	.pp-form .weui-input{padding-right:10px;text-align:right;font-size:14px;font-weight:bold;}
+	**/
+	
+	.matched-cover{width:99%;height:200px;border:3px solid #000000;border-radius:5px;object-fit:cover;box-sizing:border-box;-webkit-box-sizing:border-box;}
+
+
+</style>
+
+
+
+<!--心动数量不足弹出框-->
+<div id="dialog_likes_add" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer" style="z-index:998">
+	</div>
+	<div  class="weui-half-screen-dialog" style="z-index:999">
+		<div class="weui-half-screen-dialog__hd">
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">您的心动数量用完了</strong>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd">
+			<div style="text-align:center;">
+				<div style="font-size:14px">
+					<div><img src="{MODULE_URL}/static/mobile/images/like.png" style="display:inline-block;width:60px;height:60px;"/></div>
+					<div style="margin:30px 0 0 0;"><span style="font-size:16px;color:#f73959;font-weight:bold">用{$_W['module_setting']['like_fee']}{$_W['module_setting']['coin_name']}兑换{$_W['module_setting']['like_cnt']}次心动机会</span></div>
+					<div class="mine_coin_box btn_to_coin" style="margin:15px 0 20px 0;">
+						我有<span class="mine_coin">{$mine['coin']}</span>{$_W['module_setting']['coin_name']}
+					</div>
+				</div>
+
+				<form id="likes_add_form" action="" method="post">
+					<input type="hidden" name="cmd" value="mine"/>
+					<input type="hidden" name="submit" value="likes_add"/>
+
+					<div style="margin:0 10px 0 10px;">
+						<a id="btn_likes_add" class="btn" href="javascript:" style="background:#f73959;">确认兑换</a>
+					</div>
+				</form>
+
+			</div>
+		</div>
+		<div class="weui-half-screen-dialog__ft">
+			
+		</div>
+	</div>
+</div>
+
+
+
+<!--心动表白弹出框-->
+<div id="dialog_slike" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer" style="z-index:998">
+	</div>
+	<div  class="weui-half-screen-dialog" style="z-index:999">
+		<div class="weui-half-screen-dialog__hd">
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">对{php echo $mine['sex']==1?'她':'他'}发送心动并表白</strong>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd">
+			<div style="text-align:center;">
+				<div style="font-size:14px">
+					<div><img src="{MODULE_URL}/static/mobile/images/slike.png" style="display:inline-block;width:60px;height:60px;"/></div>
+					<div style="margin-top:15px;">{php echo $mine['sex']==1?'她':'他'}可直接看到你和你的心动表白</div>
+					<!--<div style="margin-top:5px;">{php echo $mine['sex']==1?'她':'他'}可直接查看你的联系方式</div>-->
+
+					<div style="margin:30px 0 0 0;"><span style="font-size:16px;color:#f73959;font-weight:bold">{$_W['module_setting']['super_fee']}{$_W['module_setting']['coin_name']}/次</span></div>
+					<div  class="mine_coin_box btn_to_coin" style="margin:15px 0 20px 0;">我有<span class="mine_coin"></span>{$_W['module_setting']['coin_name']}</div>
+				</div>
+
+				<form id="slike_form" action="" method="post">
+					<input type="hidden" name="cmd" value="other"/>
+					<input type="hidden" name="submit" value="slike"/>
+					<input id="slike_form_ouid" type="hidden" name="ouid" value=""/>
+
+					<div class="weui-cells weui-cells_form slike-form">
+						<div class="weui-cell" style="border:2px solid #000000;border-radius:100px;">
+							<div class="weui-cell__bd">
+								<input id="form_msg" name="msg" class="weui-input" placeholder="一句话表白..." style="text-align:center;"/>
+							</div>
+						</div>
+					</div>
+					
+					<div style="margin:15px 10px 0 10px;">
+						<a id="btn_slike" class="btn" href="javascript:" style="background:#f73959;">确认发送</a>
+					</div>
+				</form>
+
+			</div>
+		</div>
+		<div class="weui-half-screen-dialog__ft">
+			
+		</div>
+	</div>
+</div>
+
+
+<!--超级心动已发送弹出框-->
+<div id="dialog_sliked" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer" style="z-index:998">
+	</div>
+	<div  class="weui-half-screen-dialog" style="z-index:999">
+		<div class="weui-half-screen-dialog__hd">
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">已对{php echo $mine['sex']==1?'她':'他'}表白</strong>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd">
+			<div style="text-align:center;">
+				<div style="font-size:14px">
+					<div><img src="{MODULE_URL}/static/mobile/images/sliked.png" style="display:inline-block;width:60px;height:60px;"/></div>
+					<div style="margin-top:15px;">心动表白已发送，请耐心等待{php echo $mine['sex']==1?'她':'他'}回应</div>
+					<div style="margin:5px 0 0 0;font-size:12px;color:#BBBBBB;">对方可选择对你心动或直接联系你</div>
+				</div>
+			</div>
+		</div>
+		<div class="weui-half-screen-dialog__ft">
+			
+		</div>
+	</div>
+</div>
+
+
+<!--互相心动弹出框-->
+<div id="dialog_matched" class="js_dialog" style="display:none;">
+	<div class="weui-mask js_dialog_closer" style="z-index:998">
+	</div>
+	<div  class="weui-half-screen-dialog" style="z-index:999">
+		<div class="weui-half-screen-dialog__hd">
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">恭喜！你们互相心动！</strong>
+			<span class="weui-half-screen-dialog__subtitle">已互相显示对方联系方式</span>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd">
+			<div style="text-align:center;">
+				<div>
+					<div id="matched_box"></div>
+					<script id="matched_box_tpl" type="text/template" >
+						<input id="matched_ouid" type="hidden"  value="<%=other._id%>"/>
+						<div style="text-align:center;position:relative;margin:10px 0 15px 0;">
+							<div class="vp-flex">
+								<div class="vp-flex_1">
+									<img src="<%=other._cover%>" class="matched-cover" style="margin-right:1%"/>
+								</div>
+								<div class="vp-flex_1">
+									<img src="{php echo VP_IMAGE_URL($mine['cover'])}" class="matched-cover" style="margin-left:1%"/>
+								</div>
+							</div>
+
+							<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);">
+								<img src="{MODULE_URL}/static/mobile/images/marched.png" class="btn-light" style="width:70px;height:70px;"/>
+							</div>
+						</div>
+
+						<div>
+							<% if(other.wx){ %>
+								<div style="margin-top:15px;"><a href="javascript:;" class="btn btn-copyer" style="background:#f73959" data-clipboard-text="<%=other.wx%>">复制对方微信：<%=other.wx%></a></div>
+							<% } %>
+							<% if(other.qq){ %>
+								<div style="margin-top:15px;"><a href="javascript:;" class="btn btn-copyer" style="background:#f73959" data-clipboard-text="<%=other.qq%>">复制对方QQ：<%=other.qq%></a></div>
+							<% } %>
+						</div>
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 充值代币弹出框 -->
+<div id="dialog_coin" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">{$_W['module_setting']['coin_name']}</strong>
+			<span class="weui-half-screen-dialog__subtitle">{$_W['module_setting']['coin_name']}可以兑换更多匹配、心动或表白次数</span>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+
+			<div style="font-size:14px;text-align:center;margin:10px 0 30px 0;">
+				<div><img src="{php echo VP_IMAGE_URL($_W['module_setting']['coin_icon'])}" style="display:inline-block;width:60px;height:60px;"/></div>
+				<div style="margin-top:10px"><p style="font-size:18px;font-weight:bold">我有<span class="mine_coin"></span>{$_W['module_setting']['coin_name']}</p></div>
+				<!--<div style="margin:5px 0 40px 0;font-size:12px;color:#bbbbbb;">{$_W['module_setting']['coin_name']}可以兑换更多匹配、心动或表白次数</div>-->
+			</div>
+			
+			{if $_W['module_setting']['inmoney_way']==1}
+				<div style="margin:0 10px;">
+					<a class="btn btn_to_server" href="javascript:">联系客服获得更多{$_W['module_setting']['coin_name']}</a>
+				</div>
+				
+				<!--
+				<div style="text-align:center;">
+					 <a class="btn" href="javascript:">联系客服获得更多{$_W['module_setting']['coin_name']}</a>
+					 
+					<div><img src="{$_W['module_setting']['server_qrcode']}" style="display:inline-block;width:200px;"/></div>
+					<div style="margin-top:15px;font-size:14px;">请添加客服微信获取高级版</div>
+					<div style="margin-top:10px;font-size:12px;">高级版不限链接数量</div>
+					
+				</div>
+				-->
+			{/if}
+
+			{if $_W['module_setting']['inmoney_way']==2}
+				<div>
+					<div class="vp-flex" style="margin-top:20px;">
+						<div class="vp-flex_1">
+							<div class="vip-item">
+								<div class="vip-name">{$_W['module_setting']['inmoney_coin1']}{$_W['module_setting']['coin_name']}</div>
+								<div class="vip-price"><span class="vip-price-price">{$_W['module_setting']['inmoney_fee1']}</span><span class="vip-price-unit">元</span></div>
+								<div class="vip-buy"><a href="javascript:" class="weui-btn weui-btn_mini weui-btn_primary btn_coin_buy" data-coin="{$_W['module_setting']['inmoney_coin1']}" data-fee="{$_W['module_setting']['inmoney_fee1']}">购买</a></div>
+							</div>
+						</div>
+						<div class="vp-flex_1">
+							<div class="vip-item">
+								<div class="vip-name">{$_W['module_setting']['inmoney_coin2']}{$_W['module_setting']['coin_name']}</div>
+								<div class="vip-price"><span class="vip-price-price">{$_W['module_setting']['inmoney_fee2']}</span><span class="vip-price-unit">元</span></div>
+								<div class="vip-buy"><a href="javascript:" class="weui-btn weui-btn_mini weui-btn_primary btn_coin_buy" data-coin="{$_W['module_setting']['inmoney_coin2']}" data-fee="{$_W['module_setting']['inmoney_fee2']}">购买</a></div>
+							</div>
+						</div>
+						<div class="vp-flex_1">
+							<div class="vip-item">
+								<div class="vip-name">{$_W['module_setting']['inmoney_coin3']}{$_W['module_setting']['coin_name']}</div>
+								<div class="vip-price"><span class="vip-price-price">{$_W['module_setting']['inmoney_fee3']}</span><span class="vip-price-unit">元</span></div>
+								<div class="vip-buy"><a href="javascript:" class="weui-btn weui-btn_mini weui-btn_primary btn_coin_buy" data-coin="{$_W['module_setting']['inmoney_coin3']}" data-fee="{$_W['module_setting']['inmoney_fee3']}">购买</a></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div style="margin-top:30px;text-align:center;font-size:12px;"><a class="btn_to_server" href="javascript:">如有疑问可联系客服</a></div>
+			{/if}
+
+			
+			<!--
+			{if $mine['agent']>0}
+				<div style="text-align:center;margin-top:20px;"><a href="{php echo $this->createMobileUrl('agent')}">进入{$_W['module_setting']['agent1_name']}中心</a></div>
+			{else}
+				{if $_W['module_setting']['agent_on']>0}
+					<div style="text-align:center;margin-top:20px;"><span style="color:#eca052">购买高级版（一年）直接成为{$_W['module_setting']['agent1_name']}！</span></div>
+				{/if}
+			{/if}
+			-->
+
+		</div>
+	</div>
+</div>
+
+
+<!-- 联系客服弹出框 -->
+<div id="dialog_server" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">长按二维码添加客服微信</strong>
+			<span class="weui-half-screen-dialog__subtitle"><a href="javascript:;" class="btn-copyer" data-clipboard-text="{php echo pencode($mine['id'])}">点击复制我的ID:{php echo pencode($mine['id'])}</a></span>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+
+			<div style="text-align:center;">
+				<div><img src="{$_W['module_setting']['server_qrcode']}" style="display:inline-block;width:200px;"/></div>
+			</div>
+		
+		</div>
+		<div class="weui-half-screen-dialog__ft"></div>
+	</div>
+</div>
+
+<!-- 接收通知弹出框 -->
+<div id="dialog_nt" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">长按二维码关注即可接收消息通知</strong>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+
+			<div style="text-align:center;">
+				<div><img src="{$_W['module_setting']['set_acc_qrcode']}" style="display:inline-block;width:200px;"/></div>
+			</div>
+		
+		</div>
+		<div class="weui-half-screen-dialog__ft"></div>
+	</div>
+</div>
+
+
+<!-- 分享弹出框 -->
+<div id="dialog_share" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">邀请好友来玩</strong>
+			<!--<span class="weui-half-screen-dialog__subtitle"></span>-->
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+			<div style="background:#eaeaea;width:300px;padding:20px 0;margin:0 auto;text-align:center;border-radius:10px;">
+				<div style="font-size:12px;color:#444444;padding-bottom:10px;font-weight:bold;">点击右上角... 后发送给好友或朋友圈</div>
+				<div><img src="{MODULE_URL}/static/mobile/images/share.jpg" style="width:100px;display:inline-block;"/></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- 微信支付表单 -->
+<form id="pay_wechat" action="{php echo url('mc/cash/wechat');}" method="post">
+	<input id="pay_wechat_params" type="hidden" name="params" value="" />
+</form>
+
+<script type="text/javascript">
+	// 全局公共变量
+	var loading=null;
+	var mine = eval('({php echo json_encode($mine)})');	// 我当前的信息
+	// var pair = null; // 当前在匹配的对象
+
+	// 全局公共函数
+	var closeDialog=null; 
+
+	var showMatched=null;
+	var showSlike=null;
+	var showSliked=null;
+	var showCoin=null;
+	var showLikesAdd=null;
+	var switchNt=null;
+	var showShare=null;
+
+
+
+	$(function(){
+		var matched_box = $("#matched_box");
+		var matched_box_tpl=baidu.template($('#matched_box_tpl').html());
+		showMatched=function(_other){
+			var html=matched_box_tpl({
+				other:_other
+			});
+			matched_box.html(html);
+			
+			closeDialog();
+			$('#dialog_matched').fadeIn(200);
+			$('#dialog_matched').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		}
+		showSlike=function(_pair){
+			$('#slike_form_ouid').val(_pair._ouid);
+
+			closeDialog();
+			$('#dialog_slike').fadeIn(200);
+			$('#dialog_slike').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		}
+		showSliked=function(){
+			closeDialog();
+			$('#dialog_sliked').fadeIn(200);
+			$('#dialog_sliked').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		}
+		showCoin=function(){
+			$('.mine_coin').html(mine.coin);
+
+			closeDialog();
+			$('#dialog_coin').fadeIn(200);
+			$('#dialog_coin').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		}
+		showLikesAdd=function(){
+			$('.mine_coin').html(mine.coin);
+
+			closeDialog();
+			$('#dialog_likes_add').fadeIn(200);
+			$('#dialog_likes_add').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		}
+
+		showShare=function(){
+			closeDialog();
+			$('#dialog_share').fadeIn(200);
+			$('#dialog_share').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		}
+
+		
+
+		// 兑换心动次数
+		$('#btn_likes_add').on('click',function(){
+			loading = weui.loading('正在兑换...');
+			var form = $('#likes_add_form');
+			$.post(form.attr('action'), form.serialize(),function(resp) {
+				loading.hide();
+				if(resp.status==0){
+					weui.alert(resp.info,function(){
+						if(resp.data=='tocoin'){
+							showCoin();
+						}
+					});
+				}else{
+					// 更新我的信息
+					mine=resp.data.mine;
+					$('.mine_likes').text(mine.likes);
+					
+					$('#dialog_likes_add').fadeOut(200);
+					$('#dialog_likes_add').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+
+					weui.toast(resp.info, 2000);
+				}
+			});
+		});
+
+		// 超级心动表白
+		$('#btn_slike').on('click',function(){
+			if(!$('#form_msg').val()){
+				return weui.topTips('表白内容还没有填写哦');
+			}
+			loading = weui.loading('正在发送...');
+			var form = $('#slike_form');
+			$.post(form.attr('action'), form.serialize(),function(resp) {
+				loading.hide();
+				if(resp.status==0){
+					weui.alert(resp.info,function(){
+						if(resp.data=='tocoin'){
+							showCoin();
+						}
+					});
+				}else{
+					if(resp.data){
+						// 互相心动
+						showMatched(resp.data);
+					}else{
+						// 表白完成
+						showSliked();
+					}
+					
+					// 通知页面完成
+					$('body').trigger('vp_pp_sliked');
+				}
+			});
+		});
+
+		// 代币弹窗
+		$('.btn_to_coin').on('click',function(){
+			showCoin();
+		});
+
+
+		// 代币购买
+		$('.btn_coin_buy').on('click',function(){
+			var that=$(this);
+			//$.confirm('续费将累计增加有效期，确认续费？',function() {
+				loading = weui.loading('正在购买...');
+				$.post('', {
+					cmd:'mine',
+					submit:'buycoin',
+					coin:that.data('coin'),
+					fee:that.data('fee'),
+				},function(resp) {
+					loading.hide();
+					if(resp.status==0){
+						weui.alert(resp.info);
+					}else{
+						if(resp.data){
+							loading = weui.loading('准备支付...');
+							$('#pay_wechat_params').val(resp.data.params);
+							$('#pay_wechat').submit();
+						}else{
+							weui.alert(resp.info,function(){
+								location.reload();
+							});
+						}
+					}
+				});
+			//});
+		});
+		
+		// 客服弹窗
+		$('.btn_to_server').on('click',function(){
+			closeDialog();
+
+			$('#dialog_server').fadeIn(200);
+			$('#dialog_server').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+
+		// 分享弹窗
+		$('.btn_to_share').on('click',function(){
+			showShare();
+		});
+		
+		
+		// 开启/关闭通知
+		switchNt=function(is_nt){
+			//loading = weui.loading('正在'+(is_nt==1?'开启':'关闭')+'...');
+			$.post('',{
+				cmd:'mine',
+				submit:'nt',
+				is_nt:is_nt
+			},function(resp) {
+				// TODO...
+			});
+			
+			if(is_nt==1 && _IS_USER_FOLLOWED!=1){
+				$('#dialog_nt').fadeIn(200);
+				$('#dialog_nt').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+			}
+		}
+
+
+		
+		// 弹出窗统一关闭
+		closeDialog=function(){
+			$('.js_dialog').fadeOut(200);
+			$('.js_dialog').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+		}
+		$('.js_dialog').find('.js_dialog_closer').on('click', function(){
+			// 抛出事件，点击关闭了哪个弹出框
+			//$('body').trigger('vp_close_dialog',$(this).parents('.js_dialog').attr('id'));
+			closeDialog();
+		});
+		
+
+		// 统一复制
+		var clipboard = new ClipboardJS('.btn-copyer');
+		clipboard.on('success', function(e) {
+			weui.toast('复制成功', 2000);
+		});
+
+	});
+</script>

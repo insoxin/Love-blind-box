@@ -1,0 +1,569 @@
+{php $title=$_W['module_setting']['set_app_name']}
+{template 'inc/header'}
+
+<script type="text/javascript">
+	wx.ready(function () {
+		wx.onMenuShareAppMessage({
+			title:"{$_W['module_setting']['share_post_title']}",
+			desc:"{$_W['module_setting']['share_post_desc']}",
+			imgUrl:"{php echo tomedia($_W['module_setting']['share_post_logo'])}",
+			link:"{$invite_url}"
+		});
+		wx.onMenuShareTimeline({
+			title:"{$_W['module_setting']['share_post_line']}",
+			imgUrl:"{php echo tomedia($_W['module_setting']['share_post_logo'])}",
+			link:"{$invite_url}"
+		});
+	});
+</script>
+
+<style>
+	body{background:#FFFFFF;}
+
+	.page-frame{padding:30px;height:100%;box-sizing:border-box;-webkit-box-sizing:border-box;display:flex;flex-flow:column;position:relative;}
+	.page-frame-bd{flex:1;}
+	.page-frame-ft{text-align:center;padding-bottom:50px;}
+	.page-frame-ft .btn-ft{display:block;height:50px;line-height:50px;border-radius:100px;font-weight:bold;}
+	.page-frame-ft .btn-ft-back{display:block;height:50px;line-height:50px;border:2px solid #000000;color:#000000;border-radius:100px;width:50px;text-align:center;font-weight:bold;margin-right:15px;}
+	
+	.profile-form{background:none;}
+	.profile-form .weui-cell{margin-bottom:15px;border:2px solid #000000;border-radius:100px;}
+	.profile-form .weui-label{font-weight:bold;margin-left:10px;}
+	.profile-form .weui-input{padding-right:10px;text-align:right;font-size:14px;font-weight:bold;}
+
+	.sex-selecter{}
+	.sex-selecter-one{display:block;height:50px;line-height:50px;text-align:center;border-radius:100px;color:#bbbbbb;font-weight:bold;background:#F4F4F4 url('{MODULE_URL}/static/mobile/images/sex_1.png') no-repeat 10px center;background-size:30px;border:2px solid #F4F4F4;}
+	.sex-selecter-one.sex-2{background-image:url('{MODULE_URL}/static/mobile/images/sex_2.png')}
+	.sex-selecter-one.sex-1.selected{border-color:#7dcbce;color:#7dcbce;background-color:#e2fdfe}
+	.sex-selecter-one.sex-2.selected{border-color:#fca3a3;color:#fca3a3;background-color:#fff0f0}
+
+
+	#images_box{margin:0;overflow:hidden;zoom:1;}
+	#images_box:after{content:"";display:block;height:0;line-height:0;clear:both;visibility:hidden;}
+	#images_box li{float:left;margin:0 5px 5px 0;width:90px;height:90px;overflow:hidden;}
+	#images_box li a{display:block;width:90px;height:90px;line-height:90px;text-align:center;overflow:hidden;}
+	#images_box li a img{height:90px;width:90px;object-fit:cover;}
+	#image_adder a{background:url("{MODULE_URL}/static/mobile/images/image_adder_normal.png");background-size:90px 90px;}
+	
+
+	.tag{display:inline-block;border:1px solid #000000;color:#000000;border-radius:100px;padding:4px 10px;margin:0 5px 8px 0;font-size:13px;}
+	.tag.selected{background:#000000;color:#FFFFFF;}
+
+</style>
+
+<div>
+	<form id="profile_form" action="" method="post">
+		<input type="hidden" name="cmd" value="init"/>
+		<input type="hidden" name="fuid" value="{$_GPC['fuid']}"/>
+		<input type="hidden" name="auid" value="{$_GPC['auid']}"/>
+
+		<div class="swiper-container">
+			<div class="swiper-wrapper">
+				
+					<div class="swiper-slide">
+						<div class="page-frame" style="color:#ffffff;opacity:0.9">
+							<div>
+								<div><img src="{php echo tomedia($_W['module_setting']['set_app_logo'])}" style="width:80px;height:80px;border:2px solid #FFFFFF;border-radius:100px;"/></div>
+								<div style="margin-top:15px;"><span style="font-size:26px;font-weight:bold">欢迎来到 {$_W['module_setting']['set_app_name']}</span></div>
+								<div style="margin-top:20px;white-space:pre-wrap;"><span style="font-weight:bold">{$_W['module_setting']['set_app_intro']}</span></div>
+							</div>
+							<div class="page-frame-bd"></div>
+							<div class="page-frame-ft">
+								<a href="javascript:;" id="btn_next1" class="btn-ft" style="background:#ffffff;color:#000000;" data-close="{$close_hint}">开始玩吧</a>
+							</div>
+							<img src="{php echo tomedia($_W['module_setting']['set_app_bg'])}" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;object-fit:cover;"/>
+						</div>
+					</div>
+
+					<div class="swiper-slide">
+						<div class="page-frame">
+							<div>
+								<div><span style="font-size:26px;font-weight:bold">你好，新人</span></div>
+								<div style="font-size:14px">请填写您基本信息，性别选定后不能更改</div>
+							</div>
+							<div class="page-frame-bd" style="display:flex;align-items:center;">
+								<div style="width:100%;">
+									<div class="weui-cells weui-cells_form profile-form">
+										<input id="form_sex" name="sex" type="hidden" />
+										<div class="vp-flex" style="margin-bottom:15px;">
+											<div class="vp-flex_1">
+												<a href="javascript:;" data-sex="1" class="sex-selecter-one sex-1" style="margin-right:3px;">男生</a>
+											</div>
+											<div class="vp-flex_1">
+												<a href="javascript:;" data-sex="2" class="sex-selecter-one sex-2" style="margin-left:3px;">女生</a>
+											</div>
+										</div>
+
+										<div class="weui-cell">
+											<div class="weui-cell__hd"><label class="weui-label">称呼</label></div>
+											<div class="weui-cell__bd">
+												<input id="form_name" name="pname" class="weui-input"  placeholder="给自己起个称呼 2~8个字" />
+											</div>
+										</div>
+										<div class="weui-cell">
+											<div class="weui-cell__hd"><label class="weui-label">年龄</label></div>
+											<div class="weui-cell__bd">
+												<input id="form_age" name="age" type="number" class="weui-input" readonly placeholder="请选择..."/>
+											</div>
+											<div class="weui-cell__hd">
+												<span style="font-weight:bold;margin-right:10px;">周岁</span>
+											</div>
+										</div>
+								
+										<div class="weui-cell">
+											<div class="weui-cell__hd"><label class="weui-label">身高</label></div>
+											<div class="weui-cell__bd">
+												<input id="form_height" name="height" type="number" class="weui-input" readonly placeholder="请选择..."/>
+											</div>
+											<div class="weui-cell__hd">
+												<span style="font-weight:bold;margin-right:10px;">厘米</span>
+											</div>
+										</div>
+										<div class="weui-cell">
+											<div class="weui-cell__hd"><label class="weui-label">体重</label></div>
+											<div class="weui-cell__bd">
+												<input id="form_weight" name="weight" type="number" class="weui-input" readonly placeholder="请选择..."/>
+											</div>
+											<div class="weui-cell__hd">
+												<span style="font-weight:bold;margin-right:10px;">公斤</span>
+											</div>
+										</div>
+									
+									</div>
+
+								</div>
+							</div>
+							<div class="page-frame-ft">
+								<a href="javascript:;" id="btn_next2" class="btn-ft" style="background:#000000;color:#ffffff;" >下一步</a>
+							</div>
+						</div>
+					</div>
+
+					<div class="swiper-slide">
+						<div class="page-frame">
+							<div>
+								<div><span style="font-size:26px;font-weight:bold">我的标签</span></div>
+								<div style="font-size:14px">选择5个与你相关的标签，方便别人了解你</div>
+							</div>
+							<div class="page-frame-bd">
+								<div style="width:100%;">
+									<div style="margin-top:50px;text-align:center;">
+										<div id="tags1">
+											{loop $tags1 $_tag}
+												<a href="javascript:;" class="tag">{$_tag}</a>
+											{/loop}
+										</div>
+										<div id="tags2">
+											{loop $tags2 $_tag}
+												<a href="javascript:;" class="tag">{$_tag}</a>
+											{/loop}
+										</div>
+									</div>
+									<input id="form_tagi" name="tagi" type="hidden"/>
+								</div>
+							</div>
+							<div class="page-frame-ft">
+								<div class="vp-flex">
+									<div>
+										<a class="btn-ft-back" style="display:block;height:50px;line-height:50px;border:2px solid #000000;color:#000000;border-radius:100px;width:50px;text-align:center;font-weight:bold;margin-right:15px;">←</a>
+									</div>
+									<div class="vp-flex_1">
+										<a href="javascript:;" id="btn_next3" class="btn-ft" style="background:#000000;color:#ffffff;" >下一步</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="swiper-slide">
+						<div class="page-frame">
+							<div>
+								<div><span style="font-size:26px;font-weight:bold">我的照片</span></div>
+								<div style="font-size:14px">请尽量展示自己真实的一面，违规照片会惩罚哦</div>
+							</div>
+							<div class="page-frame-bd">
+								<div style="width:100%;">
+									<div>
+										<div style="margin-top:50px;">
+											<ul id="images_box">
+												<li id="image_adder"><a></a></li>
+											</ul>
+										</div>
+										<!---
+										<div>
+											<a href="javascript:;" id="btn_tags_picker">我的标签</a>
+										</div>
+										-->
+									</div>
+								</div>
+							</div>
+							<div class="page-frame-ft">
+								<div class="vp-flex">
+									<div>
+										<a class="btn-ft-back" style="display:block;height:50px;line-height:50px;border:2px solid #000000;color:#000000;border-radius:100px;width:50px;text-align:center;font-weight:bold;margin-right:15px;">←</a>
+									</div>
+									<div class="vp-flex_1">
+										<a href="javascript:;" id="btn_next4" class="btn-ft" style="background:#000000;color:#ffffff;" >下一步</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			
+					<div class="swiper-slide">
+						<div class="page-frame">
+							<div>
+								<div><span style="font-size:26px;font-weight:bold">联系方式</span></div>
+								<div style="font-size:14px">默认隐藏，仅在双方互相心动时才显示给对方</div>
+							</div>
+							<div class="page-frame-bd" style="display:flex;align-items:center;">
+								<div style="width:100%;">
+									<div class="weui-cells weui-cells_form profile-form">
+										
+										<div style="text-align:center;font-weight:bold;font-size:14px;margin-bottom:20px;">微信或QQ至少填写一个</div>
+										<div class="weui-cell">
+											<div class="weui-cell__hd"><label class="weui-label">微信</label></div>
+											<div class="weui-cell__bd">
+												<input id="form_weixin" name="weixin" class="weui-input"  placeholder="我的微信号" />
+											</div>
+										</div>
+										<div class="weui-cell">
+											<div class="weui-cell__hd"><label class="weui-label">QQ</label></div>
+											<div class="weui-cell__bd">
+												<input id="form_qq" name="qq" type="number" class="weui-input" placeholder="我的QQ号"/>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+							<div class="page-frame-ft">
+								<div class="vp-flex">
+									<div>
+										<a class="btn-ft-back" style="display:block;height:50px;line-height:50px;border:2px solid #000000;color:#000000;border-radius:100px;width:50px;text-align:center;font-weight:bold;margin-right:15px;">←</a>
+									</div>
+									<div class="vp-flex_1">
+										<a href="javascript:;" id="btn_next5" class="btn-ft" style="background:#000000;color:#ffffff;" >完成，开启匹配</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+
+<!-- 标签选择
+<div id="dialog_tags_picker" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer" style="z-index:998">
+	</div>
+	<div  class="weui-half-screen-dialog" style="z-index:999">
+		<div class="weui-half-screen-dialog__hd">
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">我的标签</strong>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd">
+			<div style="text-align:center;">
+				{loop $tags1 $_tag}
+					<a href="javascript:;" class="tag">{$_tag}</a>
+				{/loop}
+			</div>
+		</div>
+		<div class="weui-half-screen-dialog__ft">
+			
+		</div>
+	</div>
+</div>
+ -->
+
+
+
+
+{template 'inc/script'}
+<script type="text/javascript">
+
+	$(function(){
+
+
+		/***
+		function userLocation(){
+			wx.getLocation({
+			  type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+			  success: function (res) {
+				//var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+				//var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+				//var speed = res.speed; // 速度，以米/每秒计
+				//var accuracy = res.accuracy; // 位置精度
+				//alert(latitude);
+				user_lat = res.latitude;
+				user_lng = res.longitude;
+				//alert(1);
+			  },
+			  fail:function(){
+				alert(2);
+			  },
+			  complete:function(){
+				//alert(3);
+				alert(user_lat);
+			  }
+			});
+		}
+		userLocation();
+		$('#btn_location').on('click', function(){
+			userLocation();
+		});
+		**/
+
+
+
+
+		var mySwiper = new Swiper ($('.swiper-container'), {
+			width:window.innerWidth,
+			height:window.innerHeight,
+			onlyExternal:true,
+			//watchSlidesProgress : true,
+			//watchSlidesVisibility : true,
+			//pagination: $('.swiper-pagination'),
+			//paginationClickable: true,
+			//autoplay: 2000,
+			//autoplayDisableOnInteraction: false,
+			//loop: true
+		});
+
+
+		// 性别选择
+		$('.sex-selecter-one').on('click',function(){
+			$('.sex-selecter-one').each(function(){
+				$(this).removeClass('selected');
+			});
+			$(this).addClass('selected');
+			$('#form_sex').val($(this).data('sex'));
+		});
+		
+		// 年龄选择
+		$('#form_age').on('click', function () {
+			weui.picker(eval('{$ages_json}'), {
+				defaultValue: [$('#form_age').val()?$('#form_age').val():20],
+				onConfirm: function (res) {
+					$('#form_age').val(res);
+				},
+				id:'form_age_picker',
+				title: '请选择您的年龄（周岁）'
+			});
+		});
+
+		// 身高选择
+		$('#form_height').on('click', function () {
+			weui.picker(eval('{$heights_json}'), {
+				defaultValue: [$('#form_height').val()?$('#form_height').val():165],
+				onConfirm: function (res) {
+					$('#form_height').val(res);
+				},
+				id:'form_height_picker',
+				title: '请选择您的身高（厘米）'
+			});
+		});
+
+		// 体重选择
+		$('#form_weight').on('click', function () {
+			weui.picker(eval('{$weights_json}'), {
+				defaultValue: [$('#form_weight').val()?$('#form_weight').val():50],
+				onConfirm: function (res) {
+					$('#form_weight').val(res);
+				},
+				id:'form_weight_picker',
+				title: '请选择您的体重（公斤）'
+			});
+		});
+
+		var images_box = $('#images_box');
+		var image_adder = $('#image_adder');
+
+		// 图片上传
+		images_box.on('image_upload',function(){
+			$(this).find('.image_wrap').each(function(){
+				var piv=$(this).find('.image_val');
+				if(piv.val()==''){
+					piv.val(-1);// -1表示正在上传
+					wx.uploadImage({
+						localId: $(this).data('localid'),
+						isShowProgressTips:0,
+						success: function (res) {
+							piv.val(res.serverId);
+							images_box.trigger('image_upload'); // 串行上传
+						},
+						fail: function () {
+							piv.val('');
+							images_box.trigger('image_upload'); // 串行上传
+						}
+					});
+					return false;
+				}
+			});
+		});
+		
+		// 添加图片
+		image_adder.on('click',function(){
+			wx.chooseImage({
+				sourceType: ['album'],
+				count:10-images_box.children().length,
+				success: function (res) {
+					if(res.localIds){
+						for (var i in res.localIds){
+							image_adder.before('<li><a class="image_wrap" data-localid="'+res.localIds[i]+'" ><input class="image_val" type="hidden" name="images[]" value="" /><img src="'+res.localIds[i]+'"/></a></li>');
+						}
+						if(images_box.children().length>=10){
+							image_adder.hide();
+						}
+						images_box.trigger('image_upload');
+					}
+				}
+			});
+		});
+
+		// 处理图片
+		images_box.on('click','.image_wrap',function(){
+			var localId=$(this).data('localid');
+			weui.confirm('确定移除这张照片？', function () {
+				images_box.children().each(function(){
+					if($(this).find('.image_wrap').data('localid')==localId){
+						$(this).remove();
+					}
+				});
+				if(images_box.children().length<=10){
+					image_adder.show();
+				}
+			});
+		});
+		
+
+		
+		$('#btn_next1').on('click',function(){
+			if($(this).data('close')){
+				weui.alert($(this).data('close'));
+				return;
+			}else{
+				mySwiper.slideNext();
+			}
+		});
+
+		$('.btn-ft-back').on('click',function(){
+			mySwiper.slidePrev();
+		});
+
+
+		$('#btn_next2').on('click',function(){
+			if(!$('#form_sex').val()){
+				return weui.topTips('您还没有选择性别');
+			}
+			if(!$('#form_name').val()){
+				return weui.topTips('您还没有称呼');
+			}
+			if(!$('#form_age').val()){
+				return weui.topTips('您还没有选择年龄');
+			}
+			if(!$('#form_height').val()){
+				return weui.topTips('您还没有选择身高');
+			}
+			if(!$('#form_weight').val()){
+				return weui.topTips('您还没有选择体重');
+			}
+
+			// 根据性别，准备标签数据
+			if($('#form_sex').val()==1){
+				$('#tags2').hide();
+				$('#tags1').show();
+			}else{
+				$('#tags1').hide();
+				$('#tags2').show();
+			}
+
+			mySwiper.slideNext();
+			//alert('OK');
+		});
+
+
+		// 标签选择
+		$('.tag').on('click',function(){
+			if($(this).hasClass('selected')){
+				$(this).removeClass('selected');
+			}else{
+				if($(this).parent().find('.selected').length>=5){
+					return weui.topTips('最多选择5个标签');
+				}else{
+					$(this).addClass('selected');
+				}
+			}
+		});
+
+		$('#btn_next3').on('click',function(){
+			var tags=new Array();
+			if($('#form_sex').val()==1){
+				$('#tags1').find('.selected').each(function(){
+					tags.push($(this).text());
+				});
+			}else{
+				$('#tags2').find('.selected').each(function(){
+					tags.push($(this).text());
+				});
+			}
+			if(tags.length<3){
+				return weui.topTips('请至少选择3个标签');
+			}
+
+			$('#form_tagi').val(tags.join(','));
+
+			mySwiper.slideNext();
+			//alert('OK');
+		});
+
+		$('#btn_next4').on('click',function(){
+			if($('.image_val').length==0){
+				return weui.topTips('请至少选择一张您的照片');
+			}
+			mySwiper.slideNext();
+			//alert('OK');
+		});
+
+		$('#btn_next5').on('click',function(){
+			if(!$('#form_weixin').val() && !$('#form_qq').val()){
+				return weui.topTips('请至少留下一种联系方式');
+			}
+			
+			loading = weui.loading('正在加载...');
+			var form = $('#profile_form');
+			$.post(form.attr('action'), form.serialize(),function(resp) {
+				if(resp.status==0){
+					loading.hide();
+					weui.alert(resp.info);
+				}else{
+					location.reload();
+					//loading.hide();
+					//weui.alert(resp.info);
+				}
+			});
+			
+		});
+
+	
+
+
+
+		// 弹出窗统一关闭
+		$('.js_dialog').find('.js_dialog_closer').on('click', function(){
+			$('.js_dialog').fadeOut(200);
+			$('.js_dialog').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+		});
+	});
+</script>
+{template 'inc/footer'}

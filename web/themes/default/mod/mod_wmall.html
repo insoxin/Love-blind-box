@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{php if(isset($title)) $_W['page']['title'] = $title}{if !empty($_W['page']['title'])}{$_W['page']['title']}{/if}{if empty($_W['page']['copyright']['sitename'])}{if IMS_FAMILY != 'x'}{if !empty($_W['page']['title'])} - {/if}{/if}{else}{if !empty($_W['page']['title'])} - {/if}{$_W['page']['copyright']['sitename']}{/if}</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="./resource/layui/css/layui.css"  media="all">
+  <link href="./resource/css/bootstrap.min.css?v=20180203" rel="stylesheet">
+  <link href="./resource/css/commonmod.css?v=20180203" rel="stylesheet">
+  <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<script type="text/javascript">
+	if(navigator.appName == 'Microsoft Internet Explorer'){
+		if(navigator.userAgent.indexOf("MSIE 5.0")>0 || navigator.userAgent.indexOf("MSIE 6.0")>0 || navigator.userAgent.indexOf("MSIE 7.0")>0) {
+			alert('您使用的 IE 浏览器版本过低, 推荐使用 Chrome 浏览器或 IE8 及以上版本浏览器.');
+		}
+	}
+	window.sysinfo = {
+		{if !empty($_W['uniacid'])}'uniacid': '{$_W['uniacid']}',{/if}
+		{if !empty($_W['acid'])}'acid': '{$_W['acid']}',{/if}
+		{if !empty($_W['openid'])}'openid': '{$_W['openid']}',{/if}
+		{if !empty($_W['uid'])}'uid': '{$_W['uid']}',{/if}
+		'isfounder': {if !empty($_W['isfounder'])}1{else}0{/if},
+		'family': '{IMS_FAMILY}',
+		'siteroot': '{$_W['siteroot']}',
+		'siteurl': '{$_W['siteurl']}',
+		'attachurl': '{$_W['attachurl']}',
+		'attachurl_local': '{$_W['attachurl_local']}',
+		'attachurl_remote': '{$_W['attachurl_remote']}',
+		'module' : {'url' : '{if defined('MODULE_URL')}{MODULE_URL}{/if}', 'name' : '{if defined('IN_MODULE')}{IN_MODULE}{/if}'},
+		'cookie' : {'pre': '{$_W['config']['cookie']['pre']}'},
+		'account' : {php echo json_encode($_W['account'])},
+		'server' : {'php' : '{php echo phpversion()}'},
+	};
+	</script>
+	<script>var require = { urlArgs: 'v=20180203' };</script>
+	<script type="text/javascript" src="./resource/js/lib/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="./resource/js/lib/bootstrap.min.js"></script>
+	<script type="text/javascript" src="./resource/js/app/util.js?v=20180203"></script>
+	<script type="text/javascript" src="./resource/js/app/common.min.js?v=20180203"></script>
+	<script type="text/javascript" src="./resource/js/require.js?v=20180203"></script>
+<body>
+          
+<blockquote class="layui-elem-quote layui-text">
+  系统当前版本:  <span class="layui-btn layui-btn-xs layui-btn-normal">{MOD_VERSION}</span><span class="layui-btn layui-btn-xs ">RELEASE {MOD_RELEASE_DATE}</span>
+</blockquote>
+{if !empty($upgrade) && !empty($upgrade['upgrade'])}
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
+  <legend><span class="layui-badge layui-bg-black">最新版本 {$upgrade['version']}【{$upgrade['release']}】版</span></legend>
+</fieldset>
+
+<form action="" class="form we7-form">
+		<div class="upgrade-info we7-padding-bottom" style="display:inline-block;width:960px;">
+			<div class="panel we7-panel">
+
+				<div class="panel-body we7-padding">
+					<div class="form-group">
+						<label for="" class="control-label color-gray col-sm-2">需要更新文件</label>
+						<div class="form-controls col-sm-7 form-control-static">{php echo count($upgrade['files'])} 个</div>
+						<span class="col-sm-3 layui-badge layui-bg-cyan"><a href="#upgrade-file" data-toggle="modal" >查看</a></span>
+					</div>
+					<div class="form-group">
+						<label for="" class="control-label color-gray col-sm-2">需要更新数据库</label>
+						<div class="form-controls col-sm-7 form-control-static">{php echo count($upgrade['database'])} 项</div>
+						<span class="col-sm-3 layui-badge layui-bg-cyan"><a href="#upgrade-databases" data-toggle="modal" >查看</a></span>
+					</div>
+					
+					<div class="form-group  we7-padding-none">
+						<label for="" class="control-label color-gray col-sm-2">更新协议事项</label>
+						<div class="form-controls col-sm-10 form-control-static">
+							<div class="">
+								<input id='agreement_0' type="checkbox" name='agreement_0' autocomplete="off" />
+								<label for="agreement_0">我已经做好了相关文件的备份工作</label>
+							</div>
+							<div class="">
+								<input id='agreement_1' type="checkbox" name='agreement_1' autocomplete="off"/>
+								<label for="agreement_1">认同官方的更新行为并自愿承担更新所存在的风险</label>
+							</div>
+							<div class="">
+								<input id='agreement_2' type="checkbox" name='agreement_2' autocomplete="off"/>
+								<label for="agreement_2">理解官方的辛勤劳动并报以感恩的心态点击更新按钮</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="alert alert-danger">
+		<i class="fa fa-exclamation-triangle"></i> 更新时请注意备份模块数据和相关数据库文件！官方不强制要求用户跟随官方意愿进行更新尝试！
+	</div>
+			<div class="text-center">
+				<input type="button" name="" id="forward" value="一键更新" class="layui-btn layui-btn-normal" />
+				<input name="rollback" type="button" value="撤回更新" class="layui-btn" data-toggle="modal" data-target="#rollback-panel" />
+			</div>
+		</div>
+	</form>
+{else}
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 60px;">
+  <legend>恭喜您！您现在是最新版本！</legend>
+</fieldset>
+{/if}
+<div class="modal fade" id="upgrade-file" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog we7-modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span>
+					<span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title">更新文件</h4>
+			</div>
+			<div class="modal-body color-dark">
+				{loop $upgrade['files'] $line}
+				<div><span style="display:inline-block; width:30px;">{if is_file(IA_ROOT . $line)}M{else}A{/if}</span>{$line}</div>
+				{/loop}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary"  data-dismiss="modal">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="upgrade-databases" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog we7-modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span>
+					<span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title">更新数据库</h4>
+			</div>
+			<div class="modal-body color-dark">
+				{loop $upgrade['database'] $line}
+				<div class="row">
+					<div class="col-sm-2">表名:</div>
+					<div class="col-sm-4">{$line['tablename']}</div>
+					{if !empty($line['new'])}
+					<div class="col-sm-6">New</div>
+					{else}
+					<div class="col-sm-6">{if !empty($line['fields'])}fields: {$line['fields']}; {/if}{if !empty($line['indexes'])}indexes: {$line['indexes']}{/if}</div>
+					{/if}
+				</div>
+				{/loop}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="upgrade-scripts" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog we7-modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span>
+					<span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title">更新脚本</h4>
+			</div>
+			<div class="modal-body color-dark">
+				{loop $upgrade['scripts'] $line}
+				<div><span style="display:inline-block; width:100px;">{$line['release']}</span>{$line['message']}</div>
+				{/loop}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="rollback-panel" tabindex="-1" role="dialog" aria-labelledby="rollback-label">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">更新回滚列表</h4>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-danger">
+					如果要恢复更早的记录请直接查看 <b>/data/patch/</b> 目录
+				</div>
+				<div class="alert alert-success">
+					恢复时，请手动将此目录中的文件上传至网站即可（选中全部文件和目录直接上传）
+				</div>
+				{if !empty($patchs)}
+				<table class="table">
+					<tr>
+						<th style="width: 200px">日期</th>
+						<th >路径</th>
+					</tr>
+					{loop $patchs $path}
+					<tr>
+						<td>{php echo date('Y-m-d')} {php echo substr($path, 0, 2)}:{php echo substr($path, 2, 2)}</td>
+						<td>{$path}</td>
+					</tr>
+					{/loop}
+				</table>
+				{else}
+				今天暂无更新
+				{/if}
+			</div>
+		</div>
+	</div>
+</div>  
+<script src="./resource/layui/layui.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+
+{if !empty($upgrade) && !empty($upgrade['upgrade'])}
+<script type="text/javascript">
+	$('#forward').click(function(){
+		var a = $("#agreement_0").is(':checked');
+		var b = $("#agreement_1").is(':checked');
+		var c = $("#agreement_2").is(':checked');
+		if(a && b && c) {
+			if(confirm('更新将直接覆盖本地文件, 请注意备份文件和数据. \n\n**另注意** 更新过程中不要关闭此浏览器窗口.')) {
+				location.href = '{url "mod/process_wmall"}';
+			}
+		} else {
+			util.message("抱歉，更新前请仔细阅读更新协议！", '', 'error', 'success');
+			return false;
+		}
+	});
+</script>
+{/if}
+
+</body>
+</html>

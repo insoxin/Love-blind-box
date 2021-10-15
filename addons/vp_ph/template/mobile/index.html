@@ -1,0 +1,755 @@
+{php $title=$_W['module_setting']['set_app_name']}
+{template 'inc/header'}
+
+<script type="text/javascript">
+	wx.ready(function () {
+		wx.onMenuShareAppMessage({
+			title:"{$_W['module_setting']['share_post_title']}",
+			desc:"{$_W['module_setting']['share_post_desc']}",
+			imgUrl:"{php echo tomedia($_W['module_setting']['share_post_logo'])}",
+			link:"{$invite_url}"
+		});
+		wx.onMenuShareTimeline({
+			title:"{$_W['module_setting']['share_post_line']}",
+			imgUrl:"{php echo tomedia($_W['module_setting']['share_post_logo'])}",
+			link:"{$invite_url}"
+		});
+	});
+</script>
+
+<style>
+	body{background:#ffffff;}
+	
+	{if $_W['module_setting']['set_app_bgclb'] && $_W['module_setting']['set_app_bgctr']}
+	body{background-image: linear-gradient(to top right, 
+		 {$_W['module_setting']['set_app_bgclb']}, {$_W['module_setting']['set_app_bgctr']});
+		}
+	{/if}
+
+	.weui-btn_primary{background:#000000}
+	.weui-btn_primary:not(.weui-btn_disabled):active {background-color: #444444;}
+
+	#nt_box{position:absolute;left:0;top:-15px;width:100%;text-align:center;z-index:1}
+	#nt_box a{display:inline-block;border:1px solid #000000;border-radius:100px;font-size:12px;background:#FFFFFF url({MODULE_URL}/static/mobile/images/ic_nt.png) no-repeat 10px center;background-size:16px;color:#000000;font-weight:bold;padding:8px 10px 10px 30px;}
+
+	.index-slider{overflow:hidden;padding:10px;opacity:0.9;}
+	.index-slider-1 img{width:100%;height:auto;border-radius:10px;}
+	.swiper-wrapper{height:auto;}
+	.swiper-slide{height:auto;}
+	.swiper-slide a{display:block}
+	.swiper-slide img{width:100%;height:auto;border-radius:10px;}
+
+	.feed-box{padding:0 0 10px 0;border-radius:10px;overflow:hidden;opacity:0.9;}
+	.feed-box-1{background:#4e86ec;}
+	.feed-box-2{background:#ec4eb3;}
+	.feed-box-hd-cover img{display:block;width:100%}
+	.feed-box-hd-tag{position:relative;}
+	.feed-box-hd-tag-box{position:absolute;left:0;top:-18px;width:100%;text-align:center;}
+	.feed-box-hd-tag-box img{width:120px}
+	.feed-box-bd{margin:110px 10px 0 10px;}
+	.btn-box{display:block;height:45px;line-height:45px;border:2px solid #000000;background:#000000;text-align:center;font-size:14px;font-weight:bold;color:#FFFFFF;border-radius:10px;}
+
+	.feed-box-mini .feed-box-hd-tag-box{top:-12px;}
+	.feed-box-mini .feed-box-hd-tag-box img{width:80px}
+	.feed-box-mini .feed-box-bd{text-align:center;margin:70px 10px 0 10px;}
+
+	.feed-form{}
+	.feed-form .weui-cells_form{margin:0;padding:10px 10px 0 10px;border:2px solid #000000;border-radius:10px;}
+	.feed-form .weui-cell{margin:0 !important;padding:0;}
+	.feed-form .weui-cell:before{left:0;right:0;}
+	.feed-form .weui-select{padding-left:0;padding-right:15px;}
+
+
+	#images_box{margin:5px 15px 5px 0;overflow:hidden;zoom:1;}
+	#images_box:after{content:"";display:block;height:0;line-height:0;clear:both;visibility:hidden;}
+	#images_box li{float:left;margin:0 5px 0 0;width:60px;height:60px;overflow:hidden;}
+	#images_box li a{display:block;width:60px;height:60px;line-height:60px;text-align:center;overflow:hidden;}
+	#images_box li a img{height:100%;width:100%;object-fit:cover;}
+	#image_adder a{background:url("{MODULE_URL}/static/mobile/images/image_adder_normal.png");background-size:60px 60px;}
+	
+	.price-box{text-align:center;padding:15px 0;font-size:18px;font-weight:bold}
+	.price-old{font-size:14px;color:#999999;text-decoration:line-through}
+	.price-fist{color:#09BB07;}
+
+
+
+	.bottom-bar{border-radius:10px;margin:0 10px;padding:10px;color:#DDDDDD;font-size:12px;text-align:center;opacity:0.8;}
+	.bottom-bar a{color:#000000;font-weight:bold;margin:0 3px;}
+
+
+
+
+	body {
+	  --text-color: hsl(0 95% 60%);
+	  --bg-color: hsl(0 0% 100%);
+	  --bg-size: 200px;
+
+	  display: grid;
+	  place-items: center;
+	  place-content: center;
+	  grid-template-areas: "body";
+	  overflow: hidden;
+	  background-color: var(--bg-color);
+	 
+	}
+
+	body::before {
+	  --size: 150vmax;
+
+	  grid-area: body;
+	  content: "";
+	  inline-size: var(--size);
+	  block-size: var(--size);
+	  background-image: url("{php echo VP_IMAGE_URL($_W['module_setting']['set_app_bg'])}");
+	  background-size: var(--bg-size);
+	  background-repeat: repeat;
+	  transform: rotate(45deg);
+	  opacity: 0.25;
+	  animation: bg 6s linear infinite;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+	  body::before {
+		animation-duration: 0s;
+	  }
+	}
+
+	@keyframes bg {
+	  to {
+		background-position: 0 calc(var(--bg-size) * -1);
+	  }
+	}
+
+	
+	/**
+	.text {
+	  grid-area: body;
+	  position: relative;
+	  display: flex;
+	  flex-direction: column;
+	  font-size: clamp(1rem, 10vmin, 6rem);
+	}
+
+	.heading span {
+	  display: block;
+	  text-transform: uppercase;
+	}
+
+	.heading span.filled {
+	  color: var(--text-color);
+	}
+
+	.heading span:not(.filled) {
+	  --stroke: min(0.25vmin, 2px) var(--text-color);
+	  color: var(--bg-color);
+	  -webkit-text-stroke: var(--stroke);
+	  text-stroke: var(--stroke);
+	}
+
+	.subheading {
+	  position: relative;
+	  margin-block-start: 1rem;
+	  margin-inline-start: auto;
+	  font-size: 0.428em;
+	  color: var(--text-color);
+	}
+	***/
+
+</style>
+
+<div>
+	{php $tab='index'}
+	{template 'inc/tab'}
+
+	<div>
+		
+		<div style="position:fixed;left:0;top:0;width:100%;">
+			<div style="height:50px;"></div>	
+
+	
+				{if $slides && count($slides)>0}
+					<div class="index-slider">
+						{if count($slides)==1}
+							<div class="index-slider-1"><img src="{php echo VP_IMAGE_URL($slides[0])}"/></div>
+						{else}
+							<div class="swiper-container">
+								<div class="swiper-wrapper">
+									{loop $slides $_item}
+										<div class="swiper-slide">
+											<img src="{php echo VP_IMAGE_URL($_item)}"/>
+										</div>
+									{/loop}
+								</div>
+							</div>
+						{/if}
+					</div>
+				{/if}
+
+				<!--
+				{if $mine['is_nt']==0}
+				<div id="nt_box">
+					<a class="btn-light">互相心动通知我</a>
+				</div>
+				{/if}
+				-->
+				
+				
+				<div style="margin-top:10px;">
+					<div class="vp-flex">
+						<div class="vp-flex_1">
+							<div style="height:100%;padding:0 5px 0 10px;">
+								<div class="feed-box feed-box-1">
+									<div class="feed-box-hd">
+										<div class="feed-box-hd-cover">
+											<img src="{MODULE_URL}/static/mobile/images/box-hd.png"/>
+										</div>
+										<div class="feed-box-hd-tag">
+											<div class="feed-box-hd-tag-box">
+												<img src="{MODULE_URL}/static/mobile/images/box-1.png"/>
+											</div>
+										</div>
+									</div>
+
+									<div class="feed-box-bd">
+										<div data-sex="1" class="btn_to_feedin btn-box">放入1张男生纸条</div>
+										<div data-sex="1" class="btn_to_feedout btn-box" style="margin-top:10px;">抽取1张男生纸条</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="vp-flex_1">
+							<div style="height:100%;padding:0 10px 0 5px;">
+								<div class="feed-box feed-box-2">
+									<div class="feed-box-hd">
+										<div class="feed-box-hd-cover">
+											<img src="{MODULE_URL}/static/mobile/images/box-hd.png"/>
+										</div>
+										<div class="feed-box-hd-tag">
+											<div class="feed-box-hd-tag-box">
+												<img src="{MODULE_URL}/static/mobile/images/box-2.png"/>
+											</div>
+										</div>
+									</div>
+									
+									<div class="feed-box-bd">
+										<div data-sex="2" class="btn_to_feedin btn-box">放入1张女生纸条</div>
+										<div data-sex="2" class="btn_to_feedout btn-box" style="margin-top:10px;">抽取1张女生纸条</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div style="margin-top:20px;">
+					<div class="bottom-bar">
+						<a href="javascript:;" class="btn_to_qa">玩家须知</a> | <a href="javascript:;" class="btn_to_server">联系客服</a> | <a href="javascript:;" class="btn_to_server">投诉举报</a> 
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+
+
+
+<!--放入纸条弹出框-->
+<div id="dialog_feedin" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer" style="z-index:998">
+	</div>
+	<div  class="weui-half-screen-dialog" style="z-index:999;max-height:90%;">
+		<div class="weui-half-screen-dialog__hd">
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">放入1张<span id="feedin_sex_text"></span>纸条</strong>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" style="padding-bottom:0;">
+			<form id="feedin_form" action="" method="post">
+				<input type="hidden" name="cmd" value="feedin"/>
+				<input id="feedin_sex" type="hidden" name="sex" value=""/>
+
+				<div class="feed-form">
+					<div>
+						<div class="weui-cells weui-cells_form">
+							<div class="weui-cell">
+								<div class="weui-cell__bd">
+									<textarea id="feedin_content" name="content" class="weui-textarea" placeholder="您的交友简介（介绍自己或对另一半的期待）..." style="height:80px;"></textarea>
+									<ul id="images_box">
+										<li id="image_adder"><a></a></li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="weui-cell weui-cell_select weui-cell_select-before">
+								<div class="weui-cell__hd">
+									<select class="weui-select" name="ctype">
+										<option value="wx">我的微信号</option>
+										<option value="qq">我的QQ号</option>
+									</select>
+								</div>
+								<div class="weui-cell__bd">
+									<input name="contact" class="weui-input" placeholder="只有抽到你的人才能看到" value=""/>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div id="feedin_price_1" class="price-box feedin-price-box">
+						{if $mine['feedin1']==0 && $_W['module_setting']['fee_in_1'] != $_W['module_setting']['fee_in1_1']}
+							<span class="price-old">{$_W['module_setting']['fee_in_1']}元/次</span> <span class="price-fist">首次{php echo $_W['module_setting']['fee_in1_1']>0?($_W['module_setting']['fee_in1_1'].'元'):'免费'}</span>
+						{else}
+							<span class="price-nom">{$_W['module_setting']['fee_in_1']}元/次</span>
+						{/if}
+					</div>
+					<div id="feedin_price_2" class="price-box feedin-price-box">
+						{if $mine['feedin2']==0 && $_W['module_setting']['fee_in_2'] != $_W['module_setting']['fee_in1_2']}
+							<span class="price-old">{$_W['module_setting']['fee_in_2']}元/次</span> <span class="price-fist">首次{php echo $_W['module_setting']['fee_in1_2']>0?($_W['module_setting']['fee_in1_2'].'元'):'免费'}</span>
+						{else}
+							<span class="price-nom">{$_W['module_setting']['fee_in_2']}元/次</span>
+						{/if}
+					</div>
+					
+					<div>
+						<a id="btn_feedin" class="btn" href="javascript:">确认放入</a>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="weui-half-screen-dialog__ft">
+			
+		</div>
+	</div>
+</div>
+
+
+
+<!--抽取纸条弹出框-->
+<div id="dialog_feedout" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer" style="z-index:998">
+	</div>
+	<div  class="weui-half-screen-dialog" style="z-index:999;max-height:90%;">
+		<div class="weui-half-screen-dialog__hd">
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">抽取1张<span id="feedout_sex_text"></span>纸条</strong>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" style="padding-bottom:0;">
+			<form id="feedout_form" action="" method="post">
+				<input type="hidden" name="cmd" value="feedout"/>
+				<input id="feedout_sex" type="hidden" name="sex" value=""/>
+
+				<div class="feed-form">
+					<div id="feedout_box_1" >
+						<div style="width:120px;margin:0 auto;">
+							<div class="feed-box feed-box-mini feed-box-1">
+								<div class="feed-box-hd">
+									<div class="feed-box-hd-cover">
+										<img src="{MODULE_URL}/static/mobile/images/box-hd.png"/>
+									</div>
+									<div class="feed-box-hd-tag">
+										<div class="feed-box-hd-tag-box">
+											<img src="{MODULE_URL}/static/mobile/images/box-1.png"/>
+										</div>
+									</div>
+								</div>
+								
+								<div class="feed-box-bd">
+									<p><span style="font-weight:bold;font-size:18px;color:#FFFFFF;">抽1张</span></p>
+								</div>
+							</div>
+						</div>
+
+						<div class="price-box">
+							<span class="price-nom">{$_W['module_setting']['fee_out_1']}元/张</span>
+						</div>
+					</div>
+
+					<div id="feedout_box_2" >
+						<div style="width:120px;margin:0 auto;">
+							<div class="feed-box feed-box-mini feed-box-2">
+								<div class="feed-box-hd">
+									<div class="feed-box-hd-cover">
+										<img src="{MODULE_URL}/static/mobile/images/box-hd.png"/>
+									</div>
+									<div class="feed-box-hd-tag">
+										<div class="feed-box-hd-tag-box">
+											<img src="{MODULE_URL}/static/mobile/images/box-2.png"/>
+										</div>
+									</div>
+								</div>
+								
+								<div class="feed-box-bd">
+									<p><span style="font-weight:bold;font-size:18px;color:#FFFFFF;">抽1张</span></p>
+								</div>
+							</div>
+						</div>
+
+						<div class="price-box">
+							<span class="price-nom">{$_W['module_setting']['fee_out_2']}元/张</span>
+						</div>
+					</div>
+
+					
+					<div>
+						<a id="btn_feedout" class="btn" href="javascript:">确认抽取</a>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="weui-half-screen-dialog__ft">
+			
+		</div>
+	</div>
+</div>
+
+
+
+<!-- 玩家须知弹出框 -->
+<div id="dialog_qa" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">玩家须知</strong>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" style="padding-bottom:0;">
+
+			<div>
+				{$_W['module_setting']['app_qa']}
+			</div>
+			<div>
+				<a href="javascript:;" class="btn js_dialog_closer">我知道了</a>
+			</div>
+		</div>
+		<div class="weui-half-screen-dialog__ft">
+			
+		</div>
+	</div>
+</div>
+
+
+<!-- 联系客服弹出框 -->
+<div id="dialog_server" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer"></div>
+	<div  class="weui-half-screen-dialog" >
+		<div class="weui-half-screen-dialog__hd">
+
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">长按二维码添加客服微信</strong>
+			<span class="weui-half-screen-dialog__subtitle"><a href="javascript:;" class="btn-copyer" data-clipboard-text="{php echo pencode($mine['id'])}">点击复制我的ID:{php echo pencode($mine['id'])}</a></span>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd" >
+
+			<div style="text-align:center;">
+				<div><img src="{$_W['module_setting']['server_qrcode']}" style="display:inline-block;width:200px;"/></div>
+			</div>
+		
+		</div>
+		<div class="weui-half-screen-dialog__ft"></div>
+	</div>
+</div>
+
+
+
+<!-- 微信支付表单 -->
+<form id="pay_wechat" action="{php echo url('mc/cash/wechat');}" method="post">
+	<input id="pay_wechat_params" type="hidden" name="params" value="" />
+</form>
+
+
+{template 'inc/script'}
+{template 'inc/app'}
+<script type="text/javascript">
+
+	$(function(){
+		var mySwiper = new Swiper ($('.swiper-container'), {
+			//width:window.innerWidth,
+			watchSlidesProgress : true,
+			watchSlidesVisibility : true,
+			pagination: $('.swiper-pagination'),
+			paginationClickable: true,
+			autoplay: 2000,
+			autoplayDisableOnInteraction: false,
+			loop: true
+		});
+		
+		// 要放入纸条
+		$('.btn_to_feedin').on('click',function(){
+			var sex = $(this).data('sex');
+			$('#feedin_sex').val(sex);
+			$('#feedin_sex_text').text(sex==1?'男生':'女生');
+			$('.feedin-price-box').hide();
+			$('#feedin_price_'+sex).show();
+
+			$('#dialog_feedin').fadeIn(200);
+			$('#dialog_feedin').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+
+		/** 图片 **/
+		var images_box = $('#images_box');
+		var image_adder = $('#image_adder');
+
+		// 图片上传
+		images_box.on('image_upload',function(){
+			$(this).find('.image_wrap').each(function(){
+				var piv=$(this).find('.image_val');
+				if(piv.val()==''){
+					piv.val(-1);// -1表示正在上传
+					wx.uploadImage({
+						localId: $(this).data('localid'),
+						isShowProgressTips:0,
+						success: function (res) {
+							piv.val(res.serverId);
+							images_box.trigger('image_upload'); // 串行上传
+						},
+						fail: function () {
+							piv.val('');
+							images_box.trigger('image_upload'); // 串行上传
+						}
+					});
+					return false;
+				}
+			});
+		});
+		
+		// 添加图片
+		image_adder.on('click',function(){
+			wx.chooseImage({
+				sourceType: ['album'],
+				count:10-images_box.children().length,
+				success: function (res) {
+					if(res.localIds){
+						for (var i in res.localIds){
+							image_adder.before('<li><a class="image_wrap" data-localid="'+res.localIds[i]+'" ><input class="image_val" type="hidden" name="images[]" value="" /><img src="'+res.localIds[i]+'"/></a></li>');
+						}
+						if(images_box.children().length>=10){
+							image_adder.hide();
+						}
+						images_box.trigger('image_upload');
+					}
+				}
+			});
+		});
+
+		// 处理图片
+		images_box.on('click','.image_wrap',function(){
+			var localId=$(this).data('localid');
+			weui.confirm('确定移除该项？', function () {
+				images_box.children().each(function(){
+					if($(this).find('.image_wrap').data('localid')==localId){
+						$(this).remove();
+					}
+				});
+				if(images_box.children().length<=1){
+					image_adder.show();
+				}
+			});
+		});
+
+		// 放入纸条
+		$('#btn_feedin').on('click',function(){	
+			loading = weui.loading('正在提交...');
+			var form = $('#feedin_form');
+			$.post(form.attr('action'), form.serialize(),function(resp) {
+				setTimeout(function() { // weui.confirm后接weui.alert太快会导致weui.alert不弹出
+					loading.hide();
+					if(resp.status==0){
+						weui.alert(resp.info);
+					}else{
+						if(resp.data){
+							loading = weui.loading('准备支付...');
+							$('#pay_wechat_params').val(resp.data.params);
+							$('#pay_wechat').submit();
+						}else{
+							weui.alert('纸条已放入，等待缘分降临吧~',function(){
+								location.href=resp.info;
+							});
+							$('#dialog_feedin').fadeOut(200);
+							$('#dialog_feedin').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+						}
+					}
+				},300);
+			});
+		});
+		
+
+		// 要抽取纸条
+		$('.btn_to_feedout').on('click',function(){
+			var sex = $(this).data('sex');
+			$('#feedout_sex').val(sex);
+			$('#feedout_sex_text').text(sex==1?'男生':'女生');
+			$('#feedout_box_1').hide();
+			$('#feedout_box_2').hide();
+			$('#feedout_box_'+sex).show();
+
+			$('#dialog_feedout').fadeIn(200);
+			$('#dialog_feedout').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+
+		// 抽取纸条
+		$('#btn_feedout').on('click',function(){	
+			var form = $('#feedout_form');
+			loading = weui.loading('正在抽取...');
+			$.post(form.attr('action'), form.serialize(),function(resp) {
+				loading.hide();
+				if(resp.status==0){
+					weui.alert(resp.info);
+				}else{
+					if(resp.data){
+						loading = weui.loading('准备支付...');
+						$('#pay_wechat_params').val(resp.data.params);
+						$('#pay_wechat').submit();
+					}else{
+						weui.alert('抽取成功，快去看看是谁吧！',function(){
+							location.href=resp.info;
+						});
+						$('#dialog_feedin').fadeOut(200);
+						$('#dialog_feedin').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+					}
+				}
+			});
+		});
+		
+
+		/***
+		// 抽取纸条
+		$('.btn_to_feedout').on('click',function(){	
+			var sex=$(this).data('sex');
+
+			weui.confirm('确定抽取1张纸条？', function () {
+				loading = weui.loading('正在提交...');
+				$.post('', {
+					cmd:'feedout',
+					sex:sex
+				},function(resp) {
+					setTimeout(function() { // weui.confirm后接weui.alert太快会导致weui.alert不弹出
+						loading.hide();
+						if(resp.status==0){
+							weui.alert(resp.info);
+						}else{
+							if(resp.data){
+								loading = weui.loading('准备支付...');
+								$('#pay_wechat_params').val(resp.data.params);
+								$('#pay_wechat').submit();
+							}else{
+								weui.alert('抽取成功，快去看看是谁吧！',function(){
+									location.href=resp.info;
+								});
+								$('#dialog_feedin').fadeOut(200);
+								$('#dialog_feedin').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+							}
+						}
+					},300);
+				});
+			});
+		});
+		**/
+
+		// 玩家须知弹窗
+		$('.btn_to_qa').on('click',function(){
+			$('#dialog_qa').fadeIn(200);
+			$('#dialog_qa').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+
+		// 客服弹窗
+		$('.btn_to_server').on('click',function(){
+			$('#dialog_server').fadeIn(200);
+			$('#dialog_server').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+		
+		
+		// 每次开启会话时弹出玩家须知
+		var qaShowed = sessionStorage.getItem("qa-showed");
+		if(qaShowed!=1){
+			$('#dialog_qa').fadeIn(200);
+			$('#dialog_qa').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+			sessionStorage.setItem("qa-showed",1); 
+		}
+
+
+		//callMatched(mine);
+		/**
+		var mySwiper = new Swiper ($('.swiper-container'), {
+			//width:window.innerWidth,
+			//height:window.innerHeight,
+			//autoHeight: true, //enable auto height
+			//initialSlide:2
+			//onlyExternal:true,
+			//watchSlidesProgress : true,
+			//watchSlidesVisibility : true,
+			//pagination: $('.swiper-pagination'),
+			//paginationClickable: true,
+			//autoplay: 2000,
+			//autoplayDisableOnInteraction: false,
+			//loop: true
+		});
+		
+		$('.ttab').on('click',function(){
+			mySwiper.slideTo($(this).data('tab'));
+		});
+		**/
+		
+		/**
+
+		$('#nt_box').on('click',function(){
+			$(this).slideUp();
+			switchNt(1);
+		});
+		
+		// 获取用户位置后加载
+		var loadUsersAfterLocation =function(refresh=true,showLoading=false){
+			wx.getLocation({
+			  type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+			  success: function (res) {
+				user_lat = res.latitude;
+				user_lng = res.longitude;
+			  },
+			  complete:function(){
+				loadUsers(refresh,showLoading);
+			  }
+			});
+		}
+
+		// 自动加载
+		wx.ready(function () {
+			loadUsersAfterLocation();
+		});
+		
+		// 邀请好友
+		$('#pair_box').on('click','.btn_to_share',function(){
+			showShare();
+		});
+
+		***/
+
+		
+		
+	});
+</script>
+{template 'inc/footer'}

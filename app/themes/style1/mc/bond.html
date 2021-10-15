@@ -1,0 +1,652 @@
+{php define(MUI, true);}
+{template 'common/header'}
+<style>
+	body{background:#d2e6e9; padding-bottom:63px;}
+	.panel{margin-bottom:0px; border:none;}
+	.panel.panel-default{color:#606366;}
+	.panel>.list-group:last-child .list-group-item:last-child{border-bottom:1px solid #dddddd;}
+	.panel.panel-default ul{background:-webkit-gradient(linear,0 0, 0 10%,from(rgba(90,197,212,1)), to(rgba(90,197,212,1))) center top; border-top:10px solid #e4e9e8; -webkit-background-size:100% 2px; padding-top:2px; background-repeat:no-repeat;}
+	.panel.panel-default:first-child ul{background:none; border-top:0; padding-top:0;}
+	.panel.panel-default ul .list-group-item{background-color:#e1ecee; height:48px; overflow:hidden;}
+	.panel.panel-default ul .list-group-item i{font-size:20px; display:inline-block; width:25px; margin-right:10px; color:#8dd1db; text-align:center; position:relative; top:3px;}
+	.panel.panel-default ul .list-group-item > .pull-right i{display:inline-block; font-size:22px; color:#888; position:absolute; right:0px; top:12px;}
+	.panel.panel-default ul .list-group-item > .pull-right .btn{background:#56c6d6; color:#FFF; border:0; border-radius:1px; margin-top:-5px; width:100px; height:32px; font-size:17px; white-space:pre-line;}
+	.btn-group-top-box{padding:10px 0; border-bottom:1px solid #a5d7de;}
+	.btn-group-top{margin:0 auto; overflow:hidden; width:200px; display:block;text-align:center;}
+	.btn-group-top .btn{width:100px; -webkit-box-shadow:none; box-shadow:none; border-color:#5ac5d4; color:#5ac5d4; background:#d1e5e9;}
+	.btn-group-top .btn:hover{color:#FFF; background:#addbe1;}
+	.btn-group-top .btn.active{color:#FFF; background:#5ac5d4;}
+	.btn.use{background:#56c6d6; color:#FFF; border:0; border-radius:4px;}
+	.pagination>li>a:hover, .pagination>li>span:hover, .pagination>li>a:focus, .pagination>li>span:focus {color: #5ac5d4; background-color: #eee; border-color: #a5d7de;}
+	.pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus{background-color:#5ac5d4; border-color:#5ac5d4;}
+	.pagination>li>a, .pagination>li>span{color:#5ac5d4; border:1px solid #a5d7de;}
+	/*消费记录*/
+	.consume .record-head{width:100%; height:100px; border-bottom:1px solid #a5d7de;margin-bottom:1px;}
+	.consume .record-head ul{margin:0 auto; list-style:none; padding:0px; }
+	.consume .record-head li{height:50px; line-height:50px; background-color:#ffffff;}
+	.consume .record-head .date{padding:0px 5px; text-align:center; }
+	.consume .record-head .money{width:46%; float:left; color:#999; height:50px; padding:0 4%; line-height:50px;}
+	.consume .record-head .income{margin-right:20px;}
+	.consume .record-head .money span{color:#333;}
+	.consume .record-box{background:transparent url('resource/images/home-bg.jpg') no-repeat; background-size:100% 100%;}
+	.consume .list-item{height:70px; padding:10px 5px; border-bottom:1px solid #dddddd;}
+	.consume .list-item>div{float:left;}
+	.consume .record-box .member-detail{width:15%; text-align:center; overflow:hidden;}
+	.consume .record-box .member-detail .img-rounded{width:30px; height:30px; line-height:30px; overflow:hidden; margin:0 auto; text-align:center;}
+	.consume .record-box .member-detail .img-rounded i{font-size:20px; margin-top:4px; display:inline-block; color:#FFF;}
+	.consume .record-box .member-detail .img-rounded img{width:30px; height:30px;}
+	.consume .record-box .member-detail span{display:block; width:100%; text-align:center; overflow:hidden; text-overflow:ellipsis;  white-space:nowrap; font-size:12px; color:#999; margin-top:3px;}
+	.consume .record-box .record-detail{width:60%;}
+	.consume .record-box .record-detail > div{margin-top:4px; border-left:1px #DDD solid; padding-left:10px;}
+	.consume .record-box .record-detail > div span{display:block;}
+	.consume .record-box .record-detail > div .name{font-size:15px; width:160px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden;}
+	.consume .record-box .record-detail > div .date{font-size:13px; margin-top:5px; color:#999;}
+	.consume .record-box .pay-detail{width:23%; text-align:right; margin-right:2%;}
+	.consume .record-box .pay-detail > div{margin-top:4px;}
+	.consume .record-box .pay-detail > div span{display:block; text-align:right;}
+	.consume .record-box .pay-detail > div .money{font-size:15px; font-weight:bold;}
+	.consume .record-box .pay-detail > div .state{font-size:13px; margin-top:5px; color:#999;}
+	.consume .list-group-item{background-color:#e1ecee;}
+	/*收货地址*/
+	.address,.address-edit{padding:10px 15px; background:transparent url('resource/images/home-bg.jpg') no-repeat; background-size:100% 100%;}
+	.address .list-item{border-bottom:1px #DDD solid; padding:8px 0;}
+	.address .list-item a{color: #333; text-decoration: none;}
+	.address .list-item:last-child{border-bottom:0;}
+	.address .list-item:last-child a{color:#428bca;}
+	.address div{padding:0; margin:0;}
+	.address .info b{margin-right:15px;}
+	.address .address-details{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:12px; margin-top:5px;}
+	@media screen and (max-width: 767px) {.tpl-calendar div,.tpl-district-container div{margin-bottom:10px;}}
+</style>
+<script>
+	$(".list-coupon").delegate("li","click",function(){
+		$(this).find(".list-coupon-ft > div").slideToggle();
+	});
+</script>
+<!--  积分记录 -->
+{if $do == 'credits'}
+	<div class="consume">
+		{if $_GPC['credittype'] == 'credit2'}
+			<div class="btn-group-top-box">
+				<div class="btn-group btn-group-top">
+					<a href="{php echo url('mc/bond/credits', array('credittype' => $behavior['currency']))}" class="btn btn-default {if ($_GPC['type'] != 'order')}active{/if}">消费记录</a>
+					<a href="{php echo url('mc/bond/credits', array('credittype' => $behavior['currency'], 'type' => 'order'))}" class="btn btn-default {if ($_GPC['type'] == 'order')}active{/if}">订单管理</a>
+				</div>
+			</div>
+		{/if}
+		<div class="record-head">
+			<ul class="clearfix">
+				<li class="date">
+					<form action="" id="form1">
+						<input type="hidden" name="i" value="{$_W['uniacid']}">
+						<input type="hidden" name="c" value="mc">
+						<input type="hidden" name="a" value="bond">
+						<input type="hidden" name="do" value="credits">
+						<input type="hidden" name="credittype" value="{$_GPC['credittype']}">
+						<input type="hidden" name="type" value="{$_GPC['type']}">
+						 日期范围:{php echo tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d', $starttime),'endtime'=>date('Y-m-d', $endtime)));}
+					</form>
+				</li>
+				<li class="infos">
+				{if ($_GPC['type'] == 'order')}
+					<div class="money">支出：<span>{php echo number_format($orderspay, 2)}</span></div>
+				{else}
+						<div class="money">支出：<span>{$pay}</span></div>
+						<div class="money income">收入：<span>{$income}</span></div>
+				{/if}
+				</li>
+			</ul>
+		</div>
+		<div class="record-box list clearfix">
+		<!-- 订单管理 -->
+		{if ($_GPC['type'] == 'order')}
+			{loop $orders $row}
+				<div class="list-item">
+					<div class="member-detail">
+						<div class="img-rounded" {if (!empty($user['avatar']))} style="background:transparent;" {else} style="background:#5ac5d4;"{/if}>
+							{if (!empty($user['avatar']))}
+								<img src="{php echo tomedia($user['avatar']);}" />
+							{else}
+								<i class="fa fa-user"></i>
+							{/if}
+						</div>
+						<span>{$user['realname']}</span>
+					</div>
+					<div class="record-detail">
+						<div>
+							<span class="name">订单编号：{$row['tid']}</span>
+							<span class="date">{$row['createtime']}</span>
+						</div>
+					</div>
+					<div class="pay-detail">
+						<div>
+							<span class="money">{$row['fee']}</span>
+							{if ($row['status'] == 1)}
+								<span class="state">支付成功</span>
+							{elseif ($row['status'] == 0)}
+								<a class="state" style="color:red" href="{php echo url('entry', array('m' => 'recharge', 'do' => 'pay', 'ajax' => 1, 'money' => $row['fee']));}">订单待支付</a>
+							{else}
+								<span class="state">支付失败</span>
+							{/if}
+						</div>
+					</div>
+				</div>
+			{/loop}
+			</div>
+			<div class="btn-group-top-box">
+				<div class="btn-group btn-group-top" style="width:320px;">
+					{$orderpager}
+				</div>
+			</div>
+		<!-- 消费记录 -->
+		{else}
+			{loop $data $row}
+				<div class="list-item">
+					<div class="member-detail">
+						<div class="img-rounded" {if (!empty($user['avatar']))} style="background:transparent;" {else} style="background:#5ac5d4;"{/if}>
+							{if (!empty($user['avatar']))}
+								<img src="{php echo tomedia($user['avatar']);}" />
+							{else}
+								<i class="fa fa-user"></i>
+							{/if}
+						</div>
+						<span>{$user['realname']}</span>
+					</div>
+					<div class="record-detail">
+						<div>
+							<span class="name">{$row['remark']}</span>
+							<span class="date">{$row['createtime']}</span>
+						</div>
+					</div>
+					<div class="pay-detail">
+						<div>
+							{if ($row['num'] > 0)}
+								<span class="money">+{$row['num']}</span>
+							{else}
+								<span class="money">{$row['num']}</span>
+							{/if}
+							<span class="state">交易成功</span>
+						</div>
+					</div>
+				</div>
+			{/loop}
+			</div>
+			<div class="btn-group-top-box">
+				<div class="btn-group btn-group-top" style="width:320px;">
+					{$pager}
+				</div>
+			</div>
+		{/if}
+	</div>
+
+	<script type="text/javascript">
+		require(['daterangepicker'], function($){
+			$('.daterange').on('apply.daterangepicker', function(ev, picker) {
+				$('#form1')[0].submit();
+			});
+		});
+	</script>
+{/if}
+
+<!--  收货地址 -->
+{if $do == 'address' && empty($_GPC['addid'])}
+<div class="address">
+	{loop $addresses $address}
+	<div class="list-item clearfix">
+		<a href="{php echo url('mc/bond/addressadd', array('addid' => $address['id'], 'uid' => $address['openid']));}">
+			<div class="info">
+				<b class="name">{$address['username']}</b>{$address['mobile']}
+			</div>
+			<div class="address-details text-muted">
+				{$address['province']} {$address['city']} {$address['district']} {$address['address']}
+				{if $address['isdefault'] > 0}
+				(默认收货地址)
+				{/if}
+			</div>
+		</a>
+		<a href="{php echo url('mc/bond/address', array('op' => 'delete', 'id' => $address['id']))}" class="pull-right">
+			&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-danger">删除</span>
+		</a>
+		{if !$address['isdefault']}
+		<a href="{php echo url('mc/bond/address', array('op' => 'default', 'id' => $address['id'], address => $address['province'].$address['city'].$address['district'].$address['address']))}" class="pull-right"><span class="text-success">设为默认</span></a>
+		{/if}
+	</div>
+	{/loop}
+	<div class="list-item text-center">
+		<a class="js-add" href="{php echo url('mc/bond/addressadd')}" target="_blank"><i class="fa fa-plus-circle"></i> 添加收货地址</a>
+	</div>
+	{$pager}
+</div>
+{/if}
+<!--  编辑收货地址 -->
+{if $do == 'addressadd'}
+<div class="address-edit">
+	<div class="info">
+	<form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-3 col-md-2 control-label">姓名</label>
+			<div class="col-xs-12 col-sm-8">
+				<input type="text" name="address[username]" class="form-control" value="{$address['username']}" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-3 col-md-2 control-label">电话</label>
+			<div class="col-xs-12 col-sm-8">
+				<input type="text" name="address[mobile]" class="form-control" value="{$address['mobile']}" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-3 col-md-2 control-label">邮编</label>
+			<div class="col-xs-12 col-sm-8">
+				<input type="text" name="address[zipcode]" class="form-control" value="{$address['zipcode']}" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-3 col-md-2 control-label">收货地址</label>
+			<div class="col-xs-12 col-sm-8">
+				{php echo tpl_form_field_district('address', array('province' => $address['province'], 'city' => $address['city'], 'district' => $address['district']))}
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-3 col-md-2 control-label">街道名称</label>
+			<div class="col-xs-12 col-sm-8">
+				<input type="text" name="address[address]" class="form-control" value="{$address['address']}" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+			<div class="col-xs-12 col-sm-8">
+				<input name="submit" type="submit" value="提交" class="btn btn-primary btn-block use" />
+				<input type="hidden" name="token" value="{$_W['token']}" />
+			</div>
+		</div>
+	</form>
+	</div>
+</div>
+{/if}
+
+<!-- 会员卡中心 -->
+{if $do == 'card'}
+	<style>
+	.card-img{width:100%; height:185px; padding-top:10px; overflow:hidden; -webkit-box-sizing:border-box; background:url('resource/images/card-img-bg.png') no-repeat 0 0; background-size:100% 100%; border-bottom: 1px solid #a5d7de; margin-bottom: 1px;}
+	.card{position:relative; width:280px; max-height:165px; overflow:hidden; margin:0 auto;}
+	.cardsn{position:absolute; color:#666; right:20px; bottom:10px; text-shadow:0 -1px 0 rgba(255, 255, 255, 0.5); font-size:16px; z-index:1;}
+	.cardtitle{position:absolute; right:20px; top:10px; color:#ffffff; font-size:16px; text-shadow:0 -1px 0 rgba(255, 255, 255, 0.5); z-index:1;}
+	.cardlogo{position:absolute; top:10px; left:20px;}
+	.card-box{width:100%; padding:10px; background:#eef8fa; border:1px solid #eeeeee;}
+	.form-control{background-color:#eef8fa;}
+	.form-horizontal .form-group{margin-left:0px; margin-right:0px;}
+	</style>
+	<form action="" class="form-horizontal form" method="post" enctype="multipart/form-data">
+		<div class="form-group" style="margin-bottom:0px;">
+			<div class="col-xs-12 card-img text-center">
+				<div class="card img-rounded">
+					{if !$setting['format_type']}
+						<div class="cardsn" style="color:{if !empty($setting['color']['number'])}{$setting['color']['number']}{/if}">卡号：{$setting['format']}</div>
+					{/if}
+					<div class="cardtitle" style="color:{if !empty($setting['color']['title'])}{$setting['color']['title']}{/if}">{if !empty($setting['title'])}{$setting['title']}{/if}</div>
+					<div class="cardlogo"><img src="{if !empty($setting['logo'])}{php echo tomedia($setting['logo'])}{else}../attachment/images/global/card/logo.png{/if}"></div>
+					<img class="cardbg"
+						 src="
+								 {if empty($setting['background']['image'])}
+									../attachment/images/global/card/1.png
+								 {elseif $setting['background']['background'] == 'system'}
+								 	../attachment/images/global/card/{$setting['background']['image']}.png
+								 {else}
+								 	{php echo tomedia($setting['background']['image']);}
+								 {/if}
+							 "
+							 width="280px" height="165px" />
+				</div>
+			</div>
+		</div>
+		<div class="card-box">
+			{if !empty($setting['grant']) && ($setting['grant']['credit1'] || $setting['grant']['credit2'] || !empty($coupon))}
+				<div class="form-group" style="margin-bottom:0">
+					<label class="col-xs-12 col-sm-1 control-label"></label>
+					<div class="col-sm-11">
+						<p class="form-control-static">
+							<strong class="text-danger">
+							<i class="fa fa-info-circle"></i>
+							领卡赠送:
+							{if $setting['grant']['credit1'] > 0}
+								{$setting['grant']['credit1']}积分
+							{/if}
+							{if $setting['grant']['credit2'] > 0}
+								{$setting['grant']['credit2']}余额
+							{/if}
+							{if !empty($coupon)}
+								{$coupon['title']}
+							{/if}
+							</strong>
+						</p>
+					</div>
+				</div>
+			{/if}
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-1 control-label">
+					姓名 <span title="必填项" style="color:red">*</span>
+				</label>
+				<div class="col-sm-11">
+					<input type="text" name="realname" value="{$member_info['realname']}" class="form-control"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-1 control-label">
+					手机号 <span title="必填项" style="color:red">*</span>
+				</label>
+				<div class="col-sm-11">
+					<input type="text" name="mobile" value="{$member_info['mobile']}" class="form-control"/>
+				</div>
+			</div>
+			{loop $setting['fields'] $item}
+				{if $item['bind'] != 'realname' &&  $item['bind'] != 'mobile'}
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-1 control-label">
+						{$item['title']} {if $item['require'] == 1}<span title="必填项" style="color:red">*</span>{else} &nbsp;{/if}
+					</label>
+					<div class="col-sm-11">
+						{if $item['bind'] == 'reside'}
+							{php echo tpl_fans_form('reside', array('province' => $member_info['resideprovince'],'city' => $member_info['residecity'],'district' => $member_info['residedist']))}
+						{elseif $item['bind'] == 'birth'}
+							{php echo tpl_fans_form('birth',array('year' => $member_info['birthyear'],'month' => $member_info['birthmonth'],'day' => $member_info['birthday']));}
+						{else}
+							{php echo tpl_fans_form($item['bind'], $member_info[$item['bind']]);}
+						{/if}
+					</div>
+				</div>
+				{/if}
+			{/loop}
+			<div class="form-group">
+				<div class="col-sm-12" style="text-align:center">
+					<input type="hidden" name="cardid" value="{$setting['id']}" />
+					<input type="hidden" name="format" value="{$setting['format']}" />
+					<input type="hidden" name="snpos"  value="{$setting['snpos']}" />
+					<button type="submit" class="btn btn-primary btn-block use" name="submit" value="领取会员卡">领取会员卡</button>
+					{if $reregister}
+						<a href="{php echo url('mc/bond/email');}" class="btn btn-danger btn-block" style="margin-top:15px">绑定已有会员</a>
+					{/if}
+					<input type="hidden" name="token" value="{$_W['token']}" />
+				</div>
+			</div>
+		</div>
+	</form>
+{/if}
+
+
+
+{if $do == 'record'}
+	<style>
+		body{background:#d2e6e9 url('resource/images/home-bg.jpg') no-repeat; background-size:100% 100%;}
+		.sign-record .header{height:45px; line-height:45px; color:#25a5b7; padding:0 20px;}
+		.sign-record .content .list{padding:0 10px 10px 10px;}
+		.sign-record .table_record{background: #ffffff; width:100%;}
+		.sign-record .table_record thead td{text-indent: 10px;}
+		.sign-record .table_record thead{background:#56c6d6;}
+		.sign-record .table_record thead td{line-height: 35px; color:#ffffff; font-size:16px;}
+		.sign-record .table_record tbody td{padding:10px; border-bottom:1px dotted #cccccc;}
+		.sign-record .table_record tbody tr:last-of-type td{border:0;}
+	</style>
+
+	<div class="sign-record">
+		{if $type == 'nums'}
+			<div class="header">{$setting['nums_text']}记录.当前剩余次数为:<strong>{$card['nums']}</strong>次</div>
+		{elseif $type == 'times'}
+			<div class="header">{$setting['times_text']}记录.当前服务到期时间:<strong>{php echo date('Y-m-d', $card['endtime']);}</strong></div>
+		{/if}
+		<div class="content">
+			<div class="list">
+				<table class="table_record">
+					<thead>
+						<tr>
+							<td style="width:35%;">日期</td>
+							<td style="width:35%;">费用</td>
+							<td style="width:30%;">次数/天数</td>
+						</tr>
+					</thead>
+					<tbody>
+					{if !empty($data)}
+						{loop $data $da}
+							<tr class="drop">
+								<td>{php echo date('Y-m-d', $da['addtime']);}</td>
+								<td>收费 {$da['fee']}</td>
+								<td>
+									{if $type == 'nums'}
+										{if $da['model'] == 1}+{$da['tag']}次{else}-{$da['tag']} 次{/if}
+									{else}
+										{if $da['model'] == 1}+{$da['tag']}天{else}-{$da['tag']} 天{/if}
+									{/if}
+									<span style="display:inline-block;float:right;width:15px"><i class="fa fa-angle-down"></i></span>
+								</td>
+							</tr>
+							<tr style="display: none; ">
+								<td colspan="3">
+									详情:{$da['note']}
+								</td>
+							</tr>
+						{/loop}
+					{else}
+						<tr>
+							<td colspan="3" class="text-center" style="color:#25a5b7"><i class="fa fa-info-circle"></i> 暂无记录</td>
+						</tr>
+					{/if}
+					</tbody>
+				</table>
+				{if !empty($data)}
+					<div class="text-center">
+						{$pager}
+					</div>
+				{/if}
+			</div>
+		</div>
+	</div>
+	<script>
+		$(function(){
+			$('tr.drop').click(function(){
+				$(this).next('tr').toggle();
+			});
+		});
+	</script>
+{/if}
+
+{if $do == 'email'}
+<style>
+	body{background:#d2e6e9;}
+	.panel{margin:.5em; border:none;}
+	.panel-info>.panel-heading {background: -webkit-gradient(linear, 0 0, 100% 0, from(#ebebeb), to(#f3f9fa), color-stop(30%, #f5f9f9)); color:#666666; border:none;}
+	a{color:#666666;}a:hover{color: #3ebacc;}
+	.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus{color: #3ebacc;}
+	.actions{margin:.8em auto;}
+	.nav.nav-tabs{margin-bottom:.8em;}
+	.btn.btn-primary{background: #56c6d6; color: #FFF; border: 0;}
+</style>
+<div class="panel panel-info">
+	<div class="panel-heading">
+		<h4>资料重置</h4>
+	</div>
+	<div class="panel-body">
+		<div class="alert alert-warning" role="alert">为了保证您的账号安全，请完善以下资料，如果密码丢失可以联系管理员为您重置密码。下面设置的密码将作为您的消费凭证，请妥善保管！</div>
+		<form name="theform" method="post" role="form" id="form1">
+			{if !empty($reregister)}
+			<ul class="nav nav-tabs" role="tablist">
+				<li class="active"><a href="#email" role="tab" data-toggle="tab">完善帐号</a></li>
+				<li><a href="#binding" role="tab" data-toggle="tab">绑定至已有帐号</a></li>
+			</ul>
+			<input type="hidden" id="type" name="type" value="1" />
+			{/if}
+			<div class="tab-content">
+				<div class="tab-pane fade in active" id="email">
+					{if !empty($reregister)}
+					<div class="form-group">
+						<input type="text" name="{if $item == 'email'}email{else}mobile{/if}" value="" class="form-control input-lg" placeholder="{if $item == 'email'}E-Mail地址{else}手机号码{/if}">
+					</div>
+					{/if}
+					<div class="form-group">
+						<input type="password" name="password" value="" class="form-control input-lg" placeholder="登录密码">
+					</div>
+					<div class="form-group">
+						<input type="password" name="repassword" value="" class="form-control input-lg" placeholder="确认登录密码">
+					</div>
+				</div>
+				{if !empty($reregister)}
+				<div class="tab-pane fade" id="binding">
+					<div class="form-group input-group">
+						<span class="input-group-addon"><i class="fa fa-user"></i></span>
+						<input type="text" name="username" value="" class="form-control input-lg" placeholder="登录账号">
+					</div>
+					<div class="form-group input-group">
+						<span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
+						<input type="password" name="oldpassword" value="" class="form-control input-lg" placeholder="登录密码">
+					</div>
+				</div>
+				{/if}
+			</div>
+			<div class="form-group">
+				<input type="hidden" name="token" value="{$_W['token']}">
+				<input type="submit" name="submit" class="btn btn-primary btn-block btn-lg" value="立即修改">
+				<button class="btn btn-default btn-block" onclick="javascript:history.go(-1);return false;">返回</button>
+			</div>
+		</form>
+	</div>
+</div>
+<script>
+	require(['util'], function(u){
+		$('#form1').submit(function(){
+			var type = $('#type').val();
+			var email = $.trim($('input[name="email"]').val());
+			var mobile = $.trim($('input[name="mobile"]').val());
+			var item = "{$item}";
+			if (type == 1) {
+				{if !empty($reregister)}
+				if(item == 'email') {
+					if($.trim($('input[name="email"]').val()) == '') {
+						u.message('请输入您的邮箱');
+						return false;
+					}
+					if($.trim($('input[name="email"]').val()).indexOf('@') < 0) {
+						u.message('您输入的邮箱有误');
+						return false;
+					}
+				} else {
+					if($.trim($('input[name="mobile"]').val()) == '') {
+						u.message('请输入您的手机号码');
+						return false;
+					}
+					if(mobile.search(/^([0-9]{11})?$/) == -1) {
+						u.message('请输入正确的手机号码');
+						return false;
+					}
+				}
+				{/if}
+				if($.trim($('input[name="password"]').val()) == '') {
+					u.message('请输入您的密码');
+					return false;
+				}
+				if($.trim($('input[name="password"]').val()) != $.trim($('input[name="repassword"]').val())) {
+					u.message('您两次输入的密码不一致');
+					return false;
+				}
+			}
+			return true;
+		});
+	});
+	$('.nav li').click(function(){
+		$('#type').val($(this).index()+1);
+	});
+</script>
+{/if}
+
+{if $do == 'mobile'}
+<style>
+	body{background:#d2e6e9;}
+	.panel{margin:.5em; border:none;}
+	.panel-info>.panel-heading {background: -webkit-gradient(linear, 0 0, 100% 0, from(#ebebeb), to(#f3f9fa), color-stop(30%, #f5f9f9)); color:#666666; border:none;}
+	a{color:#666666;}a:hover{color: #3ebacc;}
+	.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus{color: #3ebacc;}
+	.actions{margin:.8em auto;}
+	.nav.nav-tabs{margin-bottom:.8em;}
+	.btn.btn-primary{background: #56c6d6; color: #FFF; border: 0;}
+</style>
+<div class="panel panel-info">
+	<div class="panel-heading">
+		<h4>{if $mobile_exist == 0}绑定{else}修改{/if}手机号</h4>
+	</div>
+	<div class="panel-body">
+		<form name="theform" method="post" role="form" id="form1">
+			<ul class="nav nav-tabs" role="tablist">
+				<li class="active"><a href="javascript:;" role="tab" data-toggle="tab">{if $mobile_exist == 0}绑定{else}修改{/if}手机号</a></li>
+			</ul>
+			<div class="tab-content">
+				{if $mobile_exist == 1}
+					<div class="tab-pane active">
+						<div class="form-group">
+							<input type="text" name="oldmobile" value="{$profile['mobile']}" class="form-control" placeholder="原手机号">
+						</div>
+						<div class="form-group">
+							<input type="password" name="password" class="form-control" placeholder="密码">
+						</div>
+						<div class="form-group">
+							<input type="text" name="mobile" class="form-control" placeholder="新手机号">
+						</div>
+					</div>
+				{else}
+					<div class="tab-pane active">
+						<div class="form-group">
+							<input type="text" name="mobile" class="form-control" placeholder="手机号">
+						</div>
+						<div class="form-group">
+							<input type="password" name="password" class="form-control" placeholder="设置密码">
+							<span class="help-block">密码不能小于6位</span>
+						</div>
+						<div class="form-group">
+							<input type="password" name="repassword" class="form-control" placeholder="重复密码">
+						</div>
+					</div>
+				{/if}
+			</div>
+			<input type="hidden" name="token" value="{$_W['token']}">
+			<input type="submit" name="submit" class="btn btn-primary btn-block" value="立即{if $mobile_exist == 0}绑定{else}修改{/if}">
+			<button class="btn btn-default btn-block" onclick="javascript:history.go(-1);return false;">返回</button>
+		</form>
+	</div>
+</div>
+<script>
+	require(['util'], function(u){
+		$('#form1').submit(function(){
+			var reg = /^\d{11}$/;
+			var re = new RegExp(reg);
+			{if $mobile_exist == 1}
+				if($.trim($('input[name="oldmobile"]').val()) == '' || !re.test($.trim($('input[name="oldmobile"]').val()))) {
+					u.message('原手机号格式有误');
+					return false;
+				}
+				if($.trim($('input[name="password"]').val()) == '') {
+					u.message('请填写密码');
+					return false;
+				}
+				if($.trim($('input[name="mobile"]').val()) == '' || !re.test($.trim($('input[name="mobile"]').val()))) {
+					u.message('新手机号格式有误');
+					return false;
+				}
+				return true;
+			{else}
+				if($.trim($('input[name="mobile"]').val()) == '' || !re.test($.trim($('input[name="mobile"]').val()))) {
+					u.message('原手机号格式有误');
+					return false;
+				}
+				if($.trim($('input[name="password"]').val()) == '' || $.trim($('input[name="mobile"]').val()).length < 6) {
+					u.message('密码不能少于6位');
+					return false;
+				}
+				if($.trim($('input[name="repassword"]').val()) != $.trim($('input[name="password"]').val())) {
+					u.message('两次密码输入不一致');
+					return false;
+				}
+				return true;
+			{/if}
+		});
+	});
+</script>
+{/if}
+{template 'mc/footer'}
+{template 'common/footer'}

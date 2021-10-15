@@ -1,0 +1,23 @@
+{php $title=$_GPC['title']}
+{template 'inc/header'}
+
+<script type="text/javascript">
+	wx.ready(function () {
+		wx.hideAllNonBaseMenuItem();
+	});
+</script>
+
+<style>
+	body{background:#FFFFFF}
+</style>
+
+<div>
+	{$html}
+</div>
+
+
+{template 'inc/script'}
+<script type="text/javascript">
+
+</script>
+{template 'inc/footer'}

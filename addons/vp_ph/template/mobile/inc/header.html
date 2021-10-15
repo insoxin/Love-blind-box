@@ -1,0 +1,41 @@
+<html>
+	<head>
+		<title>{php echo empty($title)?$_W['module_setting']['set_app_name']:$title;}</title>  
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,width=device-width,viewport-fit=cover" >
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="author" content="dawn." />
+		<meta name="Copyright" content="dawn." />
+		<meta name="keywords" content="avp_testa" />
+		<meta name="description" content="avp_testa" />
+
+		<!--调试时关闭缓存，实际时需开启-->
+		<META http-equiv=Pragma content=no-cache>
+		<META http-equiv=Cache-Control content=no-cache>
+		<META http-equiv=Expires content=0>
+
+		<link rel="stylesheet" href="{MODULE_URL}/static/css/reset.css" type="text/css"/>
+		<link rel="stylesheet" href="{MODULE_URL}/static/mobile/css/weui.min.css" type="text/css"/>
+		<!--<link rel="stylesheet" href="{MODULE_URL}/static/mobile/libs/jquery-weui/jquery-weui.min.css" type="text/css"/>
+		<link rel="stylesheet" href="{MODULE_URL}/static/mobile/css/jquery-weui-app-fix.css" type="text/css"/>
+		-->
+		<link rel="stylesheet" href="{MODULE_URL}/static/js/swiper/swiper.min.css" type="text/css"/>
+		<link rel="stylesheet" href="{MODULE_URL}/static/mobile/css/app.css" type="text/css"/>
+	
+		<script type="text/javascript">
+			// 全局定义
+			var _MODULE_URL_='{MODULE_URL}';
+			
+			// 应用全局变量
+			var _IS_USER_FOLLOWED='{$_W["fans"]["follow"]}';
+			var _IS_USER_INFOED='{$is_user_infoed}';
+		</script>
+
+		{php echo vp_register_jssdk(false);} <!-- 注册调用微信js_api 放到其他引入的 js 之前 -->
+		
+	</head>
+
+	<body ontouchstart="" data-weui-theme='light'>

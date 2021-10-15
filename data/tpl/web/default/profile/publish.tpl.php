@@ -1,0 +1,63 @@
+<?php defined('IN_IA') or exit('Access Denied');?><?php (!empty($this) && $this instanceof WeModuleSite || 0) ? (include $this->template('common/header', TEMPLATE_INCLUDEPATH)) : (include template('common/header', TEMPLATE_INCLUDEPATH));?>
+<div class="we7-page-title">发布设置</div>
+<?php  if(!$account['isconnect']) { ?>
+<div class="alert we7-page-alert">
+	<div class="info">
+		<i class="wi wi-info"></i>当前公众号：<?php  echo $_W['account']['name'];?> 还未接入微信公众平台，请按照下列引导完成配置。
+	</div>
+</div>
+<?php  } ?>
+<div class="profile-publish-step-box">
+	<div class="step-item">
+		<div class="color-gray we7-margin-vertical info">登录--<a href="https://mp.weixin.qq.com/cgi-bin/loginpage" target="_blank" class="color-default">微信公众平台mp.weixin.qq.com</a>，进入<span class="color-dark">【开发--开发者工具】</span>，选择进入<span class="color-dark">【web开发者工具】</span></div>
+		<img src="./resource/images/profile/publish/1.png" alt="">
+		<div class="color-gray we7-margin-vertical info">进入web开发者工具，点击<span class="color-dark">【绑定开发者微信号】</span> ,向开发者微信号发送绑定邀请。</div>
+		<img src="./resource/images/profile/publish/2.png" alt="">
+		<div class="color-gray we7-margin-vertical info">开发者在手机微信上接受邀请，即可完成绑定。</div>
+		<img src="./resource/images/profile/publish/3.png" alt="">
+	</div>
+	<div class="step-item">
+		<div class="color-gray we7-margin-vertical info">基本配置中，找到<span class="color-dark">【服务器配置--修改配置】</span>， 将<span class="color-default">URL / Token / EncondingAESKey</span>对应填写至服务器配置</div>
+		<div class="setting-box">
+			<div class="setting-item">
+				<div class="setting-name">URl</div>
+				<div class="setting-value"><?php  echo $account['serviceUrl'];?></div>
+				<div class="setting-copy">
+					<a href="javascript:;" data-url="<?php  echo $account['serviceUrl'];?>" class="color-default js-clip">点击复制</a>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-name">Token</div>
+				<div class="setting-value"><?php  echo $account['token'];?></div>
+				<div class="setting-copy">
+					<a href="javascript:;" data-url="<?php  echo $account['token'];?>" class="color-default js-clip">点击复制</a>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-name">EncondingAESKey</div>
+				<div class="setting-value"><?php  echo $account['encodingaeskey'];?></div>
+				<div class="setting-copy">
+					<a href="javascript:;" data-url="<?php  echo $account['encodingaeskey'];?>" class="color-default js-clip">点击复制</a>
+				</div>
+			</div>
+		</div>
+		<img src="./resource/images/profile/publish/4.png" alt="">
+		<div class="color-gray we7-margin-vertical info">填写完成之后提交。返回服务器配置，点击<span class="color-dark">【启用】</span>, 启用服务器配置。</div>
+		<img src="./resource/images/profile/publish/5.png" alt="">
+	</div>
+	<div class="step-item">
+		<div class="color-gray we7-margin-vertical info">再在基本配置中，选择<span class="color-dark">【IP白名单】</span>，修改后保存。</div>
+		<img src="./resource/images/profile/publish/6.png" alt="">
+	</div>
+	<div class="step-item">
+		<div class="color-gray we7-margin-vertical info">进入<span class="color-dark">【设置-公众号设置】</span>，选择<span class="color-dark">【功能设置】</span>，依次<span class="color-default">配置业务域名/ JS接口安全域名/网页授权域名</span></div>
+		<img src="./resource/images/profile/publish/7.png" alt="">
+	</div>
+	<div class="step-item">
+		<div class="color-gray we7-margin-vertical info">设置完成并启用后,点击<span class="color-dark">【接入检测】</span>按钮，系统将自动检测连接状态。</div>
+		<a href="" class="btn btn-primary">接入检测</a>
+	</div>
+</div>
+<?php (!empty($this) && $this instanceof WeModuleSite || 0) ? (include $this->template('common/footer', TEMPLATE_INCLUDEPATH)) : (include template('common/footer', TEMPLATE_INCLUDEPATH));?>

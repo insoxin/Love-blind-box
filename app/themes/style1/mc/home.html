@@ -1,0 +1,125 @@
+{template 'common/header'}
+{template 'mc/header'}
+<style>
+	.mnav-box ul,.mnav-box ul li{padding:0px; margin:0px;}
+	.mnav-box{color:#606366; background:transparent url('resource/images/home-bg.jpg') no-repeat; background-size:100% 100%;}
+	.mnav-box ul{border-top:10px solid #e4e9e8; list-style:none; background:transparent -webkit-gradient(linear,0 0, 0 10%,from(rgba(90,197,212,1)), to(rgba(90,197,212,1))) center top; -webkit-background-size:100% 2px; padding-top:2px; background-repeat:no-repeat;}
+	.mnav-box ul:first-child{background:none; border-top:0; padding-top:0;}
+	.mnav-box ul li{ border-bottom:1px solid #dddddd; position:relative; height:48px; padding: 12px 15px; overflow:hidden;}
+	.mnav-box ul li .mnav-box-list{color:#606366; font-size:15px; text-decoration:none; -webkit-box-sizing:border-box; overflow:hidden;}
+	.mnav-box ul li .mnav-box-list>i{width:25px; margin-right:10px; color:#8dd1db; text-align:center; font-size:20px;}
+	.mnav-box ul li .mnav-box-list .mnav-title{display:inline-block; padding-right:15px;}
+	.mnav-box ul li .mnav-box-list > .pull-right{display:inline-block; font-size:22px; line-height:0; color:#888; position:absolute; right:15px; top:12px;}
+	.mnav-box ul li .mnav-box-list > .pull-right .btn{background:#56c6d6; color:#FFF; border:0; border-radius:1px; margin-top:-5px; width:100px; height:32px; font-size:17px; white-space:pre-line;}
+	.alert-bg{background:#000; width:100%; position:absolute; top:0; z-index:100; opacity:0.5;}
+</style>
+
+<!--  默认显示 -->
+{if $do == 'display'}
+<div class="mui-content membership-card-home">
+	<div class="card-panel" style="background-image: url(./resource/images/bg-card.png);">
+		<div class="mui-row">
+			<div class="mui-col-xs-8 mui-ellipsis card-name">
+				微信魔方VIP会员卡
+			</div>
+			<div class="mui-col-xs-4 mui-text-right mui-text-info mui-big">
+				银卡
+			</div>
+		</div>
+		<div class="card-logo mui-text-center">
+			<img src="./resource/images/avatar.png" alt="" class="mui-img-rounded"/>
+		</div>
+		<div class="card-info mui-text-center">
+			<div class="card-discount mui-text-info"><span class="num">9</span>折</div>
+			<div class="card-no">会员卡号:<span>15212345678</span></div>
+		</div>
+	</div>
+	<div class="mui-table mui-mt15 nav">
+		<div class="mui-table-cell">
+			<a href="javascript:;" class="mui-block">
+				<span class="mui-block mui-big">余额</span>
+				<span class="mui-text-muted mui-block mui-small mui-rmb">2000</span>
+			</a>
+		</div>
+		<div class="mui-table-cell">
+			<a href="javascript:;" class="mui-block">
+				<span class="mui-block mui-big">积分</span>
+				<span class="mui-text-muted mui-block mui-small">2000积分</span>
+			</a>
+		</div>
+		<div class="mui-table-cell">
+			<a href="times.html" class="mui-block">
+				<span class="mui-block mui-big">次数</span>
+				<span class="mui-text-muted mui-block mui-small">10次</span>
+			</a>
+		</div>
+		<div class="mui-table-cell">
+			<a href="valid-date.html" class="mui-block">
+				<span class="mui-block mui-big">有效期</span>
+				<span class="mui-text-muted mui-block mui-small">2016.03.14</span>
+			</a>
+		</div>
+	</div>
+	<div class="mui-table mui-table-inline mui-mt15 action-nav">
+		<div class="mui-table-cell">
+			<a href="javascript:;" class="mui-block">
+				<img src="./resource/images/recharge.png" alt="" class="mui-mr5"/>充值
+			</a>
+		</div>
+		<div class="mui-table-cell">
+			<a href="javascript:;" class="mui-block">
+				<img src="./resource/images/payment.png" alt="" class="mui-mr5"/>付款
+			</a>
+		</div>
+	</div>
+	<ul class="mui-table-view mui-table-view-chevron">
+		<li class="mui-table-view-cell">
+			<a href="discount.html" class="mui-navigate-right">
+				会员折扣
+				<span class="mui-pull-right">9折</span>
+			</a>
+		</li>
+		<li class="mui-table-view-cell">
+			<a href="#" class="mui-navigate-right">
+				优惠说明
+			</a>
+		</li>
+	</ul>
+	<ul class="mui-table-view mui-table-view-chevron">
+		<li class="mui-table-view-cell">
+			<a href="add-times.html" class="mui-navigate-right">
+				次数充值
+			</a>
+		</li>
+	</ul>
+</div>	
+{/if}
+
+<script>
+	{if $reregister}
+		function alert_close(a) {
+			a.parents('.alert').remove();
+			$('.alert-bg').remove();
+			$('.alert-li').removeClass("alert-li");
+			require(['util'], function(util) {
+				util.cookie.set('we7emailtips', 1, 3600);
+			});
+		}
+		$(function() {
+			require(['util'], function(util) {
+				var alert_html;
+				var alert_url = $('.alert-li').find('a').attr('href');
+				alert_html = '<div class="alert alert-warning" role="alert" style="position:absolute; z-index:101; margin:-150px 30px 0 30px;">';
+				alert_html += '<span>尊敬的微信用户，为了您的账号安全，请及时完善重要资料，以防账号被非法份子利用！</span>';
+				alert_html += '<div style="margin-top:10px;"><button type="button" class="btn btn-warning pull-left" onclick="alert_close($(this));">稍后提醒我</button><a class="btn btn-info pull-right" href="'+alert_url+'">现在就完善</a></div>';
+				alert_html += '</div>';
+				if(!util.cookie.get('we7emailtips') && $('.alert-li').html().length > 0) {
+					$('body').append('<div class="alert-bg" style="height:'+(parseInt($('body').height())+63)+'px;"></div>');
+					$('.alert-li').parent().prepend(alert_html);
+				}
+			});
+		});
+	{/if}
+</script>
+{template 'mc/footer'}
+{template 'common/footer'}

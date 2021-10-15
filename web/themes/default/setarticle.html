@@ -1,0 +1,490 @@
+{if $_GPC['d'] =='1'}
+    <span style="color: red;font-size:30px;margin: 50px auto;"><p>文章发布成功</p></span>
+{else}
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <title>{php if(isset($title)) $_W['page']['title'] = $title}{if !empty($_W['page']['title'])}{$_W['page']['title']}{/if}{if empty($_W['page']['copyright']['sitename'])}{if IMS_FAMILY != 'x'} - 微信魔方 - 公众平台自助引擎 -  Powered by WE7.CC{/if}{else} - {$_W['page']['copyright']['sitename']}{/if}</title>
+    <meta name="keywords" content="{if empty($_W['page']['copyright']['keywords'])}{if IMS_FAMILY != 'x'}微信魔方,微信,微信公众平台,we7.cc{/if}{else}{$_W['page']['copyright']['keywords']}{/if}" />
+    <meta name="description" content="{if empty($_W['page']['copyright']['description'])}{if IMS_FAMILY != 'x'}公众平台自助引擎（www.we7.cc），简称微信魔方，微信魔方是一款免费开源的微信公众平台管理系统，是国内最完善移动网站及移动互联网技术解决方案。{/if}{else}{$_W['page']['copyright']['description']}{/if}" />
+    <link rel="shortcut icon" href="{$_W['siteroot']}{$_W['config']['upload']['attachdir']}/{if !empty($_W['setting']['copyright']['icon'])}{$_W['setting']['copyright']['icon']}{else}images/global/wechat.jpg{/if}" />
+    <link href="./resource/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./resource/css/font-awesome.min.css" rel="stylesheet">
+    <link href="./resource/css/common.css?v=20160921" rel="stylesheet">
+    <script type="text/javascript">
+        
+
+        if(navigator.appName == 'Microsoft Internet Explorer'){
+            if(navigator.userAgent.indexOf("MSIE 5.0")>0 || navigator.userAgent.indexOf("MSIE 6.0")>0 || navigator.userAgent.indexOf("MSIE 7.0")>0) {
+                alert('您使用的 IE 浏览器版本过低, 推荐使用 Chrome 浏览器或 IE8 及以上版本浏览器.');
+            }
+        }
+        window.sysinfo = {
+            {if !empty($_W['uniacid'])}'uniacid': '{$_W['uniacid']}',{/if}
+            {if !empty($_W['acid'])}'acid': '{$_W['acid']}',{/if}
+            {if !empty($_W['openid'])}'openid': '{$_W['openid']}',{/if}
+            {if !empty($_W['uid'])}'uid': '{$_W['uid']}',{/if}
+            'siteroot': '{$_W['siteroot']}',
+            'siteurl': '{$_W['siteurl']}',
+            'attachurl': '{$_W['attachurl']}',
+            'attachurl_local': '{$_W['attachurl_local']}',
+            'attachurl_remote': '{$_W['attachurl_remote']}',
+            {if defined('MODULE_URL')}'MODULE_URL': '{MODULE_URL}',{/if}
+            'cookie' : {'pre': '{$_W['config']['cookie']['pre']}'},
+            'account' : {php echo json_encode($_W['account'])}
+        };
+    </script>
+    <script>var require = { urlArgs: 'v=20170915' };</script>  
+    
+    <link href="./resource/bootstrap-fileinput/css/bootstrap.min.css" rel="stylesheet">
+
+    <script type="text/javascript" src="./resource/js/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="./resource/js/app/util.js?v=20170915"></script>
+    <script type="text/javascript" src="./resource/js/app/common.min.js?v=20170915"></script>
+    <script type="text/javascript" src="./resource/js/require.js?v=20170915"></script>
+    
+    <!-- fileinput插件 -->        
+    <link href="./resource/bootstrap-fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css" />
+    <script src="./resource/bootstrap-fileinput/js/jquery-2.0.3.min.js"></script>
+    <script src="./resource/bootstrap-fileinput/js/fileinput.js" type="text/javascript"></script>
+    <script src="./resource/bootstrap-fileinput/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="./resource/bootstrap-fileinput/js/fileinput_locale_zh.js" type="text/javascript"></script>
+
+    <!-- 富文本 -->
+    <script src='https://cloud.tinymce.com/stable/tinymce.min.js'></script>    
+    <script src='./resource/tinymce/zh_CN.js'></script>
+    <style>
+        /*隐藏掉域名未注册的错误提示 ，如果改变富文本的菜单 此项也要相应改变*/
+        #mceu_30,#mceu_60,#mceu_61,#mceu_63,#mceu_64{
+            z-index: -9999;
+            display: none;
+        }
+        /** end **/
+    </style>
+
+</head>
+<body style="margin:auto;margin-bottom: 50px;">
+<div class="clearfix" style="width:1200px;padding-top:50px;margin:auto;">
+    <form class="form-horizontal form" action="" method="post" enctype="multipart/form-data">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="text-align:center;">发布文章</div>
+
+            <div class="panel-body">                
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color: red;">*</span> 文章类型</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <label class='radio-inline'>
+                            <input type='radio' name='types' id="art_type" {if $item['types']=='1'}checked{/if} value='1'/> 图文
+                        </label>
+                        <label class='radio-inline'>
+                            <input type='radio' name='types' id="img_type" {if $item['types']=='2'}checked{/if} value='2'/> 图片
+                        </label> 
+                        <label class='radio-inline'>
+                            <input type='radio' name='types' id="aud_type" {if $item['types']=='3'}checked{/if} value='3'  /> 音频
+                        </label> 
+                        <label class='radio-inline'>
+                            <input type='radio' name='types' id="ved_type" {if $item['types']=='4'}checked{/if} value='4'  /> 视频
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label"> <span style="color: red;">*</span> 文章类别</label>
+                    <div class="col-sm-8 col-xs-12">
+                        {php echo tpl_form_field_category_2level('catagroy', $parent, $children, $pcate, $ccate)}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label"><span style="color: red;">*</span> 标题</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" placeholder="请输入标题" name="title" value="{$item['title']}" required="required">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">缩略图</label>
+                    <div class="col-sm-9">            
+
+                        <input id="file-thumb" type="file" multiple=true name="thumb" accept="image/*">
+                            
+                        <span class="help-block">
+                            建议图片大小为：640*350
+                        </span>
+                    </div>
+                </div>
+               <!--  <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">外链</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" placeholder="" name="wailian"
+                               value="{$item['wailian']}">
+                    <span class="help-block">
+                           设置之后会点击文章列会跳转到这个外链上
+                        </span>
+                    </div>
+                </div> -->
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">文章触发关键字</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" placeholder="" name="akeyword" value="{$item['akeyword']}">
+                        <div class="help-block">添加关键字以后,系统将生成一条图文规则,用户可以通过输入关键字来阅读文章</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">付费金额(元)</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" placeholder="" name="pay_money" value="{$item['pay_money']}">
+                        <span class="help-block">如果大于0元,此文章只显示简介,需付费后才能全文.此功能用到微信支付订阅号需要借用服务号支付</span>
+                    </div>
+                </div>
+
+             <div class="form-group art_type" {if $item['types']!='1'}style="display:none;"{/if}>
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">简介</label>
+                    <div class="col-sm-8" >
+                        <span class="help-block">字号：建议14左右</span>
+                        <textarea id="destinymce" style="width:100%; height:150px" name="description"> </textarea>
+                    </div>
+                </div>
+                <div class="form-group art_type"  {if $item['types']!='1'}style="display:none;"{/if}>
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">文章内容</label>
+                    <div class="col-sm-8">
+                        <span class="help-block">字号：建议14左右</span>
+                        <span class="help-block">付费阅读的文章，没有付费展示的内容是简介里的内容，如果是付费阅读文章，需要把简介里的内容也放在这里</span>
+                        <textarea id="continymce" style="width:100%; height:200px" name="content"> </textarea>
+                        
+                    </div>
+                </div>
+                
+                <div class="form-group img_type" {if $item['types']!='2'}style="display:none;"{/if}>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">图片压缩比</label>
+                    <div class="col-sm-2 col-xs-12">                        
+                        <select class="form-control" id="yasuoSel" name="img_yasuobi">    
+                            <option value="1.0">   1   (默认不压缩)</option>
+                            <option value="0.1">   0.1   </option>
+                            <option value="0.3">   0.3  </option>
+                            <option value="0.5">   0.5  </option>
+                            <option value="0.7">   0.7  </option>
+                        </select>
+
+                    </div>
+                    <div class="help-block">说明: 1 表示不压缩；原图宽高 300*500，选择0.3压缩比，最终生成的图片为90*150</div>    
+                </div>
+
+                <div class="form-group img_type" {if $item['types']!='2'}style="display:none;"{/if}>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">上传图片</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input id="file-images" type="file" accept="image/*" multiple class="file-loading" data-overwrite-initial="false" data-min-file-count="1" name="image_data[]">
+                        <input id="form-images" type="hidden" name="images" value="">
+                    </div>
+                </div>
+                 <div class="form-group img_type" {if $item['types']!='2'}style="display:none;"{/if}>
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">图片试看数</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control"  name="img_free" value="{$item['img_free']}">
+                    </div>
+                </div>
+                <div class="form-group aud_type"  {if $item['types']!='3'}style="display:none;"{/if}>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">音频文件</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input id="file-audio" type="file" accept="audio/mp3"  class="file-loading"  data-min-file-count="1" name="bg_music">
+                        <input id="form-audio" type="hidden" name="bg_music" value="">   
+                    </div>                 
+                </div>
+                
+                <div class="form-group aud_type"  {if $item['types']!='3'}style="display:none;"{/if}>
+                    <label class="col-xs-12 col-sm-3 col-md-2 col-lg-2 control-label">音频链接</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control"   name="bg_music_lianjie" placeholder="请输入有效音频播放地址，音频链接和音频上传文件，若两者都有,以本次输入链接为准">
+                        <div class="help-block">请将视频分享的【通用代码】中src=""内容（不包括src=和引号）复制到输入框 
+    例： src=" <span style="color: red;">https://v.qq.com/iframe/player.html?vid=v0019c7up3l&tiny=0&auto=0 </span>" （红色部分）</div>
+                    </div>
+                </div>
+
+                <div class="form-group aud_type" {if $item['types']!='3'}style="display:none;"{/if}>
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">音频免费试听时长(秒)</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control"  name="aud_free" value="{$item['aud_free']}">
+                    </div>
+                </div>
+                <div class="form-group ved_type"{if $item['types']!='4'}style="display:none;"{/if}>
+                    <label class="col-xs-12 col-sm-3 col-md-2 col-lg-2 control-label">视频文件</label>
+                    <div class="col-sm-8">
+                        <input id="file-vedio" type="file" accept="video/mp4"  class="file-loading"  data-min-file-count="1" name="vedio_url">
+                        <input id="form-vedio" type="hidden" name="vedio_url" value=""> 
+                    </div>
+                </div>
+    
+                <div class="form-group ved_type" {if $item['types']!='4'}style="display:none;"{/if}>
+                    <label class="col-xs-12 col-sm-3 col-md-2 col-lg-2 control-label">视频链接</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control"   name="vedio_url_lianjie" placeholder="请输入有效视频播放地址，视频链接和视频上传文件，若两者都有,以本次输入链接为准">
+                        <div class="help-block">请将视频分享的【通用代码】中src=""内容（不包括src=和引号）复制到输入框 
+例： src=" <span style="color: red;">https://v.qq.com/iframe/player.html?vid=v0019c7up3l&tiny=0&auto=0 </span>" （红色部分）</div>
+                    </div>
+                </div>
+
+                <div class="form-group ved_type" {if $item['types']!='4'}style="display:none;"{/if}>
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">视频试看时长(秒)</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control"  name="ved_free" value="{$item['ved_free']}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-12">
+                <span style="color: red;">***  </span><span style="font-size: 20px;">若文章类型为 <span style="color:red;">“图片｜音频｜视频” </span>，请确保“上传图片 | 音频文件 ｜ 视频文件”  <span style="color:red;"> 项已上传 </span>，否则提交后将<span style="color:red;">不保存未上传</span>内容 </span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="col-sm-12">
+                <input name="submit" type="submit" value="提交" class="btn btn-primary col-lg-1">
+                <input type="hidden" name="token" value="{$_W['token']}"/>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $('#art_type').click(function(){
+        $(".img_type").hide();
+        $(".aud_type").hide();
+        $(".ved_type").hide();
+        $(".art_type").show();
+    })
+    $('#img_type').click(function(){
+        document.getElementById('form-images').value=''; // 清空图片类型 上传图片变量
+        $(".art_type").hide();
+        $(".aud_type").hide();
+        $(".ved_type").hide();
+        $(".img_type").show();
+    })
+    $('#aud_type').click(function(){
+        document.getElementById('form-audio').value=''; // 清空音频类型 上传音频变量
+        $(".img_type").hide();
+        $(".art_type").hide();
+        $(".ved_type").hide();
+        $(".aud_type").show();
+    })
+    $('#ved_type').click(function(){        
+        document.getElementById('form-vedio').value=''; // 清空视频类型 上传视频变量
+        $(".img_type").hide();
+        $(".aud_type").hide();
+        $(".art_type").hide();
+        $(".ved_type").show();
+    })
+    require(['jquery', 'util'], function ($, u) {
+
+
+        $(".js_music_close").on("change", function () {
+            $("#js_music_div").toggleClass('hide', $(this).prop("checked"));
+        });
+        $(".js_music_open").on("change", function () {
+            $("#js_music_div").toggleClass('hide', !$(this).prop("checked"));
+        });
+        $('#credit1').click(function () {
+            $('#credit-status1').show();
+        });
+        $('#credit0').click(function () {
+            $('#credit-status1').hide();
+        });
+
+        $('.link_select').unbind('click').click(function(){
+            var ipt = $(this).parent().prev();
+            util.linkBrowser(function(href){
+                ipt.val(href);
+            });
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    require(['jquery', 'util'], function ($, u) {
+
+
+        $(".js_music_close").on("change", function () {
+            $("#js_music_div").toggleClass('hide', $(this).prop("checked"));
+        });
+        $(".js_music_open").on("change", function () {
+            $("#js_music_div").toggleClass('hide', !$(this).prop("checked"));
+        });
+        $('#credit1').click(function () {
+            $('#credit-status1').show();
+        });
+        $('#credit0').click(function () {
+            $('#credit-status1').hide();
+        });
+
+        $('.link_select').unbind('click').click(function(){
+            var ipt = $(this).parent().prev();
+            util.linkBrowser(function(href){
+                ipt.val(href);
+            });
+        });
+    });
+</script>
+
+<!-- fileinput插件 -->
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var inputFilesImages=[]; // 图片类 图片集合
+        var inputFilesAudio=''; // 音频类型 音频保存地址
+        var inputFilesVedio=''; // 视频类型 视频保存地址
+        document.getElementById('form-images').value=''; // 清空图片类型 上传图片变量
+        document.getElementById('form-audio').value=''; // 清空音频类型 上传音频变量
+        document.getElementById('form-vedio').value=''; // 清空视频类型 上传视频变量
+
+        //封面图
+        $("#file-thumb").fileinput({
+            showUpload: false,
+            showCaption: false,
+            browseClass: "btn btn-primary btn-lg",
+            allowedFileTypes: ['image'],
+            previewFileIcon: "<i class='glyphicon glyphicon-king'></i>"
+        });
+
+        
+        // 图片类型时的  文章内容（图片集合）
+        $("#file-images").fileinput({
+            uploadUrl: "{$uploadUrl}&tp=upImg", //上传地址
+            allowedFileExtensions : ['jpg', 'png','gif'],
+            overwriteInitial: false,
+            maxFileSize: 20000,
+            uploadAsync: true,
+            maxFilesNum: 100,
+            minFileCount: 1,
+            showRemove:false,
+            elErrorContainer: '#kv-error-1',//错误显示的文本continner
+            allowedFileTypes: ['image'],
+            slugCallback: function(filename) {
+                return filename.replace('(', '_').replace(']', '_');
+            }, 
+            enctype: 'multipart/form-data',
+            showBrowse: true,
+        　　 browseOnZoneClick: true,
+        　　 ajaxSettings:{
+        　　　　contentType:false
+        　　 },
+            uploadExtraData:function(){
+                let ysb=$("#yasuoSel").find("option:selected").val();
+                if(!ysb){
+                    ysb=1;
+                }
+                return {'ysb':ysb};
+            }
+        }).on('fileuploaded', function(event, data, id, index) {//上传成功之后的处理 
+            inputFilesImages.push(data.response[0]);　
+            document.getElementById('form-images').value=inputFilesImages            
+        }).on('filecleared',function(event, data, id, index){    
+            delImgAV(inputFilesImages);        
+            document.getElementById('form-images').value='';
+        });   
+
+        //音频 链接
+        $("#file-audio").fileinput({
+            uploadUrl: "{$uploadUrl}&tp=upAudio", //上传地址            
+            maxFileSize: 5000000,
+            uploadAsync: true,
+            showRemove:false,
+            maxFilesNum: 1,
+            allowedFileTypes: ['audio'],
+            slugCallback: function(filename) {
+                return filename.replace('(', '_').replace(']', '_');
+            },  
+        }).on('fileuploaded', function(event, data, id, index) {//上传成功之后的处理 
+            inputFilesAudio = data.response[0];　
+            document.getElementById('form-audio').value=inputFilesAudio            
+        }).on('filecleared',function(event, data, id, index){ 
+            let delF= [];
+            delF.push(inputFilesAudio)
+            delImgAV(delF);           
+            document.getElementById('form-audio').value='';
+        }); 
+
+         //视频 链接
+        $("#file-vedio").fileinput({
+            uploadUrl: "{$uploadUrl}&tp=upVedio", //上传地址            
+            maxFileSize: 5000000,
+            uploadAsync: true,
+            showRemove:false,
+            maxFilesNum: 1,
+            allowedFileTypes: ['vedio'],
+            slugCallback: function(filename) {
+                return filename.replace('(', '_').replace(']', '_');
+            },  
+        }).on('fileuploaded', function(event, data, id, index) {//上传成功之后的处理 
+            inputFilesVedio = data.response[0];　
+            document.getElementById('form-vedio').value=inputFilesVedio            
+        }).on('filecleared',function(event, data, id, index){
+            let delF= [];
+            delF.push(inputFilesVedio)
+            delImgAV(delF);            
+            document.getElementById('form-vedio').value='';
+
+        }); 
+
+        // 已上传了的内容，点击右上角叉号  服务器物理删除
+        /*
+        * @param deltype 要删除的文件类型
+        * @param data  要删除的文件url
+        */
+        function delImgAV(data){
+            if(data.length == 0){
+                return '';
+            }
+            
+            let delData={
+                    "urlArr":data
+                }
+
+            $.ajax({
+                url:"{$uploadUrl}&tp=delupFile",
+                type:'post',
+                dataType: "json",
+                data:delData,
+                success:function(result){
+                    console.log(result)
+                }
+            });
+        }
+
+    });
+</script>
+
+<!-- TinyMCE富文本插件 -->
+<script type="text/javascript">
+    // 文章简介 编辑器实例
+    tinymce.init({
+        selector: '#destinymce',        
+        language: "zh_CN",
+        toolbar:[
+            'undo redo | styleselect | bold italic | alignleft aligncenter alignright | fontselect | fontsizeselect'
+        ],
+        font_formats: 'Verdana=verdana;宋体=宋体;黑体=黑体;隶书=隶书;楷体=楷体;Arial=arial;Arial Black=arial black;Andale Mono=andale mono',
+
+    });
+    // 文章内容 编辑器实例
+    tinymce.init({
+        selector: '#continymce',        
+        language: "zh_CN",
+        plugins : 'advlist autolink image lists charmap print preview link',
+        menubar: "insert",
+        toolbar:[
+            'undo redo | styleselect | bold italic | alignleft aligncenter alignright | link image  | fontselect | fontsizeselect'
+        ],
+        font_formats: 'Verdana=verdana;宋体=宋体;黑体=黑体;隶书=隶书;楷体=楷体;Arial=arial;Arial Black=arial black;Andale Mono=andale mono',
+        //图片上传配置
+        images_upload_url: '{$uploadUrl}&tp=mce',
+        
+    });
+</script>
+
+</body>
+{/if}

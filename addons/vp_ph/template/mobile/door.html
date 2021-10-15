@@ -1,0 +1,123 @@
+{php $title='需要邀请码访问'}
+{template 'inc/header'}
+
+<script type="text/javascript">
+	wx.ready(function () {
+		wx.hideAllNonBaseMenuItem();
+	});
+</script>
+
+<style>
+	.intro-cell{padding:20px 10px;}
+	.intro-cell .icon-stype{width:42px;height:42px;margin-right:8px;border-radius:3px}
+	.intro-cell h4{margin-top:3px;font-size:12px;color:#BBBBBB;}
+	.example-cells{padding:0}
+	.example-cell:before{display:none;}
+	.example-cells .link-cell{margin:0 0 10px 0;}
+	.example-cells .link-line{margin:0}
+
+
+	#images_box{margin:0;overflow:hidden;zoom:1;}
+	#images_box:after{content:"";display:block;height:0;line-height:0;clear:both;visibility:hidden;}
+	#images_box li{float:left;margin:5px 5px 0 0;width:80px;height:80px;overflow:hidden;}
+	#images_box li a{display:block;width:80px;height:80px;line-height:80px;text-align:center;overflow:hidden;}
+	#images_box li a img{height:80px;}
+
+	#qrcode_adder a{background:url("{MODULE_URL}/static/mobile/images/image_adder_normal.png");background-size:80px 80px;}
+	#target_adder a{background:url("{MODULE_URL}/static/mobile/images/image_adder_normal.png");background-size:80px 80px;}
+	#image_adder a{background:url("{MODULE_URL}/static/mobile/images/image_adder_normal.png");background-size:80px 80px;}
+
+
+
+	.link-cell{background:#FFFFFF;margin:10px;border:0 none;border-radius:6px;overflow:hidden}
+	.link-cell .weui-cell:before{display:none;}
+	.link-line{background:#F8F8F8;overflow:hidden;border-radius:5px;margin:0 15px;}
+	.link-line .dmpurl{background-image:url("{MODULE_URL}/static/mobile/images/dmpurl.png");background-repeat:no-repeat;background-position:left top;background-size:30px 30px;}
+
+	.btn-link-copy{background:#fa9d3b}
+	.btn-link-copy .weui-cell__bd{color:#FFFFFF;font-weight:bold;text-align:center;}
+
+	.btn_set_more{display:inline-block;padding:0 12px 0 0;font-size:12px;background:url({MODULE_URL}/static/mobile/images/set_more.png) no-repeat right center;background-size:10px;}
+	.btn_set_more.set_hide{background-image:url({MODULE_URL}/static/mobile/images/set_more_up.png)}
+</style> 
+
+
+<div>
+
+	<div>
+		<form id="door_form" action="{php echo $this->createMobileUrl('public',array('cmd'=>'door'))}" method="post">
+			<input type="hidden" name="submit" value="enter"/>
+			
+			<div style="text-align:center;padding:40px 0 15px 0;">{$_W['module_setting']['set_app_hint']}</div>
+			<div class="weui-form">
+				<div class="weui-form__text-area">
+					<div class="weui-form__control-area">	
+						<div class="weui-cells weui-cells_form" style="margin:20px 40px;">
+							<div class="weui-cell">
+								<div class="weui-cell__bd">
+									<input id="door_code" name="code" class="weui-input"  placeholder="输入或长按粘贴邀请码" style="text-align:center;" value=""/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="weui-form__opr-area">
+					  <p><a class="weui-btn weui-btn_primary" href="javascript:" id="btn_door_enter">继续访问</a></p>
+					</div>
+				</div>
+			</div>
+		</form>
+	
+	<div>
+
+
+</div>
+
+
+
+{template 'inc/script'}
+
+<script type="text/javascript">
+
+
+
+	$(function(){
+		var loading=null;
+
+		
+
+		function doAccountSave(){
+			var form = $('#door_form');
+			$.post(form.attr('action'), form.serialize(),function(resp) {
+				if(resp.status==0){
+					loading.hide();
+					weui.alert(resp.info);
+				}else{
+					location.reload();
+					
+					/**
+					//weui.alert(resp.data);
+					weui.toast(resp.info, {
+						duration: 2000,
+						callback :function(){
+							weui.alert("{$_SERVER['HTTP_REFERER']}");
+							//location.href=resp.data?resp.data:"{$_SERVER['HTTP_REFERER']}";
+						}
+					});
+					***/
+				}
+			});
+		}
+
+		// 保存
+		$('#btn_door_enter').on('click',function(){
+			if(!$('#door_code').val()){
+				return weui.alert('请填写您的邀请码');
+			}
+
+			loading = weui.loading('正在提交...');
+			doAccountSave();
+		});
+
+	});
+</script>
+{template 'inc/footer'}

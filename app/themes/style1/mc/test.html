@@ -1,0 +1,738 @@
+{template 'common/header'}
+<style>
+	body{max-width:640px; margin:0 auto;}
+</style>
+{if $do == '适用门店'}
+	<style>
+		.shop-front{color:#606366; background:transparent url('resource/images/home-bg.jpg') no-repeat; background-size:100% 100%;}
+		.shop-front .list-item{border-top:3px solid #5ac5d4; padding-bottom:10px; background:-webkit-gradient(linear,0 0, 0 10%,from(rgba(226,234,234,0.8)), to(rgba(226,234,234,0.8))) center bottom; -webkit-background-size: 100% 10px; background-repeat:no-repeat;}
+		.shop-front .header a{font-size:20px; border-bottom:1px solid #56c6d6; color:#56c6d6;}
+		.shop-front .list-item li{list-style:none; height:48px; line-height:48px;}
+		.shop-front .list-item li a{display:inline-block; width:100%; height:100%; position:relative; padding:0 40px; text-decoration:none;}
+		.shop-front li .icon{position:absolute; left:15px; font-size:20px; top:0; color:#56c6d6; display:inline-block; height:100%; line-height:47px;}
+		.shop-front li .icon-right{position:absolute; right:15px; font-size:20px; top:0; display:inline-block; height:100%; line-height:47px;}
+		.shop-front .list-item div li{border-bottom:1px solid #dddddd;}
+		.shop-front .list-item div li a{color:#606366;}
+		.shop-front .list-item .name a{padding-left:15px; font-weight:700; font-size:16px;}
+	</style>
+	<div class="shop-front hidden">
+		<div class="list">
+			<div class="list-item">
+				<li class="header"><a href="javascript:;"><span class="icon"><i class="fa fa-map-marker"></i></span>上海市</a></li>
+				<div>
+					<li class="name"><a href="javascript:;">邻家小厨3号<span class="icon-right"><i class="fa fa-angle-right"></i></span></a></li>
+					<li class="add"><a href="javascript:;"><span class="icon"><i class="fa fa-location-arrow"></i></span>地址:中山北二路1111号</a></li>
+					<li class="tel"><a href="tel:0351-3566666"><span class="icon"><i class="fa fa-phone"></i></span>电话:0351-3566666</a></li>
+				</div>
+			</div>
+			<div class="list-item">
+				<div>
+					<li class="name"><a href="javascript:;">邻家小厨2号<span class="icon-right"><i class="fa fa-angle-right"></i></span></a></li>
+					<li class="add"><a href="javascript:;"><span class="icon"><i class="fa fa-location-arrow"></i></span>地址:中山北二路1111号</a></li>
+					<li class="tel"><a href="tel:0351-3566666"><span class="icon"><i class="fa fa-phone"></i></span>电话:0351-3566666</a></li>
+				</div>
+			</div>
+			<div class="list-item">
+				<div>
+					<li class="name"><a href="javascript:;">邻家小厨1号<span class="icon-right"><i class="fa fa-angle-right"></i></span></a></li>
+					<li class="add"><a href="javascript:;"><span class="icon"><i class="fa fa-location-arrow"></i></span>地址:中山北二路1111号</a></li>
+					<li class="tel"><a href="tel:0351-3566666"><span class="icon"><i class="fa fa-phone"></i></span>电话:0351-3566666</a></li>
+				</div>
+			</div>
+		</div>
+	</div>
+{/if}
+
+
+{if $do == '门店详情信息'}
+<style>
+	.shop-front-detail .carousel-control.right,.shop-front-detail .carousel-control.left{background-image:none;}
+	.shop-front-detail .carousel img{width:100%;}
+	.shop-front-detail .detail-body{background:transparent url('resource/images/home-bg.jpg') no-repeat; background-size:100% 100%;}
+	.shop-front-detail .nav-level{margin-bottom:12px;}
+	.shop-front-detail .nav-level ul{width:100%; padding:10px 0;}
+	.shop-front-detail .nav-level ul li{width:25%; display:inline-block; box-sizing:border-box; float:left; text-align:center;}
+	.shop-front-detail .nav-level ul li+li{border-left:1px solid #ddd;}
+	.shop-front-detail .nav-level ul li a .title-num{font-size: 16px !important; line-height:20px; color:#333 !important; margin:0;}
+	.shop-front-detail .nav-level ul li a .title-info{font-size: 12px !important; line-height:20px; color:#333 !important; margin:0;}
+	.mnav-box ul,.mnav-box ul li{padding:0; margin:0; font-family:Helvetica, Arial, sans-serif;}
+	.mnav-box{color:#606366; border-top:1px solid #e5e5e5;}
+	.mnav-box ul{border-top:10px solid #e4e9e8; list-style:none; background:transparent -webkit-gradient(linear,0 0, 0 10%,from(rgba(90,197,212,1)), to(rgba(90,197,212,1))) center top; -webkit-background-size:100% 2px; padding-top:2px; background-repeat:no-repeat;}
+	.mnav-box ul:first-child{background:none; border-top:0; padding-top:0;}
+	.mnav-box ul li{ border-bottom:1px solid #dddddd; position:relative; padding: 10px 15px;}
+	.mnav-box ul #content{background:#fff; display:none;}
+	.mnav-box ul #content h6{color:#56c6d6;}
+	.mnav-box ul li .mnav-box-list{color:#606366; font-size:15px; text-decoration:none; -webkit-box-sizing:border-box; overflow:hidden;}
+	.mnav-box ul li .mnav-box-list>span:first-child i{width:25px; margin-right:10px; color:#8dd1db; text-align:center; font-size:20px; }
+	.mnav-box ul li .mnav-box-list .mnav-title{display:inline-block;}
+	.mnav-box ul li .mnav-box-list > .pull-right{display:inline-block; font-size:22px; line-height:0; color:#888; position:absolute; right:15px; top:12px;}
+	.mnav-box ul li .mnav-box-list .right{float:right;}
+</style>
+<div class="shop-front-detail hidden">
+	<div id="banner" class="carousel slide clearfix" data-ride="carousel">
+		<ol class="carousel-indicators pull-right">
+			<li data-target="#banner" data-slide-to="0" class="active"></li>
+			<li data-target="#banner" data-slide-to="1"></li>
+			<li data-target="#banner" data-slide-to="2"></li>
+		</ol>
+		<div class="carousel-inner" role="listbox">
+			<div class="item active">
+				<img src="resource/images/card/1.png" alt="">
+			</div>
+			<div class="item">
+				<img src="resource/images/card/2.png" alt="">
+			</div>
+			<div class="item">
+				<img src="resource/images/card/3.png" alt="">
+			</div>
+		</div>
+		<a class="left carousel-control" href="#banner" role="button" data-slide="prev">
+			<span class="sr-only">上一张</span>
+		</a>
+		<a class="right carousel-control" href="#banner" role="button" data-slide="next">
+			<span class="sr-only">下一张</span>
+		</a>
+	</div>
+	<div class="detail-body">
+		<div class="nav-level">
+			<ul class="clearfix">
+				<li>
+					<a class="link clearfix" href="javascript:;">
+						<p class="title-num">0</p>
+						<p class="title-info">待付款订单</p>
+					</a>
+				</li>
+				<li>
+					<a class="link clearfix" href="javascript:;">
+						<p class="title-num">5</p>
+						<p class="title-info">已付款订单</p>
+					</a>
+				</li>
+				<li>
+					<a class="link clearfix" href="javascript:;">
+						<p class="title-num">0</p>
+						<p class="title-info">已发货订单</p>
+					</a>
+				</li>
+				<li>
+					<a class="link clearfix" href="javascript:;">
+						<p class="title-num">0</p>
+						<p class="title-info">待自提订单</p>
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="mnav-box clearfix">
+			<ul>
+				<li>
+					<a class="mnav-box-list" onclick="$('#content').show('fast');">
+						<span class="mnav-title"><i class="fa fa-eye"></i></span>
+						详细信息
+						<span class="pull-right"><i id="down-up" class="fa fa-angle-down"></i></span>
+					</a>
+				</li>
+				<li id="content" class="bg_fff">
+					<h6>使用说明:</h6>
+					<div>使用说明使用说明使用说明使用说明使用说明</div>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<a class="mnav-box-list" href="javascript:;">
+						<span class="mnav-title"><i class="fa fa-pencil"></i>完善会员资料</span>
+						<span class="pull-right"><i class="fa fa-angle-right"></i></span>
+					</a>
+				</li>
+				<li>
+					<a class="mnav-box-list" href="javascript:;">
+						<span class="mnav-title"><i class="fa fa-pencil"></i>完善会员资料</span>
+						<span class="pull-right"><i class="fa fa-angle-right"></i></span>
+					</a>
+				</li>
+				<li>
+					<a class="mnav-box-list" href="javascript:;">
+						<span class="mnav-title"><i class="fa fa-pencil"></i>完善会员资料</span>
+						<span class="pull-right"><i class="fa fa-angle-right"></i></span>
+					</a>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<a class="mnav-box-list" href="javascript:;">
+						<span class="mnav-title"><i class="fa fa-pencil"></i>完善会员资料</span>
+						<span class="right">查看详情查看详</span>
+					</a>
+				</li>
+				<li>
+					<a class="mnav-box-list" href="javascript:;">
+						<span class="mnav-title"><i class="fa fa-pencil"></i>完善会员资料</span>
+						<span class="right">查看详情查看详</span>
+					</a>
+				</li>
+				<li>
+					<a class="mnav-box-list" href="javascript:;">
+						<span class="mnav-title"><i class="fa fa-pencil"></i>完善会员资料</span>
+						<span class="right">查看详情查看详</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+{/if}
+{if $do == 'sign'}
+<script type="text/javascript" src="http://stc.weimob.com/src/member/lib/calendar.js?2014-05-21"></script>
+<!--签到界面-->
+<style>
+	.sign{background:transparent url('resource/images/home-bg.jpg') no-repeat; background-size:100% 100%;}
+	.sign ul,.sign li{margin:0; padding:0; list-style:none;}
+	.sign .tbox > * {height: 100%; display: table-cell; vertical-align: top;}
+	.sign .tbox_1 li{height:150px; vertical-align: middle; text-align:center;}
+	.sign .tbox_1 li:nth-of-type(2){width:100%;}
+	.sign .tbox_1 li:nth-of-type(2) a{display: block; width:100px; height:100px; border:5px solid #bde0e2; background:#5ac5d4; color:#ffffff; font-size:23px; padding-top:31px; font-weight: 800; -webkit-box-sizing:border-box; border-radius:80px; margin: auto;}
+	.sign .tbox_1 li p{font-size:14px; width:80px; margin:auto 5px;}
+	.sign .tbox_1 li p label{display: block; color:#5ac5d4; font-size: 18px;}
+	.sign .nav_integral{background:#88c5ce; height:50px;}
+	.sign .nav_integral li{width:25%; float:left; background:-webkit-gradient(linear, 0 0, 0 00%, from(#ffffff), to(#eeeeee)) no-repeat; -webkit-background-size:1px 60%; background-position: right center;}
+	.sign .nav_integral li:last-of-type{background:none;}
+	.sign .nav_integral a{color:#ffffff; display: block; width:80px; margin:auto; height:50px; text-align: center;}
+	.sign .nav_integral a>span{display: block; width:30px; height:30px; line-height:30px; margin:auto; font-size:22px; }
+	.sign .calendar .header{font-size: 14px; color: #888e8e; line-height: 50px; height: 50px; background: #ffffff; box-shadow: 0 5px 5px rgba(100,100,100,0.1); padding:0 50px; text-align:center; position:relative;}
+	.sign .calendar .header .pre,.sign .calendar .header .next{display:inline-block; width:50px; height:50px; line-height:50px; text-align:center; position:absolute; top:0;}
+	.sign .calendar .header .pre{left:0;}
+	.sign .calendar .header .next{right:0;}
+</style>
+<style type="text/css">
+	.Calendar {
+		font-family:Verdana;
+		background-color:#EEE;
+		text-align:center;
+		height: 320px;
+		line-height:1.5em;
+	}
+	.Calendar .icons{
+		display: block;
+		width:40px;
+		height:40px;
+		background: url(http://stc.weimob.com/img/member/imgs/icons4.png) no-repeat center -300px;
+		-webkit-background-size:50px auto;
+	}
+	.Calendar .icons_after{
+		background-position: center -350px;
+	}
+	.Calendar header{
+		font-size:14px;
+		color:#888e8e;
+		line-height:50px;
+		height:50px;
+		background:#ffffff;
+		box-shadow: 0 5px 5px rgba(100,100,100,0.1);
+	}
+	.Calendar a{
+		color:#0066CC;
+	}
+	.Calendar table{
+		width:280px;
+		margin:auto;
+		border:0;
+	}
+	.Calendar table thead{color:#acacac;}
+	.Calendar table td {
+		color:#989898;
+		border:1px solid #ecf9fa;
+		width:40px;
+		height:40px;
+		margin:1px;
+		background: #ffffff;
+		-webkit-box-sizing:border-box;
+	}
+	.Calendar thead td, .Calendar td:empty{
+		background:none;
+		border:0;
+	}
+	.Calendar thead td{
+		color:#72bec9;
+		font-size:13px;
+		font-weight:bold;
+	}
+	#idCalendarPre{
+		cursor:pointer;
+		float:left;
+	}
+	#idCalendarNext{
+		cursor:pointer;
+		float:right;
+	}
+
+	#idCalendar td a.checked{
+		display: block;
+		height:100%;
+		border:1px solid #58c4d1;
+		line-height:38px;
+		color:#989898;
+	}
+	#idCalendar td.onToday, #idCalendar td.onToday a{
+		color:#ff3600!important;
+	}
+</style>
+
+<div class="sign hidden">
+	<header>
+		<ul class="tbox tbox_1">
+			<li>
+				<p class="pre">
+					<label>12</label>
+					可用积分
+				</p>
+			</li>
+			<li>
+				<a href="javascript:void(0)" onclick="dosignin()"><label>签到</label></a>
+
+			</li>
+			<li>
+				<p class="pre">
+					<label>10</label>
+					签到次数
+				</p>
+			</li>
+		</ul>
+		<nav class="nav_integral">
+			<ul class="box claarfix">
+				<li><a href="javascript:;"><span class="fa fa-gift">&nbsp;</span><label>兑换礼品</label></a></li>
+				<li><a href="javascript:;"><span class="fa fa-heart-o">&nbsp;</span><label>积分抽奖</label></a></li>
+				<li><a href="javascript:;"><span class="fa fa-file-text-o">&nbsp;</span><label>签到记录</label></a></li>
+				<li><a href="javascript:;"><span class="fa fa-cog">&nbsp;</span><label>积分攻略</label></a></li>
+			</ul>
+		</nav>
+	</header>
+	<div class="content">
+		<div class="Calendar">
+			<div class="header">
+				<span class="pre"><i class="fa fa-long-arrow-left"></i></span>
+				<span class="year">2015</span>年<span class="month">8</span>月
+				<span class="next"><i class="fa fa-long-arrow-right"></i></span>
+			</div>
+			<table cellspacing="0">
+				<thead>
+				<tr>
+					<td>日</td>
+					<td>一</td>
+					<td>二</td>
+					<td>三</td>
+					<td>四</td>
+					<td>五</td>
+					<td>六</td>
+				</tr>
+				</thead>
+				<tbody id="idCalendar">
+				</tbody>
+			</table>
+			<script language="JavaScript">
+				var cale = new Calendar("idCalendar", {
+					Year : 2015,
+					Month : 10,
+					onToday: function(o){ o.className = "onToday"; },
+					onFinish: function(){
+						this.Year = 2015;
+						this.Month = 10;
+						$$("idCalendarYear").innerHTML = this.Year;
+						$$("idCalendarMonth").innerHTML = this.Month;
+						var flag = [22];
+						for(var i = 0, len = flag.length; i < len; i++){
+							this.Days[flag[i]].innerHTML = "<a href='javascript:void(0);' class='checked'>" + flag[i] + "</a>";
+						}
+					}
+				});
+				$$("idCalendarPre").onclick = function(){ location.href = "/Webnewmemintegral/signin/pid/1071/wechatid/osXr8ju1aQhEvMN87-nM92NhonUE/date/201509"; }
+				$$("idCalendarNext").onclick = function(){ location.href = "/Webnewmemintegral/signin/pid/1071/wechatid/osXr8ju1aQhEvMN87-nM92NhonUE/date/201511"; }
+			</script>
+
+		</div>
+	</div>
+</div>
+<!--end 签到界面-->
+{/if}
+<!--签到记录-->
+<!--<style>-->
+	<!--body{background:transparent url('resource/images/home-bg.jpg') no-repeat; background-size:100% 100%;}-->
+	<!--.sign-record .header{height:45px; line-height:45px; color:#25a5b7; padding:0 20px;}-->
+	<!--.sign-record .content .list{padding:0 10px 10px 10px;}-->
+	<!--.sign-record .table_record{background: #ffffff; width:100%;}-->
+	<!--.sign-record .table_record thead td{text-indent: 10px;}-->
+	<!--.sign-record .table_record thead{background:#56c6d6;}-->
+	<!--.sign-record .table_record thead td{line-height: 35px; color:#ffffff; font-size:16px;}-->
+	<!--.sign-record .table_record tbody td{padding:10px; border-bottom:1px dotted #cccccc;}-->
+	<!--.sign-record .table_record tbody tr:last-of-type td{border:0;}-->
+<!--</style>-->
+<div class="sign-record hidden">
+	<div class="header">签到记录</div>
+	<div class="content">
+		<div class="list">
+			<table class="table_record">
+				<thead>
+				<tr>
+					<td style="width:30%;">积分详情 </td>
+					<td style="width:50%;">日期 </td>
+					<td style="width:20%;">积分</td>
+				</tr>
+				</thead>
+				<tbody>
+
+				<tr>
+					<td>签到得积分  </td>
+					<td>2015年05月20日 </td>
+					<td>+1</td>
+				</tr>
+				<tr>
+					<td>签到得积分  </td>
+					<td>2015年05月19日 </td>
+					<td>+1</td>
+				</tr>
+				<tr>
+					<td>签到得积分  </td>
+					<td>2015年01月28日 </td>
+					<td>+1</td>
+				</tr>
+				<tr>
+					<td>签到得积分  </td>
+					<td>2014年09月09日 </td>
+					<td>+1</td>
+				</tr>
+				<tr>
+					<td>签到得积分  </td>
+					<td>2014年09月04日 </td>
+					<td>+1</td>
+				</tr>
+				<tr>
+					<td>签到得积分  </td>
+					<td>2014年09月03日 </td>
+					<td>+1</td>
+				</tr>
+				<tr>
+					<td>签到得积分  </td>
+					<td>2014年08月29日 </td>
+					<td>+1</td>
+				</tr>
+				<tr>
+					<td>签到得积分  </td>
+					<td>2014年08月28日 </td>
+					<td>+1</td>
+				</tr>
+				<tr>
+					<td>签到得积分  </td>
+					<td>2014年04月14日 </td>
+					<td>+1</td>
+				</tr>
+				<tr>
+					<td>签到得积分  </td>
+					<td>2014年03月23日 </td>
+					<td>+1</td>
+				</tr>
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<!--end签到记录-->
+<!--消息-->
+<!--<style>-->
+	<!--.btn-group-top-box{padding:10px 0; border-bottom:1px solid #a5d7de;}-->
+	<!--.btn-group-top{margin:0 auto; overflow:hidden; width:200px; display:block;}-->
+	<!--.btn-group-top .btn{width:100px; -webkit-box-shadow:none; box-shadow:none; border-color:#5ac5d4; color:#5ac5d4; background:#d1e5e9;}-->
+	<!--.btn-group-top .btn:hover{color:#FFF; background:#addbe1;}-->
+	<!--.btn-group-top .btn.active{color:#FFF; background:#5ac5d4;}-->
+	<!--.list-msg,.list-msg li{margin:0; padding:0; list-style:none;}-->
+	<!--.list-msg{background: rgba(200,200,200,0.1);}-->
+	<!--.list-msg li{border-bottom:1px solid #d8d5d4; padding:10px 0; position:relative; cursor:pointer;}-->
+	<!--.list-msg li ol{display:none; color:#929292; margin:5px 20px; border-top:1px dashed #ccc; padding:10px 0 0 0; -webkit-box-sizing:border-box; font-size:13px;}-->
+	<!--.list-msg li.on ol{display:block;}-->
+	<!--.list-msg li .box{position:relative; padding-right:40px; height:50px; margin:0;}-->
+	<!--.list-msg li .box .icon-down{display:inline-block; width:30px; height:20px; position:absolute; right:10px; top:5px; font-size:25px; color:#999;}-->
+	<!--.list-msg li .box dd{float:left;}-->
+	<!--.list-msg li .box .icon{display:inline-block; margin:0 10px; width:50px; height:50px; border-radius:5px; background-color:#5ac5d4; line-height:50px; text-align:center; color:#fff; font-size:35px;}-->
+	<!--.list-msg li .box .title{padding:5px 20px 5px 0; font-size:16px; font-weight:bold; color:#444444; line-height:18px; -webkit-box-sizing:border-box; max-width:200px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }-->
+<!--</style>-->
+<script>
+	require(['bootstrap'], function($){
+		$(function(){
+			$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+				if($(e.target).attr('href') == '#tab2') {
+					$('.system-messages').addClass('active');
+					$('.broadcast').removeClass('active');
+				} else {
+					$('.system-messages').removeClass('active');
+					$('.broadcast').addClass('active');
+				}
+			});
+			$(".box").click(function(){
+				$(this).parent().toggleClass("on");
+				if($(this).parent().find(".icon-down i").hasClass('fa fa-angle-down')){
+					$(this).parent().find(".icon-down i").removeClass('fa fa-angle-down').addClass("fa fa-angle-up");
+				}else{
+					$(this).parent().find(".icon-down i").removeClass('fa fa-angle-up').addClass("fa fa-angle-down");
+				}
+			});
+		});
+	});
+</script>
+<div class="message hidden">
+	<div class="btn-group-top-box">
+		<div class="btn-group btn-group-top">
+			<a href="#tab1" data-toggle="tab" class="btn btn-default broadcast active">广播</a>
+			<a href="#tab2" data-toggle="tab" class="btn btn-default system-messages more">系统消息</a>
+		</div>
+	</div>
+	<div class="tab-content clearfix">
+
+		<div class="tab-pane active" id="tab1">
+			<ul class="list-msg">
+				<li class="js-read">
+					<dl class="box">
+						<dd>
+							<span class="icon"><i class="fa fa-bullhorn"></i></span>
+						</dd>
+						<dd>
+							<div class="title">会员卡升级</div>
+							<p>2015-10-22 14:13:39</p>
+						</dd>
+						<span class="icon-down"><i class="fa fa-angle-down"></i></span>
+					</dl>
+					<ol>
+						<p>
+							您的尾号7539会员卡于2015年08月22日12点26分存入0.01元，当前余额0.01元
+						</p>
+					</ol>
+				</li>
+			</ul>
+		</div>
+
+		<div class="tab-pane" id="tab2">
+			<ul class="list-msg">
+				<li class="js-read">
+					<dl class="box">
+						<dd>
+							<span class="icon"><i class="fa fa-wechat"></i></span>
+						</dd>
+						<dd>
+							<div class="title">微支付转入</div>
+							<p>2015-10-22 14:13:39</p>
+						</dd>
+						<span class="icon-down"><i class="fa fa-angle-down"></i></span>
+					</dl>
+					<ol>
+						<p>
+							您的尾号7539会员卡于2015年08月22日12点26分存入0.01元，当前余额0.01元
+						</p>
+					</ol>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<!--end消息-->
+<!--推荐列表-->
+<!--<style>-->
+	<!--.recommend ul,.recommend li{margin:0; padding:0; list-style:none;}-->
+	<!--.recommend li{margin:10px; border:1px solid #fff; background:#fff; -webkit-box-sizing:border-box;}-->
+	<!--.recommend li img{width:100%; max-height:240px;}-->
+	<!--.recommend .info{padding:10px 50px 10px 10px; position:relative;}-->
+	<!--.recommend .info .share{display:inline-block; width:35px; height:40px; line-height:40px; font-size:35px; color:#ccc; position:absolute; top:10px; right:10px;}-->
+	<!--.recommend .info .title{font-size:14px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}-->
+<!--</style>-->
+<div class="recommend hidden">
+	<ul class="list-recommend">
+		<li>
+			<div class="img"><a href="javascript:;"><img src="http://img.weimob.com/static/1c/38/3c/image/20140221/20140221164325_71534.jpg"></a></div>
+			<div class="info">
+				<div class="title">去商城看看</div>
+				<div class="text-muted date">2015-10-22 16:43:30</div>
+				<a href="javascript:;" class="text-muted share"><i class="fa fa-share-square-o"></i></a>
+			</div>
+		</li>
+	</ul>
+</div>
+<!--end推荐列表-->
+
+<!--收银台-->
+<style>
+	.checkstand .header{height:50px; line-height:50px; padding:0 15px; font-size:16px; background: -webkit-gradient(linear, 0 0, 100% 0, from(rgb(235, 235, 235)), color-stop(0.3, rgb(245, 249, 249)), to(rgb(243, 249, 250))); color:#666;}
+	.checkstand .info .text-danger{color:#f00;}
+	.checkstand .info .text-success{color:#44BB00;}
+	.checkstand-login form{padding:15px;}
+	.checkstand-login .header i{display: inline-block; margin-right:10px; color: #666;}
+</style>
+<div class="checkstand">
+	<!--登录界面-->
+	<div class="checkstand-login">
+		<div class="header">
+			<a href="#"><i class="fa fa-arrow-left"></i></a>
+			登录
+		</div>
+		<form action="" method="post">
+			<div class="form-group">
+				<input type="text" value="" name="" placeholder="请输入您的账号" class="form-control" />
+			</div>
+			<div class="form-group">
+				<input type="text" value="" name="" placeholder="请输入您的登陆密码" class="form-control"/>
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-danger btn-block">提交</button>
+			</div>
+			<div class="form-group">
+				<a href="javascript:;">忘记密码?</a>
+			</div>
+		</form>
+	</div>
+	<!--店铺收支-->
+	<style>
+		.checkstand-store .header img{width:40px; height:40px; margin-right:10px;}
+		.checkstand-store .store-income{height:150px; background:#FE505C; padding:15px; color:#fff; font-size:16px;}
+		.checkstand-store .store-income .money{font-size: 3em; font-weight:bold;}
+		.checkstand-store .store-info{padding:10px 0; margin-bottom:15px; background-color:#fff; border-bottom:1px solid #ddd;}
+		.checkstand-store .store-info .item{width:33.33%; float:left; text-align:center; color:#666;}
+		.checkstand-store .store-info .item span{display: block; font-size:3em; color:#555;}
+		.checkstand-store .store-info .item+.item{border-left:1px solid #ddd;}
+		.checkstand-store .store-nav{border-top:1px solid #ddd; border-bottom:1px solid #ddd; padding-bottom:10px;}
+		.checkstand-store .store-nav .item{width:33.33%; float:left; text-align:center; padding-top:10px;}
+		.checkstand-store .store-nav .item .icon{width:100%; height:60px; line-height:60px; text-align:center; overflow:hidden; margin:0 auto 5px auto;}
+		.checkstand-store .store-nav .item .icon img{max-width:100%; max-height:100%;}
+	</style>
+	<div class="checkstand-store">
+		<div class="header">
+			<div class="pull-right"><i class="fa fa-plus"></i></div>
+			<div class="title">
+				<img src="/app/resource/images/headimg_1.jpg" alt="" class="img-circle"/>
+				测试店铺
+			</div>
+		</div>
+		<div class="store-income">
+			<div>近30天收入(元)<span class="pull-right">店铺营收></span></div>
+			<div class="money">0.00</div>
+		</div>
+		<div class="store-info clearfix">
+			<div class="item"><span>1</span>今日访客</div>
+			<div class="item"><span>1</span>昨日新增客户</div>
+			<div class="item"><span>1</span>七日订单</div>
+		</div>
+		<div class="store-nav clearfix">
+			<div class="item">
+				<div class="icon"><img src="/app/resource/images/headimg_1.jpg" alt="" /></div>
+				店铺管理
+			</div>
+			<div class="item">
+				<div class="icon"><img src="/app/resource/images/headimg_1.jpg" alt="" /></div>
+				商品管理
+			</div>
+			<div class="item">
+				<div class="icon"><img src="/app/resource/images/headimg_1.jpg" alt="" /></div>
+				订单管理
+			</div>
+			<div class="item">
+				<div class="icon"><img src="/app/resource/images/headimg_1.jpg" alt="" /></div>
+				我要收款
+			</div>
+			<div class="item">
+				<div class="icon"><img src="/app/resource/images/headimg_1.jpg" alt="" /></div>
+				扫一扫
+			</div>
+			<div class="item">
+				<div class="icon"><img src="/app/resource/images/headimg_1.jpg" alt="" /></div>
+				数据统计
+			</div>
+		</div>
+	</div>
+	<!--收款-->
+	<style>
+		.checkstand-receipt .qr{background-color:#fff; border-top:1px solid #ddd; border-bottom:1px solid #ddd; padding:15px 0; margin-bottom:10px;}
+		.checkstand-receipt .qr .qr-img{height:100px; width:100%; text-align:center; overflow:hidden; padding:15px 0;}
+		.checkstand-receipt .qr .qr-img img{max-width:100%; max-height:100%;}
+		.checkstand-receipt .qr p{font-size:1.2em;}
+		.checkstand-receipt form{border-top:1px solid #ddd; border-bottom:1px solid #ddd; padding:15px; margin-top:10px;}
+
+	</style>
+	<div class="checkstand-receipt">
+		<div class="header">
+			<div class="pull-right">收款记录</div>
+			<div class="title">
+				<i class="fa fa-arrow-left"></i>
+				我要收款
+			</div>
+		</div>
+		<div class="qr">
+			<div class="qr-img"><img src="/web/resource/images/gw-qr.jpg" alt="" /></div>
+			<p class="text-center">让顾客扫一扫,向我付款</p>
+			<div class="text-center"><a href="#">保存二维码,</a>打印后张贴在门店方便顾客付款</div>
+		</div>
+		<div class="text-center text-muted">或者</div>
+		<form action="" method="post">
+			<div class="form-group"><strong>设置收款金额</strong></div>
+			<div class="form-group"><input type="text" value="" name="" placeholder="输入金额(元)" class="form-control" /></div>
+			<div class="text-right"><a href="#">添加收款理由</a></div>
+			<div class="from-group"><button type="submit" class="btn btn-danger btn-block">发起收款</button></div>
+		</form>
+	</div>
+	<style>
+		.checkstand-detail-list .list-group-item a{display:block; color:#333;}
+		.checkstand-detail-list .info{font-size:16px; margin-bottom:10px;}
+		.checkstand-detail-list .info span{font-weight:bold;}
+		.checkstand-detail .info{padding:15px; border-bottom:1px solid #ddd; border-top:1px solid #ddd;}
+		.checkstand-detail .info dt{color:#999; float:left;}
+		.checkstand-detail .info dd{text-align:right; padding-left:80px; margin:8px 0;}
+		.checkstand-detail .btn-submit{padding:15px;}
+	</style>
+	<div class="checkstand-detail-list">
+		<div class="header">
+			<div class="title">
+				<i class="fa fa-arrow-left"></i>
+				收支明细
+			</div>
+		</div>
+		<div class="list-group">
+			<div class="list-group-item">
+				<a href="javascript:;">
+					<div class="info">退款<span class="pull-right text-danger">-0.01</span></div>
+					<div class="text-muted"><span class="pull-right">微信支付-代销</span>15/09/02 15:10</div>
+				</a>
+			</div>
+			<div class="list-group-item">
+				<a href="javascript;;">
+					<div class="info">订单入账<span class="pull-right text-success">+0.03</span></div>
+					<div class="text-muted"><span class="pull-right">微信支付-代销</span>15/09/01 15:10</div>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="checkstand-detail">
+		<div class="header">
+			<div class="title">
+				<i class="fa fa-arrow-left"></i>
+				收支明细
+			</div>
+		</div>
+		<div class="info">
+			<dl class="dl-horizontal">
+				<dt>支出金额</dt>
+				<dd class="text-danger">0.01</dd>
+				<hr />
+				<dt>类型</dt>
+				<dd>退款</dd>
+				<dt>时间</dt>
+				<dd>15/09/02 15:10</dd>
+				<dt>流水号</dt>
+				<dd>123456789123456789</dd>
+				<dt>订单号</dt>
+				<dd>E123456789123456789123</dd>
+				<dt>对方</dt>
+				<dd>-</dd>
+				<dt>支付渠道</dt>
+				<dd>微信支付-代销</dd>
+				<dt>余额</dt>
+				<dd>0.01</dd>
+			</dl>
+		</div>
+		<div class="btn-submit"><button class="btn btn-success btn-block">查看详情</button></div>
+	</div>
+</div>
+{template 'common/footer'}

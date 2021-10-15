@@ -1,0 +1,308 @@
+{template 'common/header'}
+<style>
+	.sdverify{display:inline-block;height:20px;line-height:20px;padding-left:20px;font-size:12px;background:url("{MODULE_URL}/static/mobile/images/v_0.png") no-repeat left center;background-size:16px 16px;}
+	.sdverify.v1{background-image:url("{MODULE_URL}/static/mobile/images/v_1.png");color:#07ce81}
+	.sdverify.v2{background-image:url("{MODULE_URL}/static/mobile/images/v_2.png");color:#ff8808}
+</style> 
+
+
+<ul class="nav nav-tabs">
+	<li class="active"><a href="javascript:location.reload()">用户管理</a></li>
+</ul>
+
+
+<form id="the_form" class="form-horizontal form" action="" method="post" enctype="multipart/form-data">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			用户筛选
+		</div>
+		<div class="panel-body">
+
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-3 col-md-2 control-label">用户UID</label>
+				<div class="col-sm-9 col-xs-12">
+					<input type="text" name="s_user" class="form-control" value="{$_GPC['s_user']}" placeholder="根据UID查找用户"/>
+					<div class="help-block"></div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+				<div class="col-sm-9 col-xs-12">
+					<input id="btn-submit" type="submit" value="筛选" class="btn btn-primary col-lg-1" data-loading-text="正在筛选..."/>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</form>
+
+<div class="panel panel-default">
+	<nav role="navigation" class="navbar navbar-default navbar-static-top" style="margin-bottom:0;">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="javascript:;" class="navbar-brand">用户列表 (<span style="color:#428bca">{$total}</span>条记录)</a> </a>
+			</div>
+		</div>
+	</nav>
+
+
+	<div class="panel-body table-responsive" style="overflow:visible;">
+		<table class="table table-hover">
+			<thead class="navbar-inner">
+				<tr>
+					<th style="width:60px;">UID</th> 
+					<th style="width:60px;">用户</th> 
+					<th style="width:150px;"></th> 
+					<th>加入时间</th>
+
+					<th>放/取男纸条</th>
+					<th>放/取女纸条</th>
+					
+					<th>是否分销商</th>
+					<th>是否管理员</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{loop $list $item}
+				<tr>
+					<td>
+						<p>{php echo pencode($item['id'])}</p>
+						<p>{$item['id']}</p>
+					</td>
+					<td><img style="width:50px;" src="{php echo VP_AVATAR($item['avatar'],'b')}"/></td>
+					<td>
+						{$item['nickname']}
+					</td>
+					<td>{php echo date('Y-m-d H:i:s',$item['create_time']);}</td>
+					<td>{$item['feedin1']} / {$item['feedout1']}</td>
+					<td>{$item['feedin2']} / {$item['feedout2']}</td>
+					<td>
+						{if $item['agent'] > 0}  
+							<label class='label label-success' >分销商</label>
+						{/if}
+					</td>
+					<td>
+						{if $item['admin'] > 0}  
+							<label class='label label-success' >管理员</label>
+						{/if}
+					</td>
+					<td>
+						{if $item['agent'] > 0}  
+							<a href="javascript:;" class="btn  btn-danger btn-sm" onclick="agent_no('{$item['uid']}');">取消分销商</a>
+						{else}
+							<a href="javascript:;" class="btn  btn-success btn-sm" onclick="agent_yes('{$item['uid']}');">设为分销商</a>
+						{/if}
+
+						{if $item['admin'] > 0}  
+							<a href="javascript:;" class="btn  btn-danger btn-sm" onclick="admin_no('{$item['uid']}');">取消管理员</a>
+						{else}
+							<a href="javascript:;" class="btn  btn-success btn-sm" onclick="admin_yes('{$item['uid']}');">设为管理员</a>
+						{/if}
+					</td>
+				</tr>
+				{/loop}
+			</tbody>
+		</table>
+		{$pager}
+	</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	require(['bootstrap'],function($){
+		$('.btn-tooltip').hover(function(){
+			$(this).tooltip('show');
+		},function(){
+			$(this).tooltip('hide');
+		});
+	});
+
+	function displayUrl(lurl, surl) {
+		require(['jquery', 'util'], function($, u) {
+			var content = '<p class="form-control-static" style="word-break:break-all">菜单使用链接(需要oAuth): <br>' + lurl + '</p>';
+			content += '<p class="form-control-static" style="word-break:break-all">自动回复使用链接: <br>' + surl + '</p>';
+			var footer =
+					'<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>' +
+					'<button type="button" class="btn btn-primary">复制菜单链接</button>' +
+					'<button type="button" class="btn btn-success">复制自动回复链接</button>';
+			var diaobj = u.dialog('查看URL', content, footer);
+			diaobj.find('.btn-default').click(function() {
+				diaobj.modal('hide');
+			});
+			diaobj.on('shown.bs.modal', function(){
+				u.clip(diaobj.find('.btn-primary')[0], lurl);
+				u.clip(diaobj.find('.btn-success')[0], surl);
+			});
+			diaobj.modal('show');
+		});
+	}
+	function displayQr(url) {
+		require(['jquery', 'util'], function($, u) {
+			var content = '<div class="panel panel-default text-center"><img src="' + url + '" alt="房间二维码" class="img-rounded"></div>';
+			var footer =
+					'<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>';
+			var diaobj = u.dialog('查看URL二维码', content, footer);
+			diaobj.find('.btn-default').click(function() {
+				diaobj.modal('hide');
+			});
+			diaobj.modal('show');
+		});
+	}
+
+
+	function tui_set(uid,nickname) {
+		require(['jquery', 'util'], function($, u) {
+			var content =  '	<div class="form-group">';
+				content += '	<h4>推客等级：</h4>';
+                content += '	<input id="set_tui" name="tui" class="form-control" placeholder="0~3,0为非推客"/>';
+				content += '	</div>';
+
+			var footer =
+					'<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>' +
+					'<button type="button" class="btn btn-success">确定</button>';
+			var diaobj = u.dialog(nickname, content, footer);
+			diaobj.find('.btn-default').click(function() {
+				diaobj.modal('hide');
+			});
+			diaobj.find('.btn-success').click(function() {
+				$.post("{php echo $this->createWebUrl('user', array('cmd' => 'tui'))}",{
+					uid:uid,
+					tui:diaobj.find('#set_tui').val()
+				},function(resp) {
+					if(resp.status==1){
+						alert(resp.info);
+						location.reload();
+					}else{
+						alert(resp.info);
+					}
+				});
+			});
+			diaobj.modal('show');
+		});
+	}
+
+
+	function agent_yes(uid) {
+		require(['jquery', 'util'], function($, u) {
+			var content =  '	<div class="form-group">';
+				content += '	<h4>当前用户：'+uid+'</h4>';
+				content += '	</div>';
+
+			var footer =
+					'<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>' +
+					'<button type="button" class="btn btn-success">确定设为分销商</button>';
+			var diaobj = u.dialog('设为分销商', content, footer);
+			diaobj.find('.btn-default').click(function() {
+				diaobj.modal('hide');
+			});
+			diaobj.find('.btn-success').click(function() {
+				$.post("{php echo $this->createWebUrl('user', array('cmd' => 'agent'))}",{
+					uid:uid,
+					agent:1
+				},function(resp) {
+					if(resp.status==1){
+						alert(resp.info);
+						location.reload();
+					}else{
+						alert(resp.info);
+					}
+				});
+			});
+			diaobj.modal('show');
+		});
+	}
+
+	function agent_no(uid) {
+		require(['jquery', 'util'], function($, u) {
+			var content =  '	<div class="form-group">';
+				content += '	<h4>当前用户：'+uid+'</h4>';
+				content += '	</div>';
+
+			var footer =
+					'<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>' +
+					'<button type="button" class="btn btn-success">取消其分销商</button>';
+			var diaobj = u.dialog('取消分销商', content, footer);
+			diaobj.find('.btn-default').click(function() {
+				diaobj.modal('hide');
+			});
+			diaobj.find('.btn-success').click(function() {
+				$.post("{php echo $this->createWebUrl('user', array('cmd' => 'agent'))}",{
+					uid:uid,
+					agent:0
+				},function(resp) {
+					if(resp.status==1){
+						alert(resp.info);
+						location.reload();
+					}else{
+						alert(resp.info);
+					}
+				});
+			});
+			diaobj.modal('show');
+		});
+	}
+
+	function admin_yes(uid) {
+		require(['jquery', 'util'], function($, u) {
+			var content =  '	<div class="form-group">';
+				content += '	<h4>当前用户：'+uid+'</h4>';
+				content += '	</div>';
+
+			var footer =
+					'<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>' +
+					'<button type="button" class="btn btn-success">确定设为管理员</button>';
+			var diaobj = u.dialog('设为管理员', content, footer);
+			diaobj.find('.btn-default').click(function() {
+				diaobj.modal('hide');
+			});
+			diaobj.find('.btn-success').click(function() {
+				$.post("{php echo $this->createWebUrl('user', array('cmd' => 'admin'))}",{
+					uid:uid,
+					admin:1
+				},function(resp) {
+					if(resp.status==1){
+						alert(resp.info);
+						location.reload();
+					}else{
+						alert(resp.info);
+					}
+				});
+			});
+			diaobj.modal('show');
+		});
+	}
+
+	function admin_no(uid) {
+		require(['jquery', 'util'], function($, u) {
+			var content =  '	<div class="form-group">';
+				content += '	<h4>当前用户：'+uid+'</h4>';
+				content += '	</div>';
+
+			var footer =
+					'<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>' +
+					'<button type="button" class="btn btn-success">取消其管理员</button>';
+			var diaobj = u.dialog('取消管理员', content, footer);
+			diaobj.find('.btn-default').click(function() {
+				diaobj.modal('hide');
+			});
+			diaobj.find('.btn-success').click(function() {
+				$.post("{php echo $this->createWebUrl('user', array('cmd' => 'admin'))}",{
+					uid:uid,
+					admin:0
+				},function(resp) {
+					if(resp.status==1){
+						alert(resp.info);
+						location.reload();
+					}else{
+						alert(resp.info);
+					}
+				});
+			});
+			diaobj.modal('show');
+		});
+	}
+</script>
+
+{template 'common/footer'}

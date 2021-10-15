@@ -1,0 +1,51 @@
+{template 'common/header'}
+{template 'common/slide'}
+<style>
+	body{
+	font:{$_W['styles']['fontsize']} {$_W['styles']['fontfamily']};
+	color:{$_W['styles']['fontcolor']};
+	padding:0;
+	margin:0;
+	background-image:url('{if !empty($_W['styles']['indexbgimg'])}{$_W['styles']['indexbgimg']}{/if}');
+	background-size:cover;
+	background-color:{if empty($_W['styles']['indexbgcolor'])}#ffffff{else}{$_W['styles']['indexbgcolor']}{/if};
+	{$_W['styles']['indexbgextra']}
+	}
+	a{color:{$_W['styles']['linkcolor']}; text-decoration:none;}
+	{$_W['styles']['css']}
+	.box{width:100%; overflow:hidden; background:url('./themes/style49/images/bg.jpg') no-repeat; height:540px; background-size:cover;}
+	.box .box-item{display:block; text-decoration:none; outline:none; width:100%; height:90px; line-height:90px; color:#FFF;overflow:hidden;}
+	.box-item.right{ text-align:right;}
+	.box-item.left{ text-align:left;}
+	.box .box-item span{color:{$_W['styles']['fontnavcolor']};display:block; height:90px; line-height:90px; padding: 0 20px; font-size:16px; font-weight:700; overflow:hidden;}
+	.box ul li{background-color:#9e0b36;padding:0 10px;margin:1%;display: inline-block;height:45px;width:100%;}
+	.box ul li a{text-decoration: none;}
+	.box .title{color:#fff;}
+	.box .createtime{color:#999;font-size:12px}
+</style>
+<div class="box clearfix">
+	{php $num = 1;}
+	{loop $navs $nav}
+	<a href="{$nav['url']}" class="box-item {if $num%2}right{else}left{/if}">
+		<span style="{$nav['css']['name']}" title="{$nav['name']}"><i>{$nav['name']}</i></span>
+	</a>
+	{php $num++; if($num>6) break}
+	{/loop}
+
+	<!-- 该分类下文章-start -->
+	{if $_GPC['c'] == 'site' && $_GPC['a'] == 'site'}
+	<ul class="list list-unstyled">
+		{data func="site_article" cid=$cid return="true" assign="result"}
+			{loop $result['list'] $row}
+			<li>
+				<a href="{$row['linkurl']}">
+					<div class="title">{php echo cutstr($row['title'],20,1);}</div>
+					<div class="createtime">{php echo date('Y-m-d H:i:s', $row['createtime'])}</div>
+				</a>
+			</li>
+			{/loop}
+	</ul>
+	{/if}
+	<!-- 该分类下文章-start -->
+</div>
+{template 'common/footer'}

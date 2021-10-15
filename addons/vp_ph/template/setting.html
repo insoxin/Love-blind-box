@@ -1,0 +1,743 @@
+{template 'common/header'}
+
+
+
+<style type="text/css">
+
+</style>
+
+<div class="main">
+	<form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" id="form1">
+
+
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				运营配置
+			</div>
+			<div class="panel-body">
+		
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">应用名称</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="set_app_name" class="form-control" value="{$settings['set_app_name']}"/>
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">首页背景色</label>
+					<div class="col-sm-9 col-xs-12">
+						<div class="input-group">
+							<div class="input-group-addon">左下</div>
+							{php echo tpl_form_field_color('set_app_bgclb',$settings['set_app_bgclb']);}
+							<div class="input-group-addon">右上</div>
+							{php echo tpl_form_field_color('set_app_bgctr',$settings['set_app_bgctr']);}
+						</div>
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">首页背景图</label>
+					<div class="col-sm-9 col-xs-12">
+						{php echo tpl_form_field_image('set_app_bg',$settings['set_app_bg'])}
+						<div class="help-block">部分机型会卡顿，谨慎使用，动态平铺,建议尺寸 260x260 像素</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">首页轮播图</label>
+					<div class="col-sm-9 col-xs-12">
+						 {php echo tpl_form_field_multi_image('slides',$settings['slides'])}
+						<div class="help-block">可选择上传多张图,建议尺寸 600x240 像素</div>
+					</div>
+				</div>
+
+				
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">玩家须知</label>
+					<div class="col-sm-9 col-xs-12">
+						<div>
+							{php echo tpl_ueditor('app_qa',$settings['app_qa'])}
+						</div>
+						<!---<div class="help-block">页面地址：{php echo $_W['siteroot'] . 'app/' . substr($this->createMobileUrl('public',array('cmd'=>'html','type'=>'app_qa')), 2)}</div>-->
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">客服微信二维码</label>
+					<div class="col-sm-9 col-xs-12">
+						{php echo tpl_form_field_image('server_qrcode',$settings['server_qrcode'])}
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">应用开放程度</label>
+					<div class="col-sm-9 col-xs-12">
+						<div class="col-sm-9 col-xs-12">
+							<div>
+								<label class="radio-inline">
+									<input type="radio" value="0" name="set_app_status" {if $settings['set_app_status']==0}checked="checked"{/if}/> 完全开放加入
+								</label>
+								<!--
+								<label class="radio-inline">
+									<input type="radio" value="1" name="set_app_status" {if $settings['set_app_status']==1}checked="checked"{/if}/> 需分销商邀请加入
+								</label>
+								-->
+								<label class="radio-inline">
+									<input type="radio" value="2" name="set_app_status" {if $settings['set_app_status']==2}checked="checked"{/if}/> 需管理员邀请加入
+								</label>
+								<label class="radio-inline">
+									<input type="radio" value="3" name="set_app_status" {if $settings['set_app_status']==3}checked="checked"{/if}/> 暂停新用户加入
+								</label>
+								<label class="radio-inline">
+									<input type="radio" value="4" name="set_app_status" {if $settings['set_app_status']==4}checked="checked"{/if}/> 应用暂停访问
+								</label>
+							</div>
+							<div class="help-block"></div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">应用入口提示语</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="set_app_hint" class="form-control" value="{$settings['set_app_hint']}"/>
+						<div class="help-block">应用非完全开放时显示</div>
+					</div>
+				</div>
+				
+				<!--
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">腾讯地图APPKEY</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="qmap_key" class="form-control" value="{$settings['qmap_key']}"/>
+						<div class="help-block">用于解析用户位置</div>
+					</div>
+				</div>
+				-->
+
+			</div>
+		</div>
+
+
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				收费设置
+			</div>
+			<div class="panel-body">
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">男生盒子收费设置</label>
+					<div class="col-sm-9 col-xs-12">
+						<div class="input-group">
+							<div class="input-group-addon">首次放入男生纸条（元）</div>
+							<input type="number" step="0.01" name="fee_in1_1" class="form-control" value="{$settings['fee_in1_1']}" placeholder="例：1即1元，0免费" />
+							<div class="input-group-addon">之后放1张男生纸条（元）</div>
+							<input type="number" step="0.01" name="fee_in_1" class="form-control" value="{$settings['fee_in_1']}" placeholder="例：1即1元，0免费" />
+							<div class="input-group-addon">取1张男生纸条（元）</div>
+							<input type="number" step="0.01" name="fee_out_1" class="form-control" value="{$settings['fee_out_1']}" placeholder="例：1即1元，0免费" />
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">女生盒子收费设置</label>
+					<div class="col-sm-9 col-xs-12">
+						<div class="input-group">
+							<div class="input-group-addon">首次放入女生纸条（元）</div>
+							<input type="number" step="0.01" name="fee_in1_2" class="form-control" value="{$settings['fee_in1_2']}" placeholder="例：1即1元，0免费" />
+							<div class="input-group-addon">之后放1张女生纸条（元）</div>
+							<input type="number" step="0.01" name="fee_in_2" class="form-control" value="{$settings['fee_in_2']}" placeholder="例：1即1元，0免费" />
+							<div class="input-group-addon">取1张女生纸条（元）</div>
+							<input type="number" step="0.01" name="fee_out_2" class="form-control" value="{$settings['fee_out_2']}" placeholder="例：1即1元，0免费" />
+						</div>
+					</div>
+				</div>
+
+				<!--
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">代币图标</label>
+					<div class="col-sm-9 col-xs-12">
+						 {php echo tpl_form_field_image('coin_icon',$settings['coin_icon'])}
+						 <div class="help-block">建议180x180</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">代币标题</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="coin_name" class="form-control" value="{$settings['coin_name']}"/>
+						<div class="help-block">例：爱心</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">匹配收费设置</label>
+
+					<div class="col-sm-9 col-xs-12">
+						<div class="input-group">
+							<div class="input-group-addon">新用户免费匹配个数</div>
+							<input type="number" step="1" name="look_free" class="form-control" value="{$settings['look_free']}" placeholder="例：50" />
+							<div class="input-group-addon">每增加</div>
+							<input type="number" step="1" name="look_cnt" class="form-control" value="{$settings['look_cnt']}" placeholder="例：10" />
+							<div class="input-group-addon">个，需付</div>
+							<input type="number" step="1" name="look_fee" class="form-control" value="{$settings['look_fee']}" placeholder="例：1" />
+							<div class="input-group-addon">个代币</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">喜欢收费设置</label>
+
+					<div class="col-sm-9 col-xs-12">
+						<div class="input-group">
+							<div class="input-group-addon">新用户免费喜欢个数</div>
+							<input type="number" step="1" name="like_free" class="form-control" value="{$settings['like_free']}" placeholder="例：5" />
+							<div class="input-group-addon">每增加</div>
+							<input type="number" step="1" name="like_cnt" class="form-control" value="{$settings['like_cnt']}" placeholder="例：5" />
+							<div class="input-group-addon">个，需付</div>
+							<input type="number" step="1" name="like_fee" class="form-control" value="{$settings['like_fee']}" placeholder="例：2" />
+							<div class="input-group-addon">个代币</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">心动表白每次收费</label>
+					<div class="col-sm-9 col-xs-12">
+						<div class="input-group">
+							<input type="number" step="1" name="super_fee" class="form-control" value="{$settings['super_fee']}" placeholder="例：1" />
+							<div class="input-group-addon">个代币</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">偷看心动我每次收费</label>
+
+					<div class="col-sm-9 col-xs-12">
+						<div class="input-group">
+							<input type="number" step="1" name="peek_fee" class="form-control" value="{$settings['peek_fee']}" placeholder="例：1" />
+							<div class="input-group-addon">个代币</div>
+						</div>
+					</div>
+				</div>
+				--->
+
+			</div>
+		</div>
+
+		<!---
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				充值配置
+			</div>
+			<div class="panel-body">
+				
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">充值方式</label>
+					<div class="col-sm-9 col-xs-12">
+						<div class="col-sm-9 col-xs-12">
+							<label class="radio-inline">
+								<input type="radio" value="1" name="inmoney_way" {if $settings['inmoney_way']==1}checked="checked"{/if}/> 联系客服
+							</label>
+							<label class="radio-inline">
+								<input type="radio" value="2" name="inmoney_way" {if $settings['inmoney_way']==2}checked="checked"{/if}/> 在线支付（需开通并配置微擎支付）
+							</label>
+						</div>
+						<div class="help-block"></div>
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">充值套餐一</label>
+
+					<div class="col-sm-9 col-xs-12">
+						<div class="input-group">
+							<div class="input-group-addon">代币数量（个）</div>
+							<input type="number" step="1" name="inmoney_coin1" class="form-control" value="{$settings['inmoney_coin1']}" placeholder="例：5" />
+							<div class="input-group-addon">充值费用（元）</div>
+							<input type="number" step="0.01" name="inmoney_fee1" class="form-control" value="{$settings['inmoney_fee1']}" placeholder="例：3.5" />
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">充值套餐二</label>
+
+					<div class="col-sm-9 col-xs-12">
+						<div class="input-group">
+							<div class="input-group-addon">代币数量（个）</div>
+							<input type="number" step="1" name="inmoney_coin2" class="form-control" value="{$settings['inmoney_coin2']}" placeholder="例：15" />
+							<div class="input-group-addon">充值费用（元）</div>
+							<input type="number" step="0.01" name="inmoney_fee2" class="form-control" value="{$settings['inmoney_fee2']}" placeholder="例：9.9" />
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">充值套餐三</label>
+
+					<div class="col-sm-9 col-xs-12">
+						<div class="input-group">
+							<div class="input-group-addon">代币数量（个）</div>
+							<input type="number" step="1" name="inmoney_coin3" class="form-control" value="{$settings['inmoney_coin3']}" placeholder="例：45" />
+							<div class="input-group-addon">充值费用（元）</div>
+							<input type="number" step="0.01" name="inmoney_fee3" class="form-control" value="{$settings['inmoney_fee3']}" placeholder="例：19.9" />
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		-->
+
+
+		<!--
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				邀请奖励
+			</div>
+			<div class="panel-body">
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启邀请有奖</label>
+					<div class="col-sm-9 col-xs-12">
+						<div class="col-sm-9 col-xs-12">
+							<label class="radio-inline">
+								<input type="radio" value="0" name="invite_status" {if $settings['invite_status']!=1}checked="checked"{/if}/> 关闭
+							</label>
+							<label class="radio-inline">
+								<input type="radio" value="1" name="invite_status" {if $settings['invite_status']==1}checked="checked"{/if}/> 开启
+							</label>
+						</div>
+						<div class="help-block"></div>
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">邀请图标</label>
+					<div class="col-sm-9 col-xs-12">
+						 {php echo tpl_form_field_image('invite_logo',$settings['invite_logo'])}
+						 <div class="help-block">建议180x180</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">邀请标题</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="invite_title" class="form-control" value="{$settings['invite_title']}"/>
+						<div class="help-block"></div>
+					</div>
+					
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">邀请描述</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="invite_desc" class="form-control" value="{$settings['invite_desc']}"/>
+						<div class="help-block"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">邀请朋友圈描述</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="invite_line" class="form-control" value="{$settings['invite_line']}"/>
+						<div class="help-block"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">邀请海报图</label>
+					<div class="col-sm-9 col-xs-12">
+						 {php echo tpl_form_field_image('invite_poster',$settings['invite_poster'])}
+						 <div class="help-block">建议640x800</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">邀请奖励</label>
+					<div class="col-sm-9 col-xs-12">
+						<div class="input-group">
+							<div class="input-group-addon">每邀请1人奖励代币（个）</div>
+							<input type="number" step="1" name="invite_prize" class="form-control" value="{$settings['invite_prize']}" placeholder="例：1" />
+							<div class="input-group-addon">最多可邀请人数（位）</div>
+							<input type="number" step="1" name="invite_prize_limit" class="form-control" value="{$settings['invite_prize_limit']}" placeholder="例：5" />
+						</div>
+						<div class="help-block"></div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		-->
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				分销设置
+			</div>
+			<div class="panel-body">
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">分销商称呼</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="agent_name" class="form-control" value="{php echo $settings['agent_name']?$settings['agent_name']:'红娘'}"/>
+						<div class="help-block"></div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">分销商加入费用（元）</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="number" step="0.01" name="agent_fee" class="form-control" value="{$settings['agent_fee']}"/>
+						<div class="help-block">成为分销商需支付的费用</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">分销商加入文案</label>
+					<div class="col-sm-9 col-xs-12">
+						<div>
+							{php echo tpl_ueditor('agent_intro',$settings['agent_intro'])}
+						</div>
+						<div class="help-block">用户未成为分销商时在分销商页面展示，向用户介绍</div>
+					</div>
+				</div>
+
+
+				<!--
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">分销商加入</label>
+					<div class="col-sm-9 col-xs-12">
+						<div class="col-sm-9 col-xs-12">
+							<label class="radio-inline">
+								<input type="radio" value="0" name="agent_status" {if $settings['agent_status']==0}checked="checked"{/if}/> 停止新加入
+							</label>
+							<label class="radio-inline">
+								<input type="radio" value="1" name="agent_status" {if $settings['agent_status']==1}checked="checked"{/if}/> 需管理员邀请加入
+							</label>
+							<label class="radio-inline">
+								<input type="radio" value="2" name="agent_status" {if $settings['agent_status']==2}checked="checked"{/if}/> 需分销商邀请加入
+							</label>
+							<label class="radio-inline">
+								<input type="radio" value="3" name="agent_status" {if $settings['agent_status']==3}checked="checked"{/if}/> 任何人都能加入
+							</label>
+						</div>
+						<div class="help-block"></div>
+					</div>
+				</div>
+				-->
+
+
+
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">分销商提成</label>
+					<div class="col-sm-9 col-xs-12">
+						<div class="input-group">
+							<div class="input-group-addon">直接销售提成（百分比）</div>
+							<input type="number" step="1" name="agent_rate" class="form-control" value="{$settings['agent_rate']}" placeholder="例：50" />
+							<div class="input-group-addon">下级分销提成（百分比）</div>
+							<input type="number" step="1" name="agent_rate1" class="form-control" value="{$settings['agent_rate1']}" placeholder="例：10" />
+							<div class="input-group-addon">三级分销提成（百分比）</div>
+							<input type="number" step="1" name="agent_rate2" class="form-control" value="{$settings['agent_rate2']}" placeholder="例：5" />
+						</div>
+						<div class="help-block"></div>
+					</div>
+				</div>
+
+				<!--推广海报图-->
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">推广海报背景图</label>
+					<div class="col-sm-9 col-xs-12">
+						 {php echo tpl_form_field_image('agent_poster',$settings['agent_poster'])}
+						 <div class="help-block">建议180x180</div>
+					</div>
+				</div>
+
+				<!--视频号扩展链接
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">推广视频号扩展链接</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="agent_sphurl" class="form-control" value="{$settings['agent_sphurl']}"/>
+						<div class="help-block">
+							<p>公众号文章内跳转按钮链接：https://您的域名/addons/vp_pp/wxbridge.php</p>
+							<p>请联系开发者或QQ2895364284咨询链接制作方法</p>
+						</div>
+					</div>
+				</div>
+				-->
+
+				<!--邀请下级海报图 目前直接用一个二维码+邀请码实现
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">邀请下级海报背景图</label>
+					<div class="col-sm-9 col-xs-12">
+						 {php echo tpl_form_field_image('agent_invite_poster',$settings['agent_invite_poster'])}
+						 <div class="help-block">建议180x180</div>
+					</div>
+				</div>
+				-->
+			</div>
+		</div>
+
+
+
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				提现设置
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">提现方式</label>
+					<div class="col-sm-9 col-xs-12">
+						<div class="col-sm-9 col-xs-12">
+							<label class="radio-inline">
+								<input type="radio" value="1" name="outcash_way" {if $settings['outcash_way']==1}checked="checked"{/if}/> 手动转账
+							</label>
+							<label class="radio-inline">
+								<input type="radio" value="2" name="outcash_way" {if $settings['outcash_way']==2}checked="checked"{/if}/> 直接到账（需开通企业付款到零钱）
+							</label>
+						</div>
+						<div class="help-block"></div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">提现限制</label>
+					<div class="col-sm-9 col-xs-12">
+						<div class="input-group">
+							<div class="input-group-addon">每次提现下限（元）</div>
+							<input type="number" name="outcash_min" class="form-control" value="{$settings['outcash_min']}" placeholder="例：100" />
+							<div class="input-group-addon">每次提现上限（元）</div>
+							<input type="number" name="outcash_max" class="form-control" value="{$settings['outcash_max']}" placeholder="例：2000" />
+							<div class="input-group-addon">提现间隔时间（天）</div>
+							<input type="number" name="outcash_sp" class="form-control" value="{$settings['outcash_sp']}" placeholder="例：7" />
+						</div>
+						<div class="help-block"></div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!--
+			用户：服务单进度提醒
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				模板消息通知
+			</div>
+			<div class="panel-body">
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">匹配服务提醒</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="nt_pair" class="form-control" value="{$settings['nt_pair']}"/>
+						 <div class="help-block">OPENTM411641845 - 服务单进度提醒 - IT科技 - 互联网|电子商务</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		-->
+
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				应用分享设置
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">图标</label>
+					<div class="col-sm-9 col-xs-12">
+						 {php echo tpl_form_field_image('share_post_logo',$settings['share_post_logo'])}
+						 <div class="help-block">建议180x180</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">标题</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="share_post_title" class="form-control" value="{$settings['share_post_title']}"/>
+						<div class="help-block"></div>
+					</div>
+					
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">描述</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="share_post_desc" class="form-control" value="{$settings['share_post_desc']}"/>
+						<div class="help-block"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">朋友圈</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="share_post_line" class="form-control" value="{$settings['share_post_line']}"/>
+						<div class="help-block"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				应用秘钥
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">应用秘钥</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="auth_key" class="form-control" value="{$settings['auth_key']}"/>
+						<div class="help-block"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+		<!--
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				引导关注弹出提示
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">引导关注Logo</label>
+					<div class="col-sm-9 col-xs-12">
+						 {php echo tpl_form_field_image('fo_img',$settings['fo_img'])}
+						 <div class="help-block">建议48x48</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">引导关注文字</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="fo_text" class="form-control" value="{$settings['fo_text']}"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">引导关注时间(毫秒)</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="fo_time" class="form-control" value="{$settings['fo_time']}"/>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				买卖圈分享设置
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">图标</label>
+					<div class="col-sm-9 col-xs-12">
+						 {php echo tpl_form_field_image('share_sells_logo',$settings['share_sells_logo'])}
+						 <div class="help-block">建议180x180</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">标题</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="share_sells_title" class="form-control" value="{$settings['share_sells_title']}"/>
+						<div class="help-block"></div>
+					</div>
+					
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">描述</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="share_sells_desc" class="form-control" value="{$settings['share_sells_desc']}"/>
+						<div class="help-block"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">朋友圈</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="share_sells_line" class="form-control" value="{$settings['share_sells_line']}"/>
+						<div class="help-block"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	-->
+		
+		<!---
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				定时任务
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label">访问秘钥</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="task_key" class="form-control" value="{$settings['task_key']}"/>
+						<div class="help-block">设置您的接口密码，例：123456789，保存后生成定时任务</div>
+					</div>
+				</div>
+				{if !empty($settings['task_key'])}
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-2 control-label">补贴超时处理任务</label>
+						<div class="col-sm-9 col-xs-12">
+							<input type="text" disabled class="form-control" value="{php echo $_W['siteroot'] . 'app/' . substr($this->createMobileUrl('taskWork',array('_key_'=>$settings['task_key'])), 2);}"/>
+							<div class="help-block">将该地址添加到宝塔计划任务中，设为每分钟执行一次</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-2 control-label">每天零点重置任务</label>
+						<div class="col-sm-9 col-xs-12">
+							<input type="text" disabled class="form-control" value="{php echo $_W['siteroot'] . 'app/' . substr($this->createMobileUrl('taskDayReset',array('_key_'=>$settings['task_key'])), 2);}"/>
+							<div class="help-block">将该地址添加到宝塔计划任务中，设为每天0时0分执行</div>
+						</div>
+					</div>
+				{/if}
+			</div>
+		</div>
+		-->
+		
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				应用入口
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<div class="col-sm-9 col-xs-12">
+						<img src="{php echo $this->createWebUrl('qr', array('raw' => base64_encode($_W['siteroot'] . 'app/' . substr($this->createMobileUrl('index'), 2))))}" style="width:200px;" />
+						<!--
+						{php echo $_W['siteroot'] . 'app/' . substr($this->createMobileUrl('agent'), 2);}
+						 <div class="help-block">您可以创建关键字回复或菜单跳转到入口</div>
+						 --->
+						 <div>
+							{php echo $_W['siteroot'] . 'app/' . substr($this->createMobileUrl('index'), 2);}
+							 <!--<div class="help-block"><span style="color:red">首个访问者微信号将自动绑定为官方管理员</span></div>--->
+						 </div>
+					</div>
+				</div>
+
+
+
+
+				
+			</div>
+		</div>
+	
+
+		<div class="form-group col-sm-12">
+			<input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
+			<input type="hidden" name="token" value="{$_W['token']}" />
+		</div>
+	</form>
+</div>
+
+<script language='javascript'>
+
+</script>
+
+{template 'common/footer'}

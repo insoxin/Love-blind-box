@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest xmlns="https://www.mobanzhu.com" versionCode="0.8,1.0">
+
+	<application setting="true">
+		<name><![CDATA[盲盒交友变现]]></name>
+		<identifie><![CDATA[vp_ph]]></identifie>
+		<version><![CDATA[1.0.0]]></version>
+		<type><![CDATA[other]]></type>
+		<ability><![CDATA[盲盒交友变现]]></ability>
+		<description><![CDATA[盲盒交友变现]]></description>
+		<author><![CDATA[Www.Mobanzhu.Com]]></author>
+		<url><![CDATA[http://bbs.we7.cc/]]></url>
+	</application>
+
+	<platform>
+		<subscribes>
+			<message type="image" />
+			<message type="subscribe" />
+			<message type="unsubscribe" />
+			<message type="event" />
+			<message type="scan" />
+			<message type="click" />
+			<message type="view" />
+			<message type="masssendjobfinish" />
+		</subscribes>
+
+		<handles>
+			<message type="text" />
+			<message type="image" />
+			<message type="subscribe" />
+			<message type="unsubscribe" />
+			<message type="event" />
+			<message type="scan" />
+			<message type="click" />
+			<message type="view" />
+			<message type="masssendjobfinish" />
+		</handles>
+
+		<rule embed="true" />
+		<card embed="false" />
+		
+		<supports>
+		</supports>
+	</platform>
+
+	<bindings>
+		<menu>
+			<entry title="纸条管理" do="feed" state="" direct="false"/>
+			<entry title="用户管理" do="user" state="" direct="false"/>
+			<entry title="分销管理" do="agent" state="" direct="false"/>
+			<entry title="消费记录" do="order" state="" direct="false"/>
+			<entry title="提现管理" do="outcash" state="" direct="false"/>
+		</menu>
+	</bindings>
+
+	<permissions>
+	</permissions>
+
+	<install><![CDATA[CREATE TABLE IF NOT EXISTS `ims_vp_ph_feed` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`uniacid` int(11) NOT NULL,
+`uid` int(11) NOT NULL,
+`openid` varchar(80) NOT NULL,
+`sex` tinyint(4) NOT NULL,
+`content` text NOT NULL,
+`images` text NOT NULL,
+`ctype` varchar(20) NOT NULL,
+`contact` varchar(30) NOT NULL,
+`create_time` int(11) NOT NULL,
+`update_time` int(11) NOT NULL,
+`status` tinyint(4) NOT NULL,
+`verify_status` tinyint(4) NOT NULL,
+`verify_remark` text NOT NULL,
+`verify_time` int(11) NOT NULL,
+`views` int(11) NOT NULL,
+`is_del` tinyint(4) NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `ims_vp_ph_money` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`uniacid` int(11) NOT NULL,
+`who` varchar(20) NOT NULL,
+`who_id` int(11) NOT NULL,
+`uid` int(11),
+`money` decimal(12,2) NOT NULL,
+`biz` varchar(32) NOT NULL,
+`biz_id` int(11) NOT NULL,
+`biz_name` varchar(255) NOT NULL,
+`create_time` int(11) NOT NULL,
+`remark` text NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `ims_vp_ph_order` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`uniacid` int(11) NOT NULL,
+`biz` varchar(32) NOT NULL,
+`biz_id` int(11) NOT NULL,
+`biz_name` varchar(255) NOT NULL,
+`title` varchar(255) NOT NULL,
+`uid` int(11) NOT NULL,
+`openid` varchar(255) NOT NULL,
+`num` varchar(32) NOT NULL,
+`price` decimal(12,2) NOT NULL,
+`cnt` int(11) NOT NULL,
+`amount` decimal(12,2) NOT NULL,
+`fee` decimal(12,2) NOT NULL,
+`cut` decimal(12,2) NOT NULL,
+`to_pay` decimal(12,2) NOT NULL,
+`agentp` int(11) NOT NULL,
+`agentp_money` decimal(12,2) NOT NULL,
+`agentp1` int(11) NOT NULL,
+`agentp1_money` decimal(12,2) NOT NULL,
+`agentp2` int(11) NOT NULL,
+`agentp2_money` decimal(12,2) NOT NULL,
+`profit` decimal(12,2) NOT NULL,
+`create_time` int(11) NOT NULL,
+`remark` text NOT NULL,
+`status` tinyint(2) NOT NULL,
+`status_time` int(11),
+`prepay_params` text,
+`pay_way` int(11) NOT NULL,
+`pay` decimal(12,2),
+`pay_params` text,
+`pay_time` int(11),
+`pay_callback` varchar(255) NOT NULL,
+`refund_status` tinyint(1) NOT NULL,
+`refund_money` decimal(12,2),
+`refund` decimal(12,2),
+`refund_time` int(11),
+`refund_remark` text,
+`refund_tag` text,
+PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `ims_vp_ph_outcash` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`uniacid` int(11) NOT NULL,
+`biz` varchar(20) NOT NULL,
+`biz_id` int(11) NOT NULL,
+`uid` int(11) NOT NULL,
+`nickname` varchar(40),
+`weixin` varchar(255) NOT NULL,
+`mobile` varchar(32) NOT NULL,
+`openid` varchar(100) NOT NULL,
+`money_before` decimal(12,2) NOT NULL,
+`money_after` decimal(12,2) NOT NULL,
+`money` decimal(12,2) NOT NULL,
+`cash` decimal(12,2) NOT NULL,
+`status` tinyint(1) NOT NULL,
+`status_remark` text,
+`channel` tinyint(1),
+`channel_account` varchar(255),
+`channel_realname` varchar(64),
+`tag` text,
+`remark` text,
+`fedback` text,
+`create_time` int(11) NOT NULL,
+`update_time` int(11) NOT NULL,
+PRIMARY KEY (`id`),
+UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `ims_vp_ph_pair` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`uniacid` int(11) NOT NULL,
+`uid` int(11) NOT NULL,
+`ouid` int(11) NOT NULL,
+`create_time` int(11) NOT NULL,
+`pair` tinyint(4) NOT NULL,
+`pair_time` int(11) NOT NULL,
+`feel` tinyint(4) NOT NULL,
+`msg` text NOT NULL,
+`feel_time` int(11) NOT NULL,
+`msg_time` int(11) NOT NULL,
+`matched` tinyint(4) NOT NULL,
+`matched_time` int(11) NOT NULL,
+`peek` tinyint(4) NOT NULL,
+`peek_time` int(11) NOT NULL,
+PRIMARY KEY (`id`),
+UNIQUE KEY `uniacid_uid_ouid` (`uniacid`,`uid`,`ouid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `ims_vp_ph_user` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`uniacid` int(11) NOT NULL,
+`ufo` tinyint(1) NOT NULL,
+`uid` int(11) NOT NULL,
+`nickname` varchar(255) NOT NULL,
+`avatar` varchar(255) NOT NULL,
+`mobile` varchar(20) NOT NULL,
+`openid` varchar(80) NOT NULL,
+`feedin1` int(11) NOT NULL,
+`feedin2` int(11) NOT NULL,
+`feedout1` int(11) NOT NULL,
+`feedout2` int(11) NOT NULL,
+`pname` varchar(255) NOT NULL,
+`pname_edittime` int(11) NOT NULL,
+`cover` varchar(255) NOT NULL,
+`images` text NOT NULL,
+`images_edittime` int(11) NOT NULL,
+`sex` tinyint(1) NOT NULL,
+`age` tinyint(4) NOT NULL,
+`height` float NOT NULL,
+`weight` float NOT NULL,
+`tagi` text NOT NULL,
+`tagu` text NOT NULL,
+`province` varchar(80) NOT NULL,
+`city` varchar(80) NOT NULL,
+`country` varchar(80) NOT NULL,
+`address` varchar(255) NOT NULL,
+`lng` double NOT NULL,
+`lat` double NOT NULL,
+`distance` decimal(12,2) NOT NULL,
+`qq` varchar(32) NOT NULL,
+`wx` varchar(32) NOT NULL,
+`coin` int(11) NOT NULL,
+`coin_in` int(11) NOT NULL,
+`coin_used` int(11) NOT NULL,
+`money_in` decimal(12,2) NOT NULL,
+`fuid` int(11) NOT NULL,
+`invites` int(11) NOT NULL,
+`agentp` int(11) NOT NULL,
+`agentp1` int(11) NOT NULL,
+`agentp2` int(11) NOT NULL,
+`create_time` int(11) NOT NULL,
+`is_play` tinyint(4) NOT NULL,
+`play_time` int(11) NOT NULL,
+`is_nt` tinyint(4) NOT NULL,
+`verify_status` tinyint(4) NOT NULL,
+`verify_remark` text NOT NULL,
+`verify_time` int(11) NOT NULL,
+`pps` int(11) NOT NULL,
+`pped` int(11) NOT NULL,
+`likes` int(11) NOT NULL,
+`liked` int(11) NOT NULL,
+`sliked` int(11) NOT NULL,
+`likedo` int(11) NOT NULL,
+`slikedo` int(11) NOT NULL,
+`peeked` int(11) NOT NULL,
+`peekedo` int(11) NOT NULL,
+`matched` int(11) NOT NULL,
+`agent` int(11) NOT NULL,
+`agent_time` int(11) NOT NULL,
+`users` int(11) NOT NULL,
+`agentbs` int(11) NOT NULL,
+`agentb1s` int(11) NOT NULL,
+`agentb2s` int(11) NOT NULL,
+`agent_money` decimal(12,2) NOT NULL,
+`agent_money_in` decimal(12,2) NOT NULL,
+`agent_money_outcash` decimal(12,2) NOT NULL,
+`admin` tinyint(4) NOT NULL,
+PRIMARY KEY (`id`),
+KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `ims_vp_ph_user_feed` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`uniacid` int(11) NOT NULL,
+`uid` int(11) NOT NULL,
+`feed_id` int(11) NOT NULL,
+`feed_uid` int(11) NOT NULL,
+`sex` tinyint(4) NOT NULL,
+`create_time` int(11) NOT NULL,
+`status` int(11) NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+]]></install>
+	<uninstall><![CDATA[DROP TABLE IF EXISTS `ims_vp_ph_feed`;
+DROP TABLE IF EXISTS `ims_vp_ph_money`;
+DROP TABLE IF EXISTS `ims_vp_ph_order`;
+DROP TABLE IF EXISTS `ims_vp_ph_outcash`;
+DROP TABLE IF EXISTS `ims_vp_ph_pair`;
+DROP TABLE IF EXISTS `ims_vp_ph_user`;
+DROP TABLE IF EXISTS `ims_vp_ph_user_feed`;
+]]></uninstall>
+	<upgrade><![CDATA[]]></upgrade>
+
+</manifest>

@@ -1,0 +1,136 @@
+{template 'common/header'}
+<style>
+	body{background:#d2e6e9;}
+	.charge.panel{margin:.5em; border:none;}
+	.charge.panel-info>.panel-heading {background: -webkit-gradient(linear, 0 0, 100% 0, from(#ebebeb), to(#f3f9fa), color-stop(30%, #f5f9f9)); color:#666666; border:none;}
+	a{color:#666666;}a:hover{color: #3ebacc;}
+	.charge .btn.btn-primary{background: #56c6d6; color: #FFF; border: 0;}
+	.text-hight{color:red;font-weight: bold;font-size: 18px;}
+</style>
+<div class=" panel panel-info charge">
+	<div class="panel-heading">
+		<h4>会员卡消费</h4>
+	</div>
+	<div class="panel-body">
+		<form method="post" action="{php echo url('mc/bond/consume');}" role="form" id="form1" class="form-horizontal form">
+			<div class="form-group">
+				<div class="col-xs-12">
+					<select name="store_id" id="store_id" class="form-control">
+						{loop $stores $store}
+						<option value="{$store['id']}">{$store['business_name']}</option>
+						{/loop}
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-xs-12">
+					<input type="text" class="form-control" name="credit" value="" placeholder="实际消费金额"/>
+					<div class="help-block"><strong class="text-danger">{$tips}</strong></div>
+				</div>
+			</div>
+			<div class="form-group" style="display: none" id="discount">
+				<div class="col-xs-12">
+					<span>实际支付金额 <span class="text-hight" id="price"></span></span>
+					<input type="hidden" name="last_credit" value="0"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-xs-12">
+					<input type="hidden" name="token" value="{$_W['token']}">
+					<input type="submit" name="submit" class="btn btn-primary btn-block" value="提交">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-xs-12">
+					<a href="javascript:;" data-toggle="modal" data-target="#qrcode-modal" class="btn btn-warning btn-block">生成付款二维码</a>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-xs-12">
+					<a class="btn btn-default btn-block" href="javascript:history.go(-1);">返回</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="modal fade modal-code" id="qrcode-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="code-img text-center" data-dismiss="modal">
+		<div class="qr">
+			<img style="-webkit-user-select: none" src="{php echo url('mc/bond/card_qrcode');}">
+		</div>
+		<div class="text-center tip">付款时请交给店员扫一扫。该功能只能在微信中使用</div>
+	</div>
+</div>
+
+<script>
+	require(['util'], function(u){
+		$(':text[name="credit"]').keyup(function(){
+			var credit = parseFloat($(this).val());
+			if(isNaN(credit)) {
+				return false;
+			}
+			var price = credit;
+			{if $setting['discount_type'] > 0 && !empty($mine_discount)}
+				var discount = '{php echo json_encode($mine_discount);}';
+				discount = $.parseJSON(discount);
+				var type = "{$setting['discount_type']}";
+
+				discount.condition = parseFloat(discount.condition);
+				discount.discount = parseFloat(discount.discount);
+				if(credit >= discount.condition) {
+					if(type == 1) {
+						price = credit - discount.discount;
+					} else {
+						if(!discount.discount) {
+							discount.discount = 1;
+						}
+						price = credit * discount.discount;
+					}
+					price = price.toFixed(2);
+					if(price < 0) {
+						price = 0;
+					}
+				}
+			{/if}
+
+			if(price >= 0) {
+				$('#price').html(price+'元');
+				$(':hidden[name="last_credit"]').val(price);
+				$('#discount').show();
+			}
+		});
+
+
+		$('#form1').submit(function(){
+			{if !empty($stores)}
+				var store = $('#store_id').val();
+				if(!store) {
+					u.message('请选择消费门店', '', 'error');
+					return false;
+				}
+			{/if}
+
+			var member_credit = parseFloat("{$_W['member']['credit2']}");
+			var credit = parseFloat($('#form1 :text[name="credit"]').val());
+			var last_credit = credit;
+
+			var last_credit = parseFloat($('#form1 :hidden[name="last_credit"]').val());
+			if(isNaN(credit)) {
+				u.message('请输入消费金额', '', 'error');
+				return false;
+			}
+			if(isNaN(last_credit) || !last_credit) {
+				u.message('实际支付金额错误', '', 'error');
+				return false;
+			}
+			if(member_credit < last_credit) {
+				u.message('余额不够，请先充值', '', 'error');
+				return false;
+			}
+		});
+	});
+</script>
+{template 'mc/footer'}
+{template 'common/footer'}
+

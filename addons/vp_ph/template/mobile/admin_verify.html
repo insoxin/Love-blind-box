@@ -1,0 +1,299 @@
+{template 'inc/header'}
+
+<script type="text/javascript">
+	wx.ready(function () {
+		wx.hideAllNonBaseMenuItem();
+	});
+</script>
+
+<style>
+
+
+
+	#main_list{margin-top:0;padding-bottom:40px;}
+	#main_list h4{font-size:12px;color:#bbbbbb}
+	#main_list i{width:16px;height:16px;}
+	.feed-item{background:#FFFFFF;margin:0 10px 10px 10px;border:0 none;border-radius:5px;overflow:hidden}
+	.feed-item .weui-cell{padding:15px;}/**-webkit-box-align:stretch;-webkit-align-items:stretch;align-items:stretch;**/
+
+
+</style>
+
+<div>
+
+	{php $tab='admin'}
+	{template 'inc/tab'}
+	<div style="height:50px;"></div>
+
+
+	<div>
+		
+		<!-- 列表 -->
+		<div id="main_list" data-url="" data-loading=0 data-start=0 data-more=1 ></div>
+		
+		<!--列表模板-->
+		<script id="feed_list_tpl" type="text/template" >
+			<%
+				if(!list || list.length==0){
+			%>
+					<div style="padding:30px 0;text-align:center;font-size:14px;color:#999999;">没有待审核的纸条</div>
+			<%
+				}
+				for(var i=0;i<list.length;i++){
+					var item = list[i];
+			%>	
+				<div class="feed-item" id="pair_<%=item.id%>">
+					<div class="weui-cell">
+						<div class="weui-cell__bd">
+							<div>
+								<% if(item.sex==1){ %><span style="color:#4e86ec">[男生盒子]</span><%  } %>
+								<% if(item.sex==2){ %><span style="color:#ec4eb3">[女生盒子]</span><%  } %>
+								<%=item.content%>
+							</div>
+							<%
+								if(item.images && item.images.length>0){
+							%>
+							<div style="margin-top:8px;">
+								<%
+									for(var j=0;j<item.images.length;j++){
+										var img = item.images[j];
+								%>	
+									<img class="feed-img" src="<%=img.url%>" data-src="<%=img.url%>" style="width:80px;height:80px;margin-right:2px;object-fit:cover;" />
+								<%  } %>
+							</div>
+							<%  } %>
+							<div style="margin-top:8px;"><%=item.ctype=='wx'?'微信号':''%><%=item.ctype=='qq'?'QQ号':''%>：<%=item.contact%> <a class="btn-copyer"  href="javascript:" data-clipboard-text="<%=item.contact%>">复制</a></div>
+						</div>
+					</div>
+					<%
+						if(item.verify_status==0){
+					%>
+						<div class="weui-cell">
+							<div class="weui-cell__bd">
+								<span style="font-size:12px;color:#10AEFF">初审</span>
+							</div>
+							<div class="weui-cell__ft">
+								<a class="btnm btnm-success btn_verify_yes" data-id="<%=item.id%>" style="margin-right:5px;">通过</a>
+								<a class="btnm btnm-warn btn_verify_no" data-id="<%=item.id%>">拒绝</a>
+							</div>
+						</div>
+					<%  } %>
+
+					<%
+						if(item.verify_status==5){
+					%>
+						<div class="weui-cell">
+							<div class="weui-cell__bd">
+								<span style="font-size:12px;color:#10AEFF">复审 <%=item.verify_remark%></span>
+							</div>
+							<div class="weui-cell__ft">
+								<a class="btnm btnm-success btn_verify_yes" data-id="<%=item.id%>" style="margin-right:5px;">通过</a>
+								<a class="btnm btnm-warn btn_verify_no" data-id="<%=item.id%>">拒绝</a>
+							</div>
+						</div>
+					<%  } %>
+				</div>
+			<%  } %>
+		</script>
+	</div>
+
+	<!--
+		等待审核	：等待审核，【修改】
+		审核通过	：已有xx人抽到过，【销毁】
+		审核拒绝	：拒绝原因，【修改】
+	-->
+
+</div>
+
+
+
+
+
+<!--纸条审核拒绝弹出框-->
+<div id="dialog_feedverify" class="js_dialog"  style="display:none;">
+	<div class="weui-mask js_dialog_closer" style="z-index:998">
+	</div>
+	<div  class="weui-half-screen-dialog" style="z-index:999">
+		<div class="weui-half-screen-dialog__hd">
+		  <div class="weui-half-screen-dialog__hd__side">
+			<button style="display: none;" class="weui-icon-btn js_dialog_closer">返回<i class="weui-icon-back-arrow-thin"></i></button>
+			<button class="weui-icon-btn js_dialog_closer">关闭<i class="weui-icon-close-thin"></i></button>
+		  </div>
+		  <div class="weui-half-screen-dialog__hd__main">
+			<strong class="weui-half-screen-dialog__title">纸条审核拒绝</strong>
+		  </div>
+		</div>
+		<div class="weui-half-screen-dialog__bd">
+			<form id="feedverify_form" action="" method="post">
+				<input type="hidden" name="submit" value="verify"/>
+				<input type="hidden" name="verify" value="no"/>
+				<input id="feedverify_id" type="hidden" name="id" value=""/>
+
+				<div class="weui-form">
+					<div class="weui-form__text-area">
+						<div class="weui-form__control-area">
+							<div style="border:1px solid #CCCCCC;border-radius:10px;">
+								<textarea  name="verify_remark" class="weui-textarea" placeholder="拒绝原因..." style="height:80px;padding:10px;">内容违规，请修改</textarea>
+							</div>
+						</div>
+
+						<div class="weui-form__opr-area">
+							<a id="btn_verify_no_do" class="btn" href="javascript:">确认拒绝</a>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="weui-half-screen-dialog__ft">
+			
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+{template 'inc/script'}
+{template 'inc/app'}
+<script type="text/javascript">
+
+	$(function(){
+		
+		var feed_list = $("#main_list");
+		var feed_list_tpl=baidu.template($('#feed_list_tpl').html());
+		var list = new Array();
+		var loadList=function(refresh=true,showloading=false){
+			if(refresh){
+				feed_list.attr('data-start',0);
+				feed_list.attr('data-more',1);
+			}
+
+			if(feed_list.attr('data-loading')==1 || feed_list.attr('data-more')==0){
+				return;
+			}
+			
+			if(showloading){
+				loading = weui.loading('正在加载...');
+			}
+			feed_list.attr('data-loading',1);
+			
+			$.post(feed_list.attr('data-url'), {
+				submit:'list',
+				filt:feed_list.attr('data-filt'),
+				start:feed_list.attr('data-start')
+			},function(resp) {
+				if(loading){
+					loading.hide();
+				}
+				feed_list.attr('data-loading',0);
+				if(resp.status==0){
+					alert(resp.info);
+				}else{
+					list=list.concat(resp.data.list);
+
+					feed_list.attr('data-start',resp.data.start);
+					feed_list.attr('data-more',resp.data.more);
+					/**
+					if(feed_list.attr('data-more')==0){
+						$('#money_list_container').destroyInfinite();
+						$('#money_list_loader').hide();
+					}
+					
+					
+					**/
+					var html='';
+					html=feed_list_tpl(resp.data);
+				
+					
+					if(!refresh){
+						html=feed_list.html()+html;
+					}
+					feed_list.html(html);
+				}
+			});	
+		}
+		
+		// 自动加载历史链接
+		loadList(true,true);
+
+		// 预览图片
+		feed_list.on('click','.feed-img',function(){
+			var imgs = $(this).parent().children();
+
+			var imgurls=new Array();
+			$(this).parent().children().each(function(){
+				imgurls.push($(this).data('src'));
+			}); 
+
+			wx.previewImage({
+			  current: $(this).data('src'),
+			  urls: imgurls
+			});
+		});
+
+
+		// 审核通过
+		feed_list.on('click','.btn_verify_yes',function(){
+			var id=$(this).data('id');
+			weui.confirm('确定通过审核？', function () {
+				loading = weui.loading('正在处理...');
+				$.post('', {
+					submit:'verify',
+					verify:'yes',
+					id:id
+				},function(resp) {
+					setTimeout(function() { // weui.confirm后接weui.alert太快会导致weui.alert不弹出
+						loading.hide();
+						if(resp.status==0){
+							weui.alert(resp.info);
+						}else{
+							weui.toast(resp.info, 2000);
+							loadList(true);
+						}
+					},300);
+				});
+			});
+		});
+
+
+
+		// 审核拒绝
+		feed_list.on('click','.btn_verify_no',function(){
+			var id=$(this).data('id');
+			$('#feedverify_id').val(id);
+			
+			$('#dialog_feedverify').fadeIn(200);
+			$('#dialog_feedverify').find('.weui-half-screen-dialog').addClass('weui-half-screen-dialog_show');
+		});
+
+		// 审核拒绝
+		$('#btn_verify_no_do').on('click',function(){	
+			loading = weui.loading('正在提交...');
+			var form = $('#feedverify_form');
+			$.post(form.attr('action'), form.serialize(),function(resp) {
+				setTimeout(function() { // weui.confirm后接weui.alert太快会导致weui.alert不弹出
+					loading.hide();
+					if(resp.status==0){
+						weui.alert(resp.info);
+					}else{
+						$('#dialog_feedverify').fadeOut(200);
+						$('#dialog_feedverify').find('.weui-half-screen-dialog').removeClass('weui-half-screen-dialog_show');
+
+						weui.toast(resp.info, 2000);
+						loadList(true);
+					}
+				},300);
+			});
+		});
+
+		// 统一复制
+		var clipboard = new ClipboardJS('.btn-copyer');
+		clipboard.on('success', function(e) {
+			weui.toast('复制成功', 2000);
+		});
+	});
+</script>
+{template 'inc/footer'}

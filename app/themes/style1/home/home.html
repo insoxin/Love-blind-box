@@ -1,0 +1,49 @@
+{template 'common/header'}
+{template 'common/slide'}
+<style>
+	body{
+	font:{$_W['styles']['fontsize']} {$_W['styles']['fontfamily']};
+	color:{if empty($_W['styles']['fontcolor'])}#333{else}{$_W['styles']['fontcolor']}{/if};
+	padding:0;
+	margin:0;
+	background:url('{if !empty($_W['styles']['indexbgimg'])}{$_W['styles']['indexbgimg']}{/if}') no-repeat center center;
+	background-size:cover;
+	background-color:{if empty($_W['styles']['indexbgcolor'])}#fbf5df{else}{$_W['styles']['indexbgcolor']}{/if};
+	{$_W['styles']['indexbgextra']}
+	}
+	a{color:{$_W['styles']['linkcolor']}; text-decoration:none;}
+	{$_W['styles']['css']}
+	.box{width:100%; margin-top:10px;}
+	.box .box-item{float:left; display:block; width:25%; height:90px; text-align:center; text-decoration:none; outline:none;  margin-bottom:8px;color:#333;}
+	.box .box-item i{display:block; width:60px; height:60px; line-height:60px; margin:5px auto; font-size:35px; color:#ff0000; background:#EEE; overflow: hidden; border:2px #FFF solid;}
+	.box .box-item span{color:{$_W['styles']['fontnavcolor']};display:block; font-size:14px; width:90%; height:20px; line-height:20px; margin:0 5%; overflow:hidden;}
+	.box ul li{background-color:#EEE;padding:0 10px;margin:1%;display: inline-block;height:45px;width:100%;}
+	.box ul li a{text-decoration: none;}
+	.box .title{color:#000;}
+	.box .createtime{color:#999;font-size:12px}
+</style>
+<script>
+	$('i').addClass("img-circle");
+</script>
+<div class="box clearfix">
+	{data func="site_navs" item="row"}
+	{$row['html']}
+	{/data}
+
+	<!-- 该分类下文章-start -->
+	{if $_GPC['c'] == 'site' && $_GPC['a'] == 'site'}
+	<ul class="list list-unstyled">
+		{data func="site_article" cid=$cid return="true" assign="result"}
+			{loop $result['list'] $row}
+			<li>
+				<a href="{$row['linkurl']}">
+					<div class="title">{php echo cutstr($row['title'],20,1);}</div>
+					<div class="createtime">{php echo date('Y-m-d H:i:s', $row['createtime'])}</div>
+				</a>
+			</li>
+			{/loop}
+	</ul>
+	{/if}
+	<!-- 该分类下文章-start -->
+</div>
+{template 'common/footer'}
